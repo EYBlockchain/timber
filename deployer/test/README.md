@@ -7,22 +7,16 @@ cd path/to/deployer
 truffle compile --all
 ```
 
-## To run the tests:
+## To run a specific test:  
 
-In one terminal window:  
-`docker-compose -f docker-compose.remote.pull.yml up --build`  
+_Note: in the steps below, you can replace `-f docker-compose.remote.pull.yml` with one of the other provided docker-compose files, such as `-f docker-compose.remote.push.yml`._  
 
-Then in another terminal window:
-`docker-compose -f docker-compose.remote.pull.yml run --rm deployer npm run test`  
-
-You can replace `-f docker-compose.remote.pull.yml` with one of the other provided docker-compose files, or omit it to use the default file.  
+_Note, however, that the default `docker-compose.yml` file is a bit more fiddly, because it relies on contracts being deployed via truffle with your application. Tests aren't provided for that file yet._
 
 Or, to run a specific test:  
 #### deployment.test.js  
 
-(You can preceed this test with deployment of other microservices, in order to see their console logging output, with `docker-compose -f docker-compose.remote.pull.yml up` in a terminal window).
-
-`docker-compose  docker-compose.remote.pull.yml run --rm deployer npx mocha --exit --require @babel/register 'test/deployment.test.js'`
+`docker-compose -f docker-compose.remote.pull.yml run --rm deployer npx mocha --exit --require @babel/register 'test/deployment.test.js'`
 
 **Understanding this command:**  
 `docker-compose -f docker-compose.remote.pull.yml` selects the docker-compose file to use. You can replace `-f docker-compose.remote.pull.yml` with one of the other provided docker-compose files, or omit it to use the default file.  
@@ -40,8 +34,6 @@ In one terminal window:
 
 Then in another terminal window:  
 `docker-compose -f docker-compose.remote.pull.yml run --rm deployer npx mocha --exit --require @babel/register 'test/MerkleTreeController.test.js'`
-
-You can replace `-f docker-compose.remote.pull.yml` with one of the other provided docker-compose files, or omit it to use the default file.  
 
 
 ## After testing
