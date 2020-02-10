@@ -19,7 +19,7 @@ Or, to run a specific test:
 `docker-compose -f docker-compose.remote.pull.yml run --rm deployer npx mocha --exit --require @babel/register 'test/deployment.test.js'`
 
 **Understanding this command:**  
-`docker-compose -f docker-compose.remote.pull.yml` selects the docker-compose file to use. You can replace `-f docker-compose.remote.pull.yml` with one of the other provided docker-compose files, or omit it to use the default file.  
+`docker-compose -f docker-compose.remote.pull.yml` selects the docker-compose file to use.  
 `run --rm deployer` creates an instance of the deployer microservice (along with any dependent service containers) and runs whatever command follows.  
 `npx mocha` run mocha.  
 `--exit` exits the mocha test once its finished (although this will leave the containers still running).  
