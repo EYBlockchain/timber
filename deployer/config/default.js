@@ -1,15 +1,19 @@
 /**
 @module default.js
 @author iAmMichaelConnor
-@desc constants used by a nubmer of other modules
+@desc constants used by a number of other modules
 */
-
+var nodeHashLength = (process.env.HASH_TYPE == 'SHA' ? 27 : 32);
+var controller = (process.env.HASH_TYPE == 'SHA' ? 'MerkleTreeControllerSHA' : 'MerkleTreeControllerMiMC');
+const contracts = [controller];
 module.exports = {
   LEVEL_DB_PATH: '/app/db/db',
   POLLING_FREQUENCY: 6000, // How many milliseconds to wait between each poll
+  HASH_TYPE: process.env.HASH_TYPE,
+  NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
 
   // deployed contract info:
-  contractNames: ['MerkleTreeController', 'MerkleTreeController2'],
+  contractNames: contracts,
 
   // push the contract information, or wait for it to be pulled
   PUSH_OR_PULL: process.env.PUSH_OR_PULL,

@@ -24,9 +24,9 @@
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.4.1",
     "safe-buffer": "^5.1.2",
-    "jsonfile": "^5.0.0",
-    "fs-extra": "^8.1.0",
-    "solc": "0.5.8"
+    "hex-to-binary": "^1.0.1",
+    "keccak": "^2.1.0",
+    "jsonfile": "^5.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",

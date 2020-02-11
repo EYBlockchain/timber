@@ -164,7 +164,7 @@ function shaHash(...items) {
 }
 
 function concatenateThenHash(...items) {
-  if (config.HASH_TYPE == 'SHA') {
+  if (config.HASH_TYPE == SHA) {
     const h = shaHash(...items);
     return h;
   } else {
