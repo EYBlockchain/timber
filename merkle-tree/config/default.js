@@ -3,8 +3,11 @@
 @author iAmMichaelConnor
 @desc constants used by a nubmer of other modules
 */
-var nodeHashLength = (process.env.HASH_TYPE == 'SHA' ? 27 : 32);
-var zeroHex = (process.env.HASH_TYPE == 'SHA' ? '0x000000000000000000000000000000000000000000000000000000' : '0x0000000000000000000000000000000000000000000000000000000000000000');
+const nodeHashLength = process.env.HASH_TYPE === 'mimc' ? 32 : 27;
+const zeroHex =
+  process.env.HASH_TYPE === 'mimc'
+    ? '0x0000000000000000000000000000000000000000000000000000000000000000'
+    : '0x000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
   // general:

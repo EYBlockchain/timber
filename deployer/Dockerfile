@@ -4,7 +4,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY ./package.json ./package-lock.json ./
-RUN npm ci
+RUN npm install 
 
 EXPOSE 80
 CMD npm start

@@ -31,7 +31,7 @@ services:
     ports:
       - "9000:80"
     environment:
-      HASH_TYPE: 'SHA' #SHA or MiMC
+      HASH_TYPE: 'sha' #SHA or MiMC
       BLOCKCHAIN_HOST: ws://ganache
       BLOCKCHAIN_PORT: 8545
       DEPLOYER_HOST: http://deployer # required if CONTRACT_ORIGIN = 'remote' - replace with external microservice's name

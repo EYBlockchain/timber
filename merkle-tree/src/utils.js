@@ -5,6 +5,7 @@
 */
 import config from 'config';
 import createKeccakHash from 'keccak';
+import BI from 'big-integer';
 
 const crypto = require('crypto');
 const { Buffer } = require('safe-buffer');
@@ -140,7 +141,7 @@ function mimcHash(...msgs) {
     // '${' notation '0x${x}' -> '0x34' w/ x=34
     msgs.map(e => {
       const f = BigInt(e);
-      if (f > config.ZOKRATES_PRIME) throw new Error('MiMC input exceeded prime field size');
+      // if (f > config.ZOKRATES_PRIME) throw new Error('MiMC input exceeded prime field size');
       return f;
     }),
     BigInt(0), // k
@@ -164,19 +165,20 @@ function shaHash(...items) {
 }
 
 function concatenateThenHash(...items) {
-  if (config.HASH_TYPE == 'SHA') {
-    const h = shaHash(...items);
-    return h;
+  let h;
+  if (config.HASH_TYPE === 'mimc') {
+    h = mimcHash(...items);
   } else {
-    const h = mimcHash(...items);
-    return h;
+    h = shaHash(...items);
   }
+  return h;
 }
-
 
 export default {
   ensure0x,
   strip0x,
   concatenate,
+  mimcHash,
+  shaHash,
   concatenateThenHash,
 };
