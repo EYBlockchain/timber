@@ -3,8 +3,9 @@
 @author iAmMichaelConnor
 @desc constants used by a number of other modules
 */
-var nodeHashLength = (process.env.HASH_TYPE == 'SHA' ? 27 : 32);
-var controller = (process.env.HASH_TYPE == 'SHA' ? 'MerkleTreeControllerSHA' : 'MerkleTreeControllerMiMC');
+const nodeHashLength = process.env.HASH_TYPE === 'mimc' ? 32 : 27;
+const controller =
+  process.env.HASH_TYPE === 'mimc' ? 'MerkleTreeControllerMiMC' : 'MerkleTreeControllerSHA';
 const contracts = [controller];
 module.exports = {
   LEVEL_DB_PATH: '/app/db/db',
