@@ -17,7 +17,6 @@ let coinbase;
 
 const n = 10;
 
-
 const deployContract = async contractName => {
   if (!(await Web3.isConnected())) await Web3.connection();
 
@@ -27,10 +26,9 @@ const deployContract = async contractName => {
   contractInstance = await contractDeployer.deploy(contractName);
 };
 
-
 describe('Deployment', async () => {
   const { contractNames } = config;
-  let contractName = 'MerkleTreeController';
+  let contractName = 'MerkleTreeControllerSHA';
   before('get contractInstance', async () => {
     if (!(await Web3.isConnected())) await Web3.connection();
 
@@ -38,7 +36,6 @@ describe('Deployment', async () => {
 
     contractInstance = await deployer.getContractInstance(contractName);
   });
-
 
   /*
   before('\ndeploy contracts', async () => {
@@ -49,7 +46,7 @@ describe('Deployment', async () => {
   });  */
 
   it(`sets the contract's owner`, async () => {
-    const contractName = 'MerkleTreeController';
+    const contractName = 'MerkleTreeControllerSHA';
     const _owner = await contractInstance.methods.owner().call(); // calls the implicit getter for the public variable
     const owner = await web3.eth.getCoinbase();
     console.log('_owner', _owner);
@@ -59,7 +56,7 @@ describe('Deployment', async () => {
 });
 
 describe('MerkleTreeController', async () => {
-  const contractName = 'MerkleTreeController';
+  const contractName = 'MerkleTreeControllerSHA';
   let rootOneAtATime; // the root after adding the leaves one-at-a-time
   let rootBulk; // the root after adding the leaves (to a new instance of the tree) in bulk.
 
@@ -68,9 +65,6 @@ describe('MerkleTreeController', async () => {
     before('\ndeploy contract', async () => {
       await deployContract(contractName);
     });
-
-
-
 
     this.timeout(3660000); // surprisingly, this.timeout() doesn't work inside an arrow function!
 
@@ -100,13 +94,6 @@ describe('MerkleTreeController', async () => {
             console.log('NewLeaf:', leafIndex, leafValue, root);
 
             rootOneAtATime = root; // will be used in a later test
-
-            // // For debugging the hash function:
-            // const outputs = receipt.events.Output.map(event => {
-            //   const { leftInput, rightInput, output, nodeIndex } = event.returnValues;
-            //   return { leftInput, rightInput, output, nodeIndex };
-            // });
-            // console.log('outputs:', outputs);
           });
 
         const { gasUsed } = txReceipt;
@@ -137,8 +124,6 @@ describe('MerkleTreeController', async () => {
     before('\ndeploy contract', async () => {
       await deployContract(contractName);
     });
-
-
 
     this.timeout(3660000); // surprisingly, this.timeout() doesn't work inside an arrow function!
 
