@@ -126,9 +126,9 @@ contract MerkleTreeMiMC is MiMC {
 
         root = nodeValue;
 
-        emit NewLeaf(leafCount, leafValue, root); // this event is what the merkle-tree microservice's filter will listen for.
-
         leafCount++; // the incrememnting of leafCount costs us 20k for the first leaf, and 5k thereafter
+
+        emit NewLeaf(leafCount, leafValue, root); // this event is what the merkle-tree microservice's filter will listen for.
 
         return root; //the root of the tree
     }
@@ -232,9 +232,10 @@ contract MerkleTreeMiMC is MiMC {
 
         root = nodeValue;
 
-        emit NewLeaves(leafCount, leafValues, root); // this event is what the merkle-tree microservice's filter will listen for.
-
         leafCount += numberOfLeaves; // the incrememnting of leafCount costs us 20k for the first leaf, and 5k thereafter
+
+        emit NewLeaves(leafCount, leafValues, root); // this event is what the merkle-tree microservice's filter will listen for.
+        
         return root; //the root of the tree
     }
 }
