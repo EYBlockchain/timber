@@ -25,7 +25,7 @@ export default class DB {
   A model is a class with which we construct documents
   */
   createModelsForUser(contractName, treeId) {
-    if (treeId === undefined) {
+    if (treeId === undefined || '') {
       this.Models = {
         node: this.connection.model(
           `${this.username}_${contractName}_${COLLECTIONS.NODE}`,
@@ -47,7 +47,7 @@ export default class DB {
           metadataSchema,
         ),
       };
-  }
+    }
   }
 
   /**

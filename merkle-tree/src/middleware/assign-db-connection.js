@@ -13,7 +13,7 @@ export default async function(req, res, next) {
     if (contractName === undefined) throw new Error('No contractname key provided in req.headers.');
 
     const treeId = req.headers.treeid;
-    console.log(`treeId: ${treeId}`);
+    // console.log(`treeId: ${treeId}`);
     req.user = {};
     // give all requesters admin privileges:
     // console.log('\nAssigning req.user.connection as', adminDbConnection);
