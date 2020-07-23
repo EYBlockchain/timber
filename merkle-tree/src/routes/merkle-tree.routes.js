@@ -28,13 +28,13 @@ async function startEventFilter(req, res, next) {
   try {
     if (alreadyStarted[contractName] && (treeId === undefined || '')) {
       res.data = { message: `filter already started for ${contractName}` };
-    } else if (alreadyStarted[contractName.treeId]) {
+    } else if (alreadyStarted[(contractName, treeId)]) {
       res.data = { message: `filter already started for ${contractName}.${treeId}` };
     } else if (alreadyStarting[contractName] && (treeId === undefined || '')) {
       res.data = {
         message: `filter is already in the process of being started for ${contractName}`,
       };
-    } else if (alreadyStarting[contractName.treeId]) {
+    } else if (alreadyStarting[(contractName, treeId)]) {
       res.data = {
         message: `filter is already in the process of being started for ${contractName}.${treeId}`,
       };
@@ -43,7 +43,7 @@ async function startEventFilter(req, res, next) {
         alreadyStarting[contractName] = true;
         console.log(`starting filter for ${contractName}`);
       } else {
-        alreadyStarting[contractName.treeId] = true;
+        alreadyStarting[(contractName, treeId)] = true;
         console.log(`starting filter for ${contractName}.${treeId}`);
       }
       // get a web3 contractInstance we can work with:
@@ -60,8 +60,8 @@ async function startEventFilter(req, res, next) {
         alreadyStarted[contractName] = started; // true/false
         alreadyStarting[contractName] = false;
       } else {
-        alreadyStarted[contractName.treeId] = started; // true/false
-        alreadyStarting[contractName.treeId] = false;
+        alreadyStarted[(contractName, treeId)] = started; // true/false
+        alreadyStarting[(contractName, treeId)] = false;
       }
       res.data = { message: 'filter started' };
     }
