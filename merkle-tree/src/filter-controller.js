@@ -16,12 +16,21 @@ const subscriptions = {};
 TODO: description
 */
 const newLeafResponseFunction = async (eventObject, args) => {
-  const eventName = 'NewLeaf'; // hardcoded, as inextricably linked to the name of this function.
-
+  // NEW - function remains the same, for detecting single leaves, but can now specify the event name
+  // NOTE - events must have same parameters as newLeaf / newLeaves
   // We make some hardcoded presumptions about what's contained in the 'args':
-  const { db, contractName } = args;
+  const { db, contractName, treeId } = args;
 
-  const eventParams = config.contracts[contractName].events[eventName].parameters;
+  const eventName = args.eventName === undefined ? 'NewLeaf' : args.eventName; // hardcoded, as inextricably linked to the name of this function.
+
+  let eventParams;
+  console.log(`eventname: ${eventName}`);
+
+  if (treeId === undefined || '') {
+    eventParams = config.contracts[contractName].events[eventName].parameters;
+  } else {
+    eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
+  }
 
   // Now some generic eventObject handling code:
   const { eventData } = eventObject;
@@ -58,12 +67,18 @@ const newLeafResponseFunction = async (eventObject, args) => {
 TODO: description
 */
 const newLeavesResponseFunction = async (eventObject, args) => {
-  const eventName = 'NewLeaves'; // hardcoded, as inextricably linked to the name of this function.
-
   // We make some hardcoded presumptions about what's contained in the 'args':
-  const { db, contractName } = args;
+  const { db, contractName, treeId } = args;
 
-  const eventParams = config.contracts[contractName].events[eventName].parameters;
+  const eventName = args.eventName === undefined ? 'NewLeaves' : args.eventName; // hardcoded, as inextricably linked to the name of this function.
+
+  let eventParams;
+
+  if (treeId === undefined || '') {
+    eventParams = config.contracts[contractName].events[eventName].parameters;
+  } else {
+    eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
+  }
 
   // Now some generic eventObject handling code:
   const { eventData } = eventObject;
@@ -131,15 +146,23 @@ const responseFunctions = {
 An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
-async function filterBlock(db, contractName, contractInstance, fromBlock) {
+async function filterBlock(db, contractName, contractInstance, fromBlock, treeId) {
   console.log(`\nsrc/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock})`);
 
-  const eventNames = Object.keys(config.contracts[contractName].events);
+  let eventNames;
+
+  if (treeId === undefined || '') {
+    eventNames = Object.keys(config.contracts[contractName].events);
+  } else {
+    eventNames = Object.keys(config.contracts[contractName].treeId[treeId].events);
+  }
 
   eventNames.forEach(async eventName => {
     const responder = newEventResponder;
-    const responseFunction = responseFunctions[eventName];
-    const responseFunctionArgs = { db, contractName };
+    const responseFunction = eventName.includes('Leaf')
+      ? responseFunctions.NewLeaf
+      : responseFunctions.NewLeaves;
+    const responseFunctionArgs = { db, contractName, eventName, treeId };
 
     const eventSubscription = await utilsWeb3.subscribeToEvent(
       contractName,
@@ -202,14 +225,14 @@ async function getFromBlock(db) {
 /**
 Commence filtering
 */
-async function start(db, contractName, contractInstance) {
+async function start(db, contractName, contractInstance, treeId) {
   try {
     console.log('\nStarting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
     const fromBlock = await getFromBlock(db); // the blockNumber we get is the next WHOLE block to start filtering.
 
     // Now we filter indefinitely:
-    await filterBlock(db, contractName, contractInstance, fromBlock);
+    await filterBlock(db, contractName, contractInstance, fromBlock, treeId);
     return true;
   } catch (err) {
     throw new Error(err);

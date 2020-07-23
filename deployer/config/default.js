@@ -15,10 +15,41 @@ module.exports = {
   NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
 
   // deployed contract info:
-  contractNames: contracts,
+  contractNames: [contracts, 'MerkleTreeControllerSHAZVM'],
 
   // push the contract information, or wait for it to be pulled
   PUSH_OR_PULL: process.env.PUSH_OR_PULL,
+
+  contracts: {
+    // contract name:
+    MerkleTreeControllerMiMC: {
+      events: {
+        // filter for the following event names:
+        NewLeaf: {
+          // filter for these event parameters:
+          parameters: ['leafIndex', 'leafValue'],
+        },
+        NewLeaves: {
+          // filter for these event parameters:
+          parameters: ['minLeafIndex', 'leafValues'],
+        },
+      },
+    },
+    // contract name:
+    MerkleTreeControllerSHA: {
+      events: {
+        // filter for the following event names:
+        NewLeaf: {
+          // filter for these event parameters:
+          parameters: ['leafIndex', 'leafValue'],
+        },
+        NewLeaves: {
+          // filter for these event parameters:
+          parameters: ['minLeafIndex', 'leafValues'],
+        },
+      },
+    },
+  },
 
   // microservices:
   merkleTree: {

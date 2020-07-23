@@ -62,6 +62,37 @@ module.exports = {
         },
       },
     },
+    // contract name:
+    MerkleTreeControllerSHAZVM: {
+      treeId: {
+        a: {
+          events: {
+            // filter for the following event names:
+            NewLeafA: {
+              // filter for these event parameters:
+              parameters: ['leafIndex', 'leafValue'],
+            },
+            NewLeavesA: {
+              // filter for these event parameters:
+              parameters: ['minLeafIndex', 'leafValues'],
+            },
+          },
+        },
+        b: {
+          events: {
+            // filter for the following event names:
+            NewLeafB: {
+              // filter for these event parameters:
+              parameters: ['leafIndex', 'leafValue'],
+            },
+            NewLeavesB: {
+              // filter for these event parameters:
+              parameters: ['minLeafIndex', 'leafValues'],
+            },
+          },
+        },
+      }
+    },
   },
 
   /*
