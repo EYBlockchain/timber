@@ -26,11 +26,11 @@ async function startEventFilter(req, res, next) {
   const { contractAddress } = req.body; // contractAddress is an optional parameter. Address can instead be inferred by Timber in many cases.
 
   try {
-    if (alreadyStarted[contractName] && (treeId === undefined || '')) {
+    if (alreadyStarted[contractName] && (treeId === undefined || treeId === '')) {
       res.data = { message: `filter already started for ${contractName}` };
     } else if (alreadyStarted[(contractName, treeId)]) {
       res.data = { message: `filter already started for ${contractName}.${treeId}` };
-    } else if (alreadyStarting[contractName] && (treeId === undefined || '')) {
+    } else if (alreadyStarting[contractName] && (treeId === undefined || treeId === '')) {
       res.data = {
         message: `filter is already in the process of being started for ${contractName}`,
       };
@@ -39,7 +39,7 @@ async function startEventFilter(req, res, next) {
         message: `filter is already in the process of being started for ${contractName}.${treeId}`,
       };
     } else {
-      if (treeId === undefined || '') {
+      if (treeId === undefined || treeId === '') {
         alreadyStarting[contractName] = true;
         console.log(`starting filter for ${contractName}`);
       } else {
@@ -56,7 +56,7 @@ async function startEventFilter(req, res, next) {
       // start an event filter on this contractInstance:
       const started = await filterController.start(db, contractName, contractInstance, treeId);
 
-      if (treeId === undefined || '') {
+      if (treeId === undefined || treeId === '') {
         alreadyStarted[contractName] = started; // true/false
         alreadyStarting[contractName] = false;
       } else {

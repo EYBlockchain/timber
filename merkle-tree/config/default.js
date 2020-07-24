@@ -66,6 +66,7 @@ module.exports = {
     MerkleTreeControllerSHAZVM: {
       treeId: {
         a: {
+          treeHeight: 16,
           events: {
             // filter for the following event names:
             NewLeafA: {
@@ -79,6 +80,7 @@ module.exports = {
           },
         },
         b: {
+          treeHeight: 10,
           events: {
             // filter for the following event names:
             NewLeafB: {
@@ -91,7 +93,7 @@ module.exports = {
             },
           },
         },
-      }
+      },
     },
   },
 

@@ -67,6 +67,26 @@ async function insertContractInterface(req, res, next) {
 }
 
 /**
+ * Add the relevant height to the tree's db.
+ * req.body {
+ *  contractAddress: '0xabc123..',
+ * }
+ * @param {*} req
+ * @param {*} res
+ */
+async function insertTreeHeight(req, res, next) {
+  try {
+    const { db } = req.user;
+    const metadataService = new MetadataService(db);
+    await metadataService.insertTreeHeight(req.body);
+    res.data = { message: 'inserted' };
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * Update the latestLeaf metadata in the tree's db.
  * @param {*} req
  * @param {*} res
@@ -148,6 +168,22 @@ async function getContractInterface(req, res, next) {
 }
 
 /**
+ * Get the tree height from the tree's 'metadata' db.
+ * @param {*} req
+ * @param {*} res
+ */
+async function getTreeHeight(req, res, next) {
+  try {
+    const { db } = req.user;
+    const metadataService = new MetadataService(db);
+    res.data = await metadataService.getTreeHeight();
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * Get the latestRecalculation tree metadata from the tree's 'metadata' db.
  * @param {*} req
  * @param {*} res
@@ -196,6 +232,11 @@ export default function(router) {
     .route('/metadata/contractInterface')
     .get(getContractInterface)
     .post(insertContractInterface);
+
+  router
+    .route('/metadata/treeHeight')
+    .get(getTreeHeight)
+    .post(insertTreeHeight);
 
   router
     .route('/metadata/latestLeaf')

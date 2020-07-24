@@ -12,7 +12,7 @@ export default new Schema(
 
     treeHeight: {
       type: Number,
-      default: config.TREE_HEIGHT, //TODO
+      default: config.TREE_HEIGHT, // TODO
     },
     contractAddress: {
       type: String,

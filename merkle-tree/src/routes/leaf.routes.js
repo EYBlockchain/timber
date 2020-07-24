@@ -4,7 +4,7 @@
  * @desc leaf.routes.js gives api endpoints to access the functions of the merkle-tree microservice
  */
 
-import { LeafService } from '../db/service';
+import { LeafService, MetadataService } from '../db/service';
 import merkleTreeController from '../merkle-tree-controller';
 
 /**
@@ -23,6 +23,9 @@ async function insertLeaf(req, res, next) {
   console.log('req.body:');
   console.log(req.body);
   try {
+    const metadataService = new MetadataService(req.user.db);
+    const { treeHeight } = await metadataService.getTreeHeight();
+    req.body.treeHeight = treeHeight;
     const leafService = new LeafService(req.user.db);
     await leafService.insertLeaf(req.body);
     res.data = { message: 'inserted' };
@@ -127,6 +130,9 @@ async function insertLeaves(req, res, next) {
   console.log('req.body:');
   console.log(req.body);
   try {
+    const metadataService = new MetadataService(req.user.db);
+    const { treeHeight } = await metadataService.getTreeHeight();
+    req.body.treeHeight = treeHeight;
     const leafService = new LeafService(req.user.db);
     await leafService.insertLeaves(req.body);
     res.data = { message: 'inserted' };

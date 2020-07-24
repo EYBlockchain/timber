@@ -26,7 +26,7 @@ const newLeafResponseFunction = async (eventObject, args) => {
   let eventParams;
   console.log(`eventname: ${eventName}`);
 
-  if (treeId === undefined || '') {
+  if (treeId === undefined || treeId === '') {
     eventParams = config.contracts[contractName].events[eventName].parameters;
   } else {
     eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
@@ -49,6 +49,9 @@ const newLeafResponseFunction = async (eventObject, args) => {
   // console.log('eventInstance:');
   // console.dir(eventInstance, { depth: null });
 
+  const metadataService = new MetadataService(db);
+  const { treeHeight } = await metadataService.getTreeHeight();
+
   // Now some bespoke code; specific to how our application needs to deal with this eventObject:
   // construct a 'leaf' document to store in the db:
   const { blockNumber } = eventData;
@@ -57,6 +60,7 @@ const newLeafResponseFunction = async (eventObject, args) => {
     value: leafValue,
     leafIndex,
     blockNumber,
+    treeHeight,
   };
 
   const leafService = new LeafService(db);
@@ -74,7 +78,7 @@ const newLeavesResponseFunction = async (eventObject, args) => {
 
   let eventParams;
 
-  if (treeId === undefined || '') {
+  if (treeId === undefined || treeId === '') {
     eventParams = config.contracts[contractName].events[eventName].parameters;
   } else {
     eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
@@ -96,6 +100,8 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   });
   // console.log('eventInstance:');
   // console.dir(eventInstance, { depth: null });
+  const metadataService = new MetadataService(db);
+  const { treeHeight } = await metadataService.getTreeHeight();
 
   // Now some more bespoke code; specific to how our application needs to deal with this eventObject:
   // construct an array of 'leaf' documents to store in the db:
@@ -110,6 +116,7 @@ const newLeavesResponseFunction = async (eventObject, args) => {
       value: leafValue,
       leafIndex,
       blockNumber,
+      treeHeight,
     };
     docs.push(doc);
   });
@@ -147,13 +154,21 @@ An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
 async function filterBlock(db, contractName, contractInstance, fromBlock, treeId) {
-  console.log(`\nsrc/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock})`);
+  console.log(
+    `\nsrc/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
+  );
+  const metadataService = new MetadataService(db);
 
   let eventNames;
 
-  if (treeId === undefined || '') {
+  if (treeId === undefined || treeId === '') {
     eventNames = Object.keys(config.contracts[contractName].events);
   } else {
+    const { treeHeightDb } = await metadataService.getTreeHeight();
+    const { treeHeight } = config.contracts[contractName].treeId[treeId];
+    if (treeHeightDb !== treeHeight && (treeHeight !== undefined || '')) {
+      metadataService.insertTreeHeight({ treeHeight });
+    }
     eventNames = Object.keys(config.contracts[contractName].treeId[treeId].events);
   }
 
