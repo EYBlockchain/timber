@@ -45,7 +45,7 @@ describe(`${contractName}`, async () => {
 
         // eslint-disable-next-line no-await-in-loop
         const txReceiptA = await contractInstance.methods
-          ._insertLeaf(`0x${leaf}`, 0)
+          ._insertLeaf(`0x${leaf}`, 0) // this merkle tree contract takes 0 as treeid=a and 1 as treeId = b (can be changed for own app)
           .send({
             from: coinbase,
             gas: config.web3.options.defaultGas,
@@ -63,26 +63,27 @@ describe(`${contractName}`, async () => {
             // });
             // console.log('outputs:', outputs);
           });
-          // eslint-disable-next-line no-await-in-loop
-          const txReceiptB = await contractInstance.methods
-            ._insertLeaf(`0x${leaf}`, 1)
-            .send({
-              from: coinbase,
-              gas: config.web3.options.defaultGas,
-              gasPrice: config.web3.options.defaultGasPrice,
-            })
-            // eslint-disable-next-line no-loop-func
-            .on('receipt', receipt => {
-              const { leafIndex, leafValue, root } = receipt.events.NewLeafB.returnValues;
-              console.log('NewLeaf B event returnValues:', leafIndex, leafValue, root);
+        const leafB = (batchSize - i).toString().padStart(64, '0');
+        // eslint-disable-next-line no-await-in-loop
+        const txReceiptB = await contractInstance.methods
+          ._insertLeaf(`0x${leafB}`, 1)
+          .send({
+            from: coinbase,
+            gas: config.web3.options.defaultGas,
+            gasPrice: config.web3.options.defaultGasPrice,
+          })
+          // eslint-disable-next-line no-loop-func
+          .on('receipt', receipt => {
+            const { leafIndex, leafValue, root } = receipt.events.NewLeafB.returnValues;
+            console.log('NewLeaf B event returnValues:', leafIndex, leafValue, root);
 
-              // // For debugging the hash function:
-              // const outputs = receipt.events.Output.map(event => {
-              //   const { leftInput, rightInput, output, nodeIndex } = event.returnValues;
-              //   return { leftInput, rightInput, output, nodeIndex };
-              // });
-              // console.log('outputs:', outputs);
-            });
+            // // For debugging the hash function:
+            // const outputs = receipt.events.Output.map(event => {
+            //   const { leftInput, rightInput, output, nodeIndex } = event.returnValues;
+            //   return { leftInput, rightInput, output, nodeIndex };
+            // });
+            // console.log('outputs:', outputs);
+          });
         let { gasUsed } = txReceiptA;
         // const { gasUsedB } = txReceiptB.gasUsed;
         // const gasUsed = gasUsedA + gasUsedB;
@@ -143,22 +144,22 @@ describe(`${contractName}`, async () => {
           // console.dir(receipt.events, { depth: null });
         });
 
-        // eslint-disable-next-line no-await-in-loop
-        const txReceiptB = await contractInstance.methods
-          ._insertLeaves(leaves, 1)
-          .send({
-            from: coinbase,
-            gas: 10000000, // explore a full block of gas being used
-            gasPrice: config.web3.options.defaultGasPrice,
-          })
-          // eslint-disable-next-line no-loop-func
-          .on('receipt', receipt => {
-            const { minLeafIndex, leafValues, root } = receipt.events.NewLeavesB.returnValues;
+      // eslint-disable-next-line no-await-in-loop
+      const txReceiptB = await contractInstance.methods
+        ._insertLeaves(leaves.reverse(), 1)
+        .send({
+          from: coinbase,
+          gas: 10000000, // explore a full block of gas being used
+          gasPrice: config.web3.options.defaultGasPrice,
+        })
+        // eslint-disable-next-line no-loop-func
+        .on('receipt', receipt => {
+          const { minLeafIndex, leafValues, root } = receipt.events.NewLeavesB.returnValues;
 
-            console.log('NewLeaves B event returnValues:', minLeafIndex, leafValues, root);
+          console.log('NewLeaves B event returnValues:', minLeafIndex, leafValues, root);
 
-            // console.dir(receipt.events, { depth: null });
-          });
+          // console.dir(receipt.events, { depth: null });
+        });
 
       let { gasUsed } = txReceiptA;
       // const { gasUsedB } = txReceiptB.gasUsed;
