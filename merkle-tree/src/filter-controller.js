@@ -163,10 +163,14 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 
   if (treeId === undefined || treeId === '') {
     eventNames = Object.keys(config.contracts[contractName].events);
+    if (config.treeHeight !== undefined || config.treeHeight !== '') {
+      const { treeHeight } = config;
+      metadataService.insertTreeHeight({ treeHeight });
+    }
   } else {
     const { treeHeightDb } = await metadataService.getTreeHeight();
     const { treeHeight } = config.contracts[contractName].treeId[treeId];
-    if (treeHeightDb !== treeHeight && (treeHeight !== undefined || '')) {
+    if (treeHeightDb !== treeHeight && (treeHeight !== undefined || treeHeight !== '')) {
       metadataService.insertTreeHeight({ treeHeight });
     }
     eventNames = Object.keys(config.contracts[contractName].treeId[treeId].events);
