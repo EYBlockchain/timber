@@ -158,23 +158,25 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
     `\nsrc/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
   const metadataService = new MetadataService(db);
-  const { treeHeight } = config.contracts[contractName].treeId[treeId];
+
   let eventNames;
 
   if (treeId === undefined || treeId === '') {
     eventNames = Object.keys(config.contracts[contractName].events);
   } else {
     const { treeHeightDb } = await metadataService.getTreeHeight();
+    const { treeHeight } = config.contracts[contractName].treeId[treeId];
     if (treeHeightDb !== treeHeight && (treeHeight !== undefined || '')) {
       metadataService.insertTreeHeight({ treeHeight });
     }
     eventNames = Object.keys(config.contracts[contractName].treeId[treeId].events);
   }
 
+  const { treeHeight } = await metadataService.getTreeHeight();
   const { latestRecalculation } = await metadataService.getLatestRecalculation();
   const { frontier } =
     latestRecalculation.frontier === undefined ? new Array(treeHeight) : latestRecalculation;
-  if (frontier.length !== treeHeight) {
+  if (frontier.length !== treeHeight && treeHeight !== 32) {
     latestRecalculation.frontier = new Array(treeHeight);
     await metadataService.updateLatestRecalculation({ latestRecalculation });
   }
