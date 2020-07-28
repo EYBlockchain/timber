@@ -63,18 +63,18 @@ module.exports = {
       },
     },
     // contract name:
-    MerkleTreeControllerSHAZVM: {
+    MultipleMerkleTreesControllerSHA: {
       treeId: {
         a: {
           treeHeight: 16,
           events: {
             // filter for the following event names:
             NewLeafA: {
-              // filter for these event parameters:
+              // filter for these event parameters when a single leaf is added:
               parameters: ['leafIndex', 'leafValue'],
             },
             NewLeavesA: {
-              // filter for these event parameters:
+              // filter for these event parameters when multiple leaves are added:
               parameters: ['minLeafIndex', 'leafValues'],
             },
           },

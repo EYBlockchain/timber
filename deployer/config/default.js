@@ -4,9 +4,11 @@
 @desc constants used by a number of other modules
 */
 const nodeHashLength = process.env.HASH_TYPE === 'mimc' ? 32 : 27;
-const controller =
-  process.env.HASH_TYPE === 'mimc' ? 'MerkleTreeControllerMiMC' : 'MerkleTreeControllerSHA';
-const contracts = [controller];
+const contracts =
+  process.env.HASH_TYPE === 'mimc'
+    ? ['MerkleTreeControllerMiMC']
+    : ['MerkleTreeControllerSHA', 'MultipleMerkleTreesControllerSHA'];
+// const contracts = [controller];
 
 module.exports = {
   LEVEL_DB_PATH: '/app/db/db',
@@ -15,7 +17,7 @@ module.exports = {
   NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
 
   // deployed contract info:
-  contractNames: [contracts, 'MerkleTreeControllerSHAZVM'],
+  contractNames: contracts,
 
   // push the contract information, or wait for it to be pulled
   PUSH_OR_PULL: process.env.PUSH_OR_PULL,

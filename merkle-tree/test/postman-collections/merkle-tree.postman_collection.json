@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3159dda6-69a1-4197-82bd-16d379913eb0",
+		"_postman_id": "cbc33008-1712-4b9e-9e55-e79bcc033a0d",
 		"name": "merkle-tree",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -17,16 +17,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"value\": \"0xabc123-7\",\n\t\"leafIndex\": 100,\n\t\"blockNumber\": 60000000\n}"
+							"raw": "{\n\t\"value\": \"0xabc123-7\",\n\t\"leafIndex\": 100,\n\t\"blockNumber\": 60000000,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaf",
@@ -52,16 +47,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n\t{\n\t\t\"value\": \"0xabc123-3\",\n\t\t\"leafIndex\": 1,\n\t\t\"blockNumber\": 60000000\n\t}\n]"
+							"raw": "[\n\t{\n\t\t\"value\": \"0xabc123-3\",\n\t\t\"leafIndex\": 1,\n\t\t\"blockNumber\": 60000000,\n\t\t\"contractName\": \"MerkleTreeControllerSHA\"\n\t}\n]"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves?",
@@ -97,16 +87,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaf/index/100",
@@ -136,16 +121,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"leafIndex\": 0 }"
+							"raw": "{ \n\t\"leafIndex\": 0,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaf/index",
@@ -174,16 +154,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"value\": \"0xabc123-7\" }"
+							"raw": "{ \n\t\"value\": \"0xabc123-7\",\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaf/value",
@@ -212,16 +187,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"leafIndices\": [0, 2, 3] }"
+							"raw": "{ \n\t\"leafIndices\": [0, 2, 3],\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -249,16 +219,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"values\": [\"0xabc123-7\", \"0xabc123-8\", \"0xabc123-9\"] }"
+							"raw": "{ \n\t\"values\": [\"0xabc123-7\", \"0xabc123-8\", \"0xabc123-9\"],\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -286,16 +251,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 100000\n}"
+							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 100000,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -312,7 +272,7 @@
 					"response": []
 				},
 				{
-					"name": "/leaves -> get leaves within index range for a treeid",
+					"name": "/leaves -> get leaves within index range for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -323,16 +283,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 10,\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 10,\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -360,16 +315,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -386,7 +336,7 @@
 					"response": []
 				},
 				{
-					"name": "/leaves -> get all leaves for a treeid",
+					"name": "/leaves -> get all leaves for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -397,16 +347,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves",
@@ -434,16 +379,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves/check",
@@ -461,7 +401,7 @@
 					"response": []
 				},
 				{
-					"name": "/leaves/check -> check for missing leaves for a treeid",
+					"name": "/leaves/check -> check for missing leaves for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -472,16 +412,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves/check",
@@ -510,11 +445,6 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
@@ -537,7 +467,7 @@
 					"response": []
 				},
 				{
-					"name": "/leaves/count -> count the number of leaves in the db for a treeid",
+					"name": "/leaves/count -> count the number of leaves in the db for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -548,16 +478,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaves/count",
@@ -589,16 +514,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"value\": \"0xabc123-0\",\n\t\"nodeIndex\": \"0\",\n\t\"isLocked\": false\n}"
+							"raw": "{\n\t\"value\": \"0xabc123-0\",\n\t\"nodeIndex\": \"0\",\n\t\"isLocked\": false,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node",
@@ -624,16 +544,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n\t{\n\t\t\"value\": \"0xabc123-0\",\n\t\t\"nodeIndex\": \"0\"\n\t},\n\t{\n\t\t\"value\": \"0xabc123-1\",\n\t\t\"nodeIndex\": 1\n\t},\n\t{\n\t\t\"value\": \"0xabc123-2\",\n\t\t\"nodeIndex\": 2\n\t}\n]"
+							"raw": "[\n\t\n\t{\n\t\t\"value\": \"0xabc123-0\",\n\t\t\"nodeIndex\": \"0\",\n\t\t\"contractName\": \"MerkleTreeControllerSHA\"\n\t},\n\t{\n\t\t\"value\": \"0xabc123-1\",\n\t\t\"nodeIndex\": 1,\n\t\t\"contractName\": \"MerkleTreeControllerSHA\"\n\t},\n\t{\n\t\t\"value\": \"0xabc123-2\",\n\t\t\"nodeIndex\": 2,\n\t\t\"contractName\": \"MerkleTreeControllerSHA\"\n\t}\n]"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes",
@@ -662,16 +577,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node/index/0",
@@ -698,16 +608,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node/index/1",
@@ -726,7 +631,7 @@
 					"response": []
 				},
 				{
-					"name": "/node/:nodeIndex -> updates a node at nodeIndex for treeid",
+					"name": "/node/:nodeIndex -> updates a node at nodeIndex for treeId",
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -734,16 +639,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeControllerSHAZVM",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node/index/1",
@@ -773,16 +673,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"nodeIndex\": 0 }"
+							"raw": "{ \n\t\"nodeIndex\": 0,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node/index",
@@ -811,16 +706,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"value\": \"0xabc123-1\" }"
+							"raw": "{ \n\t\"value\": \"0xabc123-1\",\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/node/value",
@@ -849,16 +739,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"nodeIndices\": [0, 2, 7] }"
+							"raw": "{ \n\t\"nodeIndices\": [0, 2, 7],\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes",
@@ -886,16 +771,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{ \"values\": [\"0xabc123-0\", \"0xabc123-1\", \"0xabc123-9\"] }"
+							"raw": "{ \n\t\"values\": [\"0xabc123-0\", \"0xabc123-1\", \"0xabc123-9\"],\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes",
@@ -923,16 +803,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 1000000000000000\n}"
+							"raw": "{\n\t\"minIndex\": 0,\n\t\"maxIndex\": 1000000000000000,\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes",
@@ -960,16 +835,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes",
@@ -997,16 +867,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes/count",
@@ -1024,7 +889,7 @@
 					"response": []
 				},
 				{
-					"name": "/nodes/count -> count the number of nodes in the treeid db",
+					"name": "/nodes/count -> count the number of nodes in the treeId db",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1035,16 +900,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"b\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/nodes/count",
@@ -1076,16 +936,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contractAddress\": \"0xabc123-0\"\n}"
+							"raw": "{\n\t\"contractAddress\": \"0xabc123-0\",\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/contractAddress",
@@ -1115,16 +970,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeController2"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/contractAddress",
@@ -1151,16 +1001,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeController"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contractInterface\": \"pretend this is an interface\"\n}"
+							"raw": "{\n\t\"contractInterface\": \"pretend this is an interface\",\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/contractInterface",
@@ -1190,16 +1035,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeController"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/contractInterface",
@@ -1229,16 +1069,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata",
@@ -1255,7 +1090,7 @@
 					"response": []
 				},
 				{
-					"name": "/metadata -> gets the tree's metadata object for a treeid",
+					"name": "/metadata -> gets the tree's metadata object for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1267,16 +1102,11 @@
 								"name": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}",
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1306,16 +1136,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestLeaf",
@@ -1345,16 +1170,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestLeaf",
@@ -1373,7 +1193,7 @@
 					"response": []
 				},
 				{
-					"name": "/metadata/latestLeaf -> updates the latestLeaf metadata object for a treeid",
+					"name": "/metadata/latestLeaf -> updates the latestLeaf metadata object for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1384,16 +1204,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeControllerSHAZVM",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestLeaf",
@@ -1420,16 +1235,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestRecalculation",
@@ -1459,16 +1269,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestRecalculation",
@@ -1487,7 +1292,7 @@
 					"response": []
 				},
 				{
-					"name": "/metadata/latestRecalculation -> gets the latestRecalculation metadata object for a treeid",
+					"name": "/metadata/latestRecalculation -> gets the latestRecalculation metadata object for a treeId",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1498,16 +1303,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/latestRecalculation",
@@ -1540,16 +1340,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/start",
@@ -1567,7 +1362,7 @@
 					"response": []
 				},
 				{
-					"name": "/start -> starts the event filter for a treeid",
+					"name": "/start -> starts the event filter for a treeId",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1575,16 +1370,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/start",
@@ -1613,16 +1403,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/siblingPath/2",
@@ -1651,16 +1436,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/path/2",
@@ -1686,16 +1466,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
-							{
-								"key": "contractname",
-								"value": "MerkleTreeController2",
-								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/update",
@@ -1712,7 +1487,7 @@
 					"response": []
 				},
 				{
-					"name": "/update -> updates the merkle tree for a treeid",
+					"name": "/update -> updates the merkle tree for a treeId",
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -1720,16 +1495,11 @@
 								"key": "Content-Type",
 								"type": "text",
 								"value": "application/json"
-							},
-							{
-								"key": "contractname",
-								"type": "text",
-								"value": "MerkleTreeControllerSHAZVM"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"treeid\": \"a\"\n}"
+							"raw": "{\n\t\"treeId\": \"a\",\n\t\"contractName\": \"MultipleMerkleTreesControllerSHA\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/update",

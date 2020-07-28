@@ -132,7 +132,9 @@ async function insertLeaves(req, res, next) {
   try {
     const metadataService = new MetadataService(req.user.db);
     const { treeHeight } = await metadataService.getTreeHeight();
-    req.body.treeHeight = treeHeight;
+    for (let i = 0; i < req.body.length; i += 1) {
+      req.body[i].treeHeight = treeHeight;
+    }
     const leafService = new LeafService(req.user.db);
     await leafService.insertLeaves(req.body);
     res.data = { message: 'inserted' };

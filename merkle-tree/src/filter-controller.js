@@ -187,9 +187,8 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 
   eventNames.forEach(async eventName => {
     const responder = newEventResponder;
-    const responseFunction = eventName.includes('Leaf')
-      ? responseFunctions.NewLeaf
-      : responseFunctions.NewLeaves;
+    const responseFunction =
+      eventName === eventNames[0] ? responseFunctions.NewLeaf : responseFunctions.NewLeaves;
     const responseFunctionArgs = { db, contractName, eventName, treeId };
 
     const eventSubscription = await utilsWeb3.subscribeToEvent(

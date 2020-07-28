@@ -293,10 +293,10 @@ contracts: {
   },
 },
 ```
-**Note:** Requests to the API must specify the `contractname` in the header of the request.
-By specifying the `contractname`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
+**Note:** Requests to the API must specify the `contractName` in the body of the request.
+By specifying the `contractName`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
 
-E.g. `"contractname": "MerkleTreeControllerSHA"`
+E.g. `"contractName": "MerkleTreeControllerSHA"`
 
 
 #### `treeId`
@@ -307,7 +307,7 @@ E.g.:
 // contracts to filter:
 contracts: {
   // contract name:
-  MerkleTreeControllerSHAZVM: {
+  MultipleMerkleTreesControllerSHA: {
     treeId: {
       a: {
         treeHeight: 16,
@@ -341,25 +341,30 @@ contracts: {
   },
 },
 ```
-**Note:** If the contract has multiple trees, all requests to the API must specify the `treeid` in the body of the request.
+**Note:** If the contract has multiple trees, all requests to the API must specify the `treeId` in the body of the request.
 
-E.g. `{ "treeid": "a" }`
+E.g. `{ "contractName": "MultipleMerkleTreesController", "treeId": "a" }`
 
-If you submit a request to a contract with multiple trees without specifying `treeid`, Timber will throw an error. This is because it does not know which tree to direct the request to.
+If you submit a request to a contract with multiple trees without specifying `treeId`, Timber will throw an error. This is because it does not know which tree to direct the request to.
 
-The event names must differ between trees so Timber knows which db collection to add the new leaves to. As long as the name of the event adding single leaves contains the term `Leaf`, and that adding multiple leaves contains the term `Leaves`, they can have any structure you like.
+The event names must differ between trees so Timber knows which db collection to add the new leaves to. As long as the first event adds single leaves and the second adds multiple leaves, they can have any structure you like.
 
 E.g. in config:
-`        events: {
-          NewLeafA: {
-            parameters: ['leafIndex', 'leafValue'],
-          },` and
-      `       events: {
-          NewLeafB: {
-            parameters: ['leafIndex', 'leafValue'],
-                    },`
+```js
+events: {
+  // filter for the following event names:
+  Cheese: {
+    // filter for these event parameters adding a single leaf:
+    parameters: ['leafIndex', 'leafValue'],
+  },
+  Cake: {
+    // filter for these event parameters adding multiple leaves:
+    parameters: ['minLeafIndex', 'leafValues'],
+  },
+},
+```
 
-By specifying the `contractname` and `treeid`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
+By specifying the `contractName` and `treeId`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
 
 
 
@@ -368,7 +373,7 @@ The height of the merkle tree.
 
 Note that this height must match the height specified elsewhere in your application (e.g. the tree height in the merkle tree contract, or inside any zk-snark circuits).
 
-If you have multiple merkle trees in one smart contract, be sure to define each tree's height under `treeid` in the config.
+If you have multiple merkle trees in one smart contract, be sure to define each tree's height under `treeId` in the config.
 
 ---
 
@@ -382,17 +387,17 @@ To access the `merkle-tree` service from your local machine (which is not in the
 
 A postman collection (for local testing) is provided at [./merkle-tree/test/postman-collections/](merkle-tree/test/postman-collections/).
 
-**Note:** Requests to the API must specify the `contractname` in the header of the request.
-By specifying the `contractname`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
+**Note:** Requests to the API must specify the `contractName` in the body of the request.
+By specifying the `contractName`, Timber will know: which contract to interact with; and which db collection to get from, insert to, or update.
 
-E.g. `"contractname": "MerkleTreeControllerSHA"`
+E.g. `"contractName": "MerkleTreeControllerSHA"`
 
 See `./merkle-tree/src/routes` for all api routes.
 
 ### merkle-tree endpoints
 For interacting 'broadly' with Timber:
 #### `/start`
-Starts the event filter. Ensure to pass the relevant `contractname` as a req.header. If you have multiple trees in one contract, specify which `treeid` you want to start the filter for.
+Starts the event filter. Ensure to pass the relevant `contractName` in the req.body. If you have multiple trees in one contract, specify which `treeId` you want to start the filter for.
 #### `/update`
 Updates the entire merkle-tree db.
 Once started (via `/start`), Timber will be listening to contract events for new leaves. These leaves will be stored in the db, but the nodes of the db (i.e. tree data 'above' the leaves) won't be updated automatically, because that would be a waste of computation (node data would be constantly overwritten with each new leaf). Any time we want to GET up-to-date node information from the db, we must first call `/update` in order to update all nodes of the tree, based on the current set of leaves in the tree.

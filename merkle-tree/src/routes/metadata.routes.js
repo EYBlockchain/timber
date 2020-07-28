@@ -38,7 +38,7 @@ async function insertContractAddress(req, res, next) {
 async function insertContractInterface(req, res, next) {
   try {
     const { db } = req.user;
-    // const contractName = req.headers.contractname;
+    // const contractName = req.body.contractName;
     // const { contractInterface } = req.body;
     // const path = `../../build/contracts/${contractName}.json`;
 

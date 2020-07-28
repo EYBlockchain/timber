@@ -45,7 +45,7 @@ describe(`${contractName}`, async () => {
 
         // eslint-disable-next-line no-await-in-loop
         const txReceiptA = await contractInstance.methods
-          ._insertLeaf(`0x${leaf}`, 0) // this merkle tree contract takes 0 as treeid=a and 1 as treeId = b (can be changed for own app)
+          ._insertLeaf(`0x${leaf}`, 0) // this merkle tree contract takes 0 as treeId=a and 1 as treeId = b (can be changed for own app)
           .send({
             from: coinbase,
             gas: config.web3.options.defaultGas,
