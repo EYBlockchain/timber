@@ -353,11 +353,11 @@ E.g. in config:
 ```js
 events: {
   // filter for the following event names:
-  Cheese: {
+  NewLeaf: {
     // filter for these event parameters adding a single leaf:
     parameters: ['leafIndex', 'leafValue'],
   },
-  Cake: {
+  NewLeaves: {
     // filter for these event parameters adding multiple leaves:
     parameters: ['minLeafIndex', 'leafValues'],
   },
