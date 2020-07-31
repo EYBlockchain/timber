@@ -14,7 +14,7 @@ let contractInstance;
 let coinbase;
 
 const numberOfBatches = 1;
-const batchSize = 128;
+const batchSize = 10;
 
 describe(`${contractName}`, async () => {
   before('get contractInstance', async () => {
