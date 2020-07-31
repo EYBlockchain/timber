@@ -60,9 +60,9 @@ export default class NodeService {
   */
   async updateNodes(data) {
     console.log('\nsrc/db/service/node.service updateNodes()');
-    // console.log('data before mapping:', data);
+    console.log('data before mapping:', data);
     const mappedData = data.map(item => nodeMapper(item));
-    // console.log('data after mapping:', mappedData);
+    console.log('data after mapping:', mappedData);
 
     const bulkUpdates = mappedData.map(item => ({
       updateOne: {

@@ -14,6 +14,7 @@ module.exports = {
   LEVEL_DB_PATH: '/app/db/db',
   POLLING_FREQUENCY: 6000, // How many milliseconds to wait between each poll
   HASH_TYPE: process.env.HASH_TYPE,
+  CURVE: process.env.CURVE,
   NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
 
   // deployed contract info:

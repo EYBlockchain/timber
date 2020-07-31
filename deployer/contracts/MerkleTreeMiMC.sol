@@ -7,9 +7,9 @@ The intention is for other 'derived' contracts to import this contract, and for 
 
 pragma solidity ^0.5.8;
 
-import "./MiMC.sol"; // import contract with MiMC function
+import "./MiMC_BLS12_377.sol"; // import contract with MiMC function
 
-contract MerkleTreeMiMC is MiMC {
+contract MerkleTreeMiMC is MiMC_BLS12_377 {
 
     /*
     @notice Explanation of the Merkle Tree in this contract:
@@ -62,8 +62,11 @@ contract MerkleTreeMiMC is MiMC {
     If in future you want to change the truncation values, search for '27', '40' and '0x36'.
     */
     //Changed to bytes32 for MiMC hashing
-    bytes32 constant zero = 0x0000000000000000000000000000000000000000000000000000000000000000;
-    bytes32[32] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added.
+
+    // NOTE - may have to change mimcHash to mimcHash2 when using ALT_BN128
+    // bytes32 constant zero = 0x0000000000000000000000000000000000000000000000000000000000000000;
+    uint zero = 0;
+    uint[33] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added. use bytes32 with ALT_BN128
 
     /**
     @notice Get the index of the frontier (or 'storage slot') into which we will next store a nodeValue (based on the leafIndex currently being inserted). See the top-level README for a detailed explanation.
@@ -99,9 +102,10 @@ contract MerkleTreeMiMC is MiMC {
 
         uint slot = getFrontierSlot(leafCount);
         uint nodeIndex = leafCount + treeWidth - 1;
-        bytes32 nodeValue = leafValue; // nodeValue is the hash, which iteratively gets overridden to the top of the tree until it becomes the root.
+        uint nodeValue = uint(leafValue); // nodeValue is the hash, which iteratively gets overridden to the top of the tree until it becomes the root.
 
-        bytes32[2] memory input; //input of the hash fuction
+        uint[] memory input = new uint[](2); //input of the hash fuction
+        //bytes32[2] memory input; //input of the hash fuction - use this with ALT_BN128
 
         for (uint level = 0; level < treeHeight; level++) {
 
@@ -112,19 +116,19 @@ contract MerkleTreeMiMC is MiMC {
                 input[0] = frontier[level];
                 input[1] = nodeValue;
 
-                nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                 nodeIndex = (nodeIndex - 1) / 2; // move one row up the tree
             } else {
                 // odd nodeIndex
                 input[0] = nodeValue;
                 input[1] = zero;
 
-                nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                 nodeIndex = nodeIndex / 2; // move one row up the tree
             }
         }
 
-        root = nodeValue;
+        root = bytes32(nodeValue);
 
         emit NewLeaf(leafCount, leafValue, root); // this event is what the merkle-tree microservice's filter will listen for.
 
@@ -162,15 +166,16 @@ contract MerkleTreeMiMC is MiMC {
 
         uint slot;
         uint nodeIndex;
-        bytes32 nodeValue;
+        uint nodeValue;
 
-        bytes32[2] memory input;
+        // bytes32[2] memory input; // use this with ALT_BN128
+        uint[] memory input = new uint[](2); //input of the hash fuction
 
-        bytes32[32] memory tempFrontier = frontier;
+        uint[33]memory tempFrontier = frontier;
 
         // consider each new leaf in turn, from left to right:
         for (uint leafIndex = leafCount; leafIndex < leafCount + numberOfLeaves; leafIndex++) {
-            nodeValue = leafValues[leafIndex - leafCount];
+            nodeValue = uint(leafValues[leafIndex - leafCount]);
             nodeIndex = leafIndex + treeWidth - 1; // convert the leafIndex to a nodeIndex
 
             slot = getFrontierSlot(leafIndex); // determine at which level we will next need to store a nodeValue
@@ -187,14 +192,14 @@ contract MerkleTreeMiMC is MiMC {
                     input[0] = tempFrontier[level - 1]; //replace with push?
                     input[1] = nodeValue;
 
-                    nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                    nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                     nodeIndex = (nodeIndex - 1) / 2; // move one row up the tree
                 } else {
                     // odd nodeIndex
                     input[0] = nodeValue;
                     input[1] = zero;
 
-                    nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                    nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                     nodeIndex = nodeIndex / 2; // the parentIndex, but will become the nodeIndex of the next level
                 }
             }
@@ -217,20 +222,20 @@ contract MerkleTreeMiMC is MiMC {
                 input[0] = frontier[level - 1];
                 input[1] = nodeValue;
 
-                nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                 nodeIndex = (nodeIndex - 1) / 2;  // the parentIndex, but will become the nodeIndex of the next level
             } else {
                 // odd nodeIndex
                 input[0] = nodeValue;
                 input[1] = zero;
 
-                nodeValue = mimcHash2(input); // the parentValue, but will become the nodeValue of the next level
+                nodeValue = mimcHash(input); // the parentValue, but will become the nodeValue of the next level
                 nodeIndex = nodeIndex / 2;  // the parentIndex, but will become the nodeIndex of the next level
             }
 
         }
 
-        root = nodeValue;
+        root = bytes32(nodeValue);
 
         emit NewLeaves(leafCount, leafValues, root); // this event is what the merkle-tree microservice's filter will listen for.
 

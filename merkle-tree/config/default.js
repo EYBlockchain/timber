@@ -12,11 +12,12 @@ const zeroHex =
 module.exports = {
   // general:
   // ZERO: '0x0000000000000000000000000000000000000000000000000000000000000000', // 32-byte hex string representing zero, for hashing with '0' up the tree.
-  ZERO: zeroHex, // 27-byte hex string representing zero, for hashing with '0' up the tree. Byte length must match that of NODE_HASHLENGTH
+  ZERO: 0, // 27-byte hex string representing zero, for hashing with '0' up the tree. Byte length must match that of NODE_HASHLENGTH
 
   // Tree parameters. You also need to set these in the MerkleTree.sol contract.
 
   HASH_TYPE: process.env.HASH_TYPE,
+  CURVE: process.env.CURVE,
   LEAF_HASHLENGTH: 32, // expected length of leaves' values in bytes
   NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
   TREE_HEIGHT: 32, // the height of the Merkle tree
