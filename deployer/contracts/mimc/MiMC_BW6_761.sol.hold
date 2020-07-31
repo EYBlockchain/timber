@@ -148,4 +148,8 @@ contract MiMC_BW6_761 {
     {
         return hash_bw6_761(in_msgs, [uint(0), uint(0)]);
     }
+    
+    function mimcHash( uint[] memory in_msgs ) public pure returns (uint) {
+      return mimc_bls12_377(in_msgs);
+    }
 }
