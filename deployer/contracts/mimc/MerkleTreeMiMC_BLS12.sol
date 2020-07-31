@@ -9,7 +9,7 @@ pragma solidity ^0.5.8;
 
 import "./MiMC_BLS12_377.sol"; // import contract with MiMC function
 
-contract MerkleTreeMiMC is MiMC_BLS12_377 {
+contract MerkleTreeMiMC_BLS12 is MiMC_BLS12_377 {
 
     /*
     @notice Explanation of the Merkle Tree in this contract:
@@ -171,7 +171,7 @@ contract MerkleTreeMiMC is MiMC_BLS12_377 {
         // bytes32[2] memory input; // use this with ALT_BN128
         uint[] memory input = new uint[](2); //input of the hash fuction
 
-        uint[33]memory tempFrontier = frontier;
+        uint[33] memory tempFrontier = frontier;
 
         // consider each new leaf in turn, from left to right:
         for (uint leafIndex = leafCount; leafIndex < leafCount + numberOfLeaves; leafIndex++) {
