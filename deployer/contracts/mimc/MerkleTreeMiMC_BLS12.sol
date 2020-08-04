@@ -63,10 +63,10 @@ contract MerkleTreeMiMC_BLS12 is MiMC_BLS12_377 {
     */
     //Changed to bytes32 for MiMC hashing
 
-    // NOTE - may have to change mimcHash to mimcHash2 when using ALT_BN128
+    // NOTE - may have to change mimcHash to mimcHash2 when using ALT_BN_254
     // bytes32 constant zero = 0x0000000000000000000000000000000000000000000000000000000000000000;
     uint zero = 0;
-    uint[33] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added. use bytes32 with ALT_BN128
+    uint[33] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added. use bytes32 with ALT_BN_254
 
     /**
     @notice Get the index of the frontier (or 'storage slot') into which we will next store a nodeValue (based on the leafIndex currently being inserted). See the top-level README for a detailed explanation.
@@ -105,7 +105,7 @@ contract MerkleTreeMiMC_BLS12 is MiMC_BLS12_377 {
         uint nodeValue = uint(leafValue); // nodeValue is the hash, which iteratively gets overridden to the top of the tree until it becomes the root.
 
         uint[] memory input = new uint[](2); //input of the hash fuction
-        //bytes32[2] memory input; //input of the hash fuction - use this with ALT_BN128
+        //bytes32[2] memory input; //input of the hash fuction - use this with ALT_BN_254
 
         for (uint level = 0; level < treeHeight; level++) {
 
@@ -168,7 +168,7 @@ contract MerkleTreeMiMC_BLS12 is MiMC_BLS12_377 {
         uint nodeIndex;
         uint nodeValue;
 
-        // bytes32[2] memory input; // use this with ALT_BN128
+        // bytes32[2] memory input; // use this with ALT_BN_254
         uint[] memory input = new uint[](2); //input of the hash fuction
 
         uint[33] memory tempFrontier = frontier;

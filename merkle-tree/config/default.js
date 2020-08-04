@@ -46,7 +46,7 @@ module.exports = {
   // contracts to filter:
   contracts: {
     // contract name:
-    MerkleTreeControllerMiMC_BN128: {
+    MerkleTreeControllerMiMC_BN254: {
       events: {
         // filter for the following event names:
         NewLeaf: {

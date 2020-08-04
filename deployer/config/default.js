@@ -12,7 +12,7 @@ if (process.env.HASH_TYPE === 'mimc') {
   if (process.env.CURVE === 'BLS12_377') {
     contracts = ['MerkleTreeControllerMiMC_BLS12'];
   } else {
-    contracts = ['MerkleTreeControllerMiMC_BN128'];
+    contracts = ['MerkleTreeControllerMiMC_BN254'];
   }
 } else {
   nodeHashLength = 27;
@@ -34,7 +34,7 @@ module.exports = {
 
   contracts: {
     // contract name:
-    MerkleTreeControllerMiMC_BN128: {
+    MerkleTreeControllerMiMC_BN254: {
       events: {
         // filter for the following event names:
         NewLeaf: {

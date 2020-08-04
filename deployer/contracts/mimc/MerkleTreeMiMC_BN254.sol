@@ -7,9 +7,9 @@ The intention is for other 'derived' contracts to import this contract, and for 
 
 pragma solidity ^0.5.8;
 
-import "./MiMC_ALT_BN128.sol"; // import contract with MiMC function
+import "./MiMC_ALT_BN_254.sol"; // import contract with MiMC function
 
-contract MerkleTreeMiMC_BN128 is MiMC_ALT_BN128 {
+contract MerkleTreeMiMC_BN254 is MiMC_ALT_BN_254 {
 
     /*
     @notice Explanation of the Merkle Tree in this contract:
@@ -63,9 +63,9 @@ contract MerkleTreeMiMC_BN128 is MiMC_ALT_BN128 {
     */
     //Changed to bytes32 for MiMC hashing
 
-    // NOTE - may have to change mimcHash to mimcHash2 when using ALT_BN128
+    // NOTE - may have to change mimcHash to mimcHash2 when using ALT_BN_254
     bytes32 constant zero = 0x0000000000000000000000000000000000000000000000000000000000000000;
-    bytes32[33] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added. use bytes32 with ALT_BN128
+    bytes32[33] frontier; // the right-most 'frontier' of nodes required to calculate the new root when the next new leaf value is added. use bytes32 with ALT_BN_254
 
     /**
     @notice Get the index of the frontier (or 'storage slot') into which we will next store a nodeValue (based on the leafIndex currently being inserted). See the top-level README for a detailed explanation.
@@ -103,7 +103,7 @@ contract MerkleTreeMiMC_BN128 is MiMC_ALT_BN128 {
         uint nodeIndex = leafCount + treeWidth - 1;
         bytes32 nodeValue = leafValue; // nodeValue is the hash, which iteratively gets overridden to the top of the tree until it becomes the root.
 
-        bytes32[2] memory input; //input of the hash fuction - use this with ALT_BN128
+        bytes32[2] memory input; //input of the hash fuction - use this with ALT_BN_254
 
         for (uint level = 0; level < treeHeight; level++) {
 
@@ -166,7 +166,7 @@ contract MerkleTreeMiMC_BN128 is MiMC_ALT_BN128 {
         uint nodeIndex;
         bytes32 nodeValue;
 
-        bytes32[2] memory input; // use this with ALT_BN128
+        bytes32[2] memory input; // use this with ALT_BN_254
 
         bytes32[33] memory tempFrontier = frontier;
 

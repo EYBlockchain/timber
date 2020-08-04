@@ -254,12 +254,12 @@ If no _solc_-compiled json files are available, then we'll need Timber to compil
 #### `HASH_TYPE`
 
 For hashing 'up the merkle tree', there are currently two supported hash types:
-`sha` or `mimc`. You can also choose which elliptic curve `mimc` hashing is computed over. The 'default' option (when no `CURVE` is defined in the startup options) is ALT_BN128.
+`sha` or `mimc`. You can also choose which elliptic curve `mimc` hashing is computed over. The 'default' option (when no `CURVE` is defined in the startup options) is ALT_BN_254.
 
 | HASH_TYPE  | Algorithm	| Curve    | Cost* (gas))	| Proving time  	| Constraints**	|
 |:-:	       |:-:	        |:-:       | --:	          |--:	            |--:          	|
 | `sha`  	   | sha256   	| n/a       | ~90k         |  slow 	        | ~25,000	      |
-| `mimc`	   | MiMC-p/p  	| ALT_BN128      | ~1.4m    	  |  fast 	        | ~740        	|
+| `mimc`	   | MiMC-p/p  	| ALT_BN_254      | ~1.4m    	  |  fast 	        | ~740        	|
 | `mimc`	   | MiMC-p/p  	| BLS12_377      | ~1.8m    	  |  fast 	        | ~1000        	|
 
 

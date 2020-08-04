@@ -14,7 +14,7 @@ export default async function(req, res, next) {
       contractName =
         process.env.CURVE === 'BLS12_377'
           ? 'MerkleTreeControllerMiMC_BLS12'
-          : 'MerkleTreeControllerMiMC_BN128';
+          : 'MerkleTreeControllerMiMC_BN254';
     } else if (contractName === undefined) {
       const contractNameTest = req.body[0].contractName;
       if (contractNameTest === undefined) {

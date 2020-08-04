@@ -14,7 +14,7 @@ let contractInstance;
 let coinbase;
 
 const numberOfBatches = 1;
-const batchSize = 128;
+const batchSize = 16;
 
 describe(`${contractName}`, async () => {
   before('get contractInstance', async () => {
@@ -51,8 +51,12 @@ describe(`${contractName}`, async () => {
               gasPrice: config.web3.options.defaultGasPrice,
             });
           } else {
+            const preimage = [
+              `0x${i.toString().padStart(64, '0')}`,
+              `0x${(i + 1).toString().padStart(64, '0')}`,
+            ]; // pad to 32 bytes
             // eslint-disable-next-line no-await-in-loop
-            txReceipt = await contractInstance.methods.mimcHash2(i, i + 1).send({
+            txReceipt = await contractInstance.methods.mimcHash2(preimage).send({
               from: coinbase,
               gas: config.web3.options.defaultGas,
               gasPrice: config.web3.options.defaultGasPrice,

@@ -25,7 +25,7 @@ async function startEventFilter(req, res, next) {
     contractName =
       process.env.CURVE === 'BLS12_377'
         ? 'MerkleTreeControllerMiMC_BLS12'
-        : 'MerkleTreeControllerMiMC_BN128';
+        : 'MerkleTreeControllerMiMC_BN254';
   }
   const treeId = req.body.treeId;
   const { db } = req.user;
