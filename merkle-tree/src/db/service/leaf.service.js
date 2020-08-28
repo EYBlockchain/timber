@@ -47,7 +47,7 @@ export default class LeafService {
   */
   async insertLeaves(treeHeight, leaves) {
     console.log('\nsrc/db/service/leaf.service insertLeaves()');
-    console.log('data before mapping:', leaves);
+    // console.log('data before mapping:', leaves);
     const mappedData = leaves.map(leaf => leafMapper(treeHeight, leaf));
     console.log('data after mapping:', mappedData);
 
