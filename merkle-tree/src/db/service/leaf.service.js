@@ -49,7 +49,7 @@ export default class LeafService {
     console.log('\nsrc/db/service/leaf.service insertLeaves()');
     // console.log('data before mapping:', leaves);
     const mappedData = leaves.map(leaf => leafMapper(treeHeight, leaf));
-    console.log('data after mapping:', mappedData);
+    // console.log('data after mapping:', mappedData);
 
     // insert the leaves into the 'nodes' collection:
     try {
