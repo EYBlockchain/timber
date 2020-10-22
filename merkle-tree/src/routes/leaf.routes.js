@@ -194,7 +194,7 @@ async function countLeaves(req, res, next) {
 
   try {
     const leafService = new LeafService(req.user.db);
-    const leafCount = await leafService.countLeaves(req.body); // TODO - no need to send req.body??
+    const leafCount = await leafService.countLeaves();
     res.data = { leafCount };
     next();
   } catch (err) {
