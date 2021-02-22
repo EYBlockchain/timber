@@ -142,9 +142,10 @@ module.exports = {
   mongo: {
     host: 'mongo-merkle-tree',
     port: '27017',
-    databaseName: 'merkle_tree',
+    databaseName: process.env.DB_NAME || 'merkle_tree',
     admin: 'admin',
     adminPassword: 'admin',
+    dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
   },
   isLoggerEnabled: true,
 
@@ -152,7 +153,7 @@ module.exports = {
   web3: {
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
-
+    rpcUrl: process.env.RPC_URL,
     options: {
       defaultAccount: '0x0',
       defaultBlock: '0', // e.g. the genesis block our blockchain

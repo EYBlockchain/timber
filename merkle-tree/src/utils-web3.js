@@ -44,6 +44,11 @@ async function getBlockTransactionCount(blockHashOrBlockNumber) {
   return blockTxCount;
 }
 
+async function getTransactionReceipt(transactionHash) {
+  const receipt = await web3.eth.getTransactionReceipt(transactionHash);
+  return receipt;
+}
+
 /**
 Returns a block matching the block number or block hash.
 @param {String|Number} hashStringOrNumber A block number or hash. Or the string "genesis", "latest" or "pending" as in the default block parameter.
@@ -89,6 +94,23 @@ async function getContractAddress(contractName) {
   logger.silly(`deployed address: ${deployedAddress}`);
 
   return deployedAddress;
+}
+
+async function getDeployedContractTransactionHash(contractName) {
+  logger.debug(`./src/utils-web3 getDeployedContractTransactionHash(${contractName})`);
+  let transactionHash;
+  const contractInterface = getContractInterface(contractName);
+
+  const networkId = await web3.eth.net.getId();
+  logger.silly(`networkId: ${networkId}`);
+
+  if (contractInterface && contractInterface.networks && contractInterface.networks[networkId]) {
+    transactionHash = contractInterface.networks[networkId].transactionHash;
+  }
+
+  logger.silly(`deployed transactionHash: ${transactionHash}`);
+
+  return transactionHash;
 }
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
@@ -266,4 +288,6 @@ export default {
   getContractBytecode,
   subscribeToEvent,
   unsubscribe,
+  getDeployedContractTransactionHash,
+  getTransactionReceipt,
 };
