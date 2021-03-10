@@ -208,7 +208,7 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 Check which block was the last to be filtered.
 @return {number} the next blockNumber which should be filtered.
 */
-async function getFromBlock(db) {
+async function getFromBlock(db, contractName) {
   const metadataService = new MetadataService(db);
 
   const metadata = await metadataService.getLatestLeaf();
@@ -230,7 +230,16 @@ async function getFromBlock(db) {
   );
 
   if (blockNumber === undefined) {
-    blockNumber = config.FILTER_GENESIS_BLOCK_NUMBER;
+    let receipt;
+    let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
+    logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
+
+    if (transactionHash) {
+      receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
+      logger.info(`receipt: ${receipt}`);
+    }
+    
+    blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
     logger.warn(
       `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
     );
@@ -251,7 +260,7 @@ async function start(db, contractName, contractInstance, treeId) {
   try {
     logger.info('Starting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-    const fromBlock = await getFromBlock(db); // the blockNumber we get is the next WHOLE block to start filtering.
+    const fromBlock = await getFromBlock(db, contractName); // the blockNumber we get is the next WHOLE block to start filtering.
 
     // Now we filter indefinitely:
     await filterBlock(db, contractName, contractInstance, fromBlock, treeId);

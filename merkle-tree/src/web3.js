@@ -12,7 +12,10 @@ export default {
   connection() {
     return this.web3;
   },
-
+  buildUrl() {
+    if (config.web3.rpcUrl) return config.web3.rpcUrl;
+    else return `${config.web3.host}:${config.web3.port}`;
+  },
   /**
    * Connects to web3 and then sets proper handlers for events
    */
@@ -21,7 +24,7 @@ export default {
 
     logger.info('Blockchain Connecting ...');
     const provider = new Web3.providers.WebsocketProvider(
-      `${config.web3.host}:${config.web3.port}`,
+      this.buildUrl(),
       null,
       config.web3.options,
     );
