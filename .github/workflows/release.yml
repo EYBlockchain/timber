@@ -29,3 +29,5 @@ jobs:
         docker login https://docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
         docker build -t docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION .
         docker push docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
