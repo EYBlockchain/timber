@@ -25,8 +25,23 @@ export default {
     logger.info('Blockchain Connecting ...');
     const provider = new Web3.providers.WebsocketProvider(
       this.buildUrl(),
-      null,
-      config.web3.options,
+      {
+        timeout: 30000, // ms
+        clientConfig: {
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000 // ms
+        },
+    
+        // Enable auto reconnection
+        reconnect: {
+            auto: true,
+            delay: 500, // ms
+            maxAttempts: 25,
+            onTimeout: false
+        }
+    },
+      // config.web3.options,
     );
 
     provider.on('error', err => logger.error(err));

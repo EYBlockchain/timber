@@ -20,8 +20,8 @@ export default new Schema(
     },
     leafIndex: {
       type: Number,
-      unique: true, // establish this as a unique index
-      sparse: true, // the index is 'sparse' (not all documents in the collection will have a leafIndex, so we can skip them)
+      // unique: true, // establish this as a unique index
+      // sparse: true, // the index is 'sparse' (not all documents in the collection will have a leafIndex, so we can skip them)
     },
     /**
     TODO: make blockNumber 'required' if a leaf?

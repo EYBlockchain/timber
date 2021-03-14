@@ -184,6 +184,7 @@ export default class DB {
 
       return Promise.resolve(dbResponse);
     } catch (e) {
+      logger.debug('src/db/mongodb/db bulkWrite() errr');
       logger.error(e);
       return Promise.reject(e);
     }
