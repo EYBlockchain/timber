@@ -128,10 +128,22 @@ export default class DB {
     try {
       // A Model is a class with which we construct documents. We can also access all documents constructed from a particular Model class through that Model class:
       const Model = this.Models[modelName];
-      const docs = await Model.find(query, projections)
-        .sort(sort) // sort the output results
-        .limit(limit) // output only the 'top' n results
+      let docs = await Model.find(query, projections)
+        // .sort(sort) // sort the output results
+        // .limit(limit) // output only the 'top' n results
         .exec();
+
+      if (sort.leafIndex) {
+        docs = docs.sort(function(a, b){
+          return a.leafIndex - b.leafIndex          
+        });
+      }
+
+      if (sort.nodeIndex) {
+        docs = docs.sort(function(a, b){
+          return a.nodeIndex - b.nodeIndex          
+        });
+      }
 
       logger.debug('src/db/mongodb/db getDocs()');
       logger.silly(`docs ${JSON.stringify(docs, null, 2)}`);

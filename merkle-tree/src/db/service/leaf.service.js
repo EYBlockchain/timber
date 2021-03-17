@@ -200,12 +200,31 @@ export default class LeafService {
     logger.debug('src/db/service/leaf.service getLatestLeaf()');
 
     // insert the leaf into the 'nodes' collection:
-    const doc = await this.db.getDocs(
+    // const doc = await this.db.getDocs(
+    //   COLLECTIONS.NODE,
+    //   { leafIndex: { $exists: true } }, // query
+    //   null, // projection (output only these keys)
+    //   { leafIndex: -1 }, // sort by leafIndex in descending order (we'll then grab the top one),
+    //   1, // limit to the 'top' (latest) result
+    // );
+
+    const doc = await this.db.aggregate(
       COLLECTIONS.NODE,
-      { leafIndex: { $exists: true } }, // query
-      null, // projection (output only these keys)
-      { leafIndex: -1 }, // sort by leafIndex in descending order (we'll then grab the top one),
-      1, // limit to the 'top' (latest) result
+      {
+        leafIndex: { $exists: true },
+      }, // query
+      // stages:
+      [
+        {
+          $group: {
+              _id: null,
+              leafIndex: {$max: "$leafIndex"}
+          }
+        }
+      ],
+
+      // Find any expected values that are missing from the existing data
+      {},
     );
 
     return doc[0];
@@ -232,14 +251,39 @@ export default class LeafService {
   async maxLeafIndex() {
     logger.debug('src/db/service/leaf.service maxLeafIndex()');
 
-    const doc = await this.db.getDocs(
-      COLLECTIONS.NODE,
-      { leafIndex: { $exists: true } }, // query
-      { leafIndex: 1, _id: 0 }, // projection (output only these keys)
-      { leafIndex: -1 }, // sort by leafIndex in descending order (we'll then grab the top one)
-      1, // limit output to the 'top' (max) result
-    );
+    // const doc = await this.db.getDocs(
+    //   COLLECTIONS.NODE,
+    //   { leafIndex: { $exists: true } }, // query
+    //   { leafIndex: 1, _id: 0 }, // projection (output only these keys)
+    //   { leafIndex: -1 }, // sort by leafIndex in descending order (we'll then grab the top one)
+    //   1, // limit output to the 'top' (max) result
+    // );
 
+    const doc = await this.db.aggregate(
+      COLLECTIONS.NODE,
+      {
+        leafIndex: { $exists: true },
+      }, // query
+      // stages:
+      [
+        {
+          $group: {
+              _id: null,
+              leafIndex: {$max: "$leafIndex"}
+          }
+        }
+      ],
+
+      // Find any expected values that are missing from the existing data
+      {
+        $project: {
+          _id: 0, // remove the '_id' field
+          leafIndex: 1,
+        },
+      },
+    );
+    logger.debug('src/db/service/leaf.service maxLeafIndex() Aggregate')
+    logger.debug(doc[0])
     const { leafIndex } = doc[0] || {};
 
     return leafIndex;
