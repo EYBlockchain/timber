@@ -1,12 +1,10 @@
 module.exports = {
   extends: ['codfish', 'codfish/docker', 'codfish/dapp'],
   root: true,
-  env: {
-    node: true,
-  },
   rules: {
     'no-console': 'off',
     'no-plusplus': 'off',
+    'no-bitwise': 'off',
     'no-restricted-syntax': 'off',
     'import/no-extraneous-dependencies': [
       'error',
@@ -19,6 +17,6 @@ module.exports = {
     mocha: true,
   },
   globals: {
-  'BigInt':true
-},
+    'BigInt':true
+  },
 };

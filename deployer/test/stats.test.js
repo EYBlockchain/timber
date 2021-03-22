@@ -2,7 +2,6 @@
 @author iAmMichaelConnor
 */
 
-import assert from 'assert';
 import config from 'config';
 
 import Web3 from '../src/web3';
@@ -127,18 +126,16 @@ describe('insertLeaves', async () => {
           leaves.push(`0x${leaf}`);
         }
         // eslint-disable-next-line no-await-in-loop
-        const txReceipt = await contractInstance.methods
-          ._insertLeaves(leaves)
-          .send({
-            from: coinbase,
-            gas: 10000000, // explore a full block of gas being used
-            gasPrice: config.web3.options.defaultGasPrice,
-          })
-          // eslint-disable-next-line no-loop-func
-          .on('receipt', receipt => {
-            const { minLeafIndex, leafValues, root } = receipt.events.NewLeaves.returnValues;
-            // console.log(minLeafIndex, leafValues, root);
-          });
+        const txReceipt = await contractInstance.methods._insertLeaves(leaves).send({
+          from: coinbase,
+          gas: 10000000, // explore a full block of gas being used
+          gasPrice: config.web3.options.defaultGasPrice,
+        });
+        // eslint-disable-next-line no-loop-func
+        // .on('receipt', receipt => {
+        //   const { minLeafIndex, leafValues, root } = receipt.events.NewLeaves.returnValues;
+        //   console.log(minLeafIndex, leafValues, root);
+        // });
 
         const { gasUsed } = txReceipt;
         gasUsedArray.push(gasUsed);

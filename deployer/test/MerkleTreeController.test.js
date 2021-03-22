@@ -13,7 +13,7 @@ const contractName = config.contractNames[0];
 let contractInstance;
 let coinbase;
 
-const numberOfBatches = 1;
+// const numberOfBatches = 1;
 const batchSize = 16;
 
 describe(`${contractName}`, async () => {
