@@ -7,6 +7,7 @@ import config from 'config';
 import createKeccakHash from 'keccak';
 import BI from 'big-integer';
 import logger from './logger';
+import poseidonHash from './poseidon';
 
 const crypto = require('crypto');
 const { Buffer } = require('safe-buffer');
@@ -291,6 +292,8 @@ function concatenateThenHash(...items) {
   let h;
   if (config.HASH_TYPE === 'mimc') {
     h = mimcHash(...items);
+  } else if (config.HASH_TYPE === 'poseidon') {
+    h = poseidonHash(items);
   } else {
     h = shaHash(...items);
   }
