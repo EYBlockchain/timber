@@ -146,8 +146,8 @@ describe('Main test', async () => {
     });
   });
 
-  describe(`Adding ${numberOfBatches * batchSize}
-    leaves in batches of ${batchSize}`, async () => {
+  describe(`Adding ${numberOfBatches * batchSize} leaves in batches of
+    ${batchSize}`, function() { // eslint-disable-line
     this.timeout(3660000); // surprisingly, this.timeout() doesn't work inside an arrow function!
 
     const numberOfLeaves = numberOfBatches * batchSize;
