@@ -7,8 +7,15 @@
 /* eslint-disable no-bitwise */ // bit operations are essential for merkle-tree computations.
 
 import config from 'config';
-import utils from './utils';
+import utils from '@eyblockchain/zkp-utils';
 import logger from './logger';
+
+utils.concatenateThenHash = (...items) => {
+  if (config.HASH_TYPE === 'mimc') {
+    return utils.mimcHash(items, config.CURVE);
+  }
+  return utils.shaHash(...items);
+};
 
 function rightShift(integer, shift) {
   return Math.floor(integer / 2 ** shift);
