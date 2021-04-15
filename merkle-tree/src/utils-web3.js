@@ -105,7 +105,7 @@ async function getDeployedContractTransactionHash(contractName) {
   logger.silly(`networkId: ${networkId}`);
 
   if (contractInterface && contractInterface.networks && contractInterface.networks[networkId]) {
-    transactionHash = contractInterface.networks[networkId].transactionHash;
+    ({ transactionHash } = contractInterface.networks[networkId]);
   }
 
   logger.silly(`deployed transactionHash: ${transactionHash}`);

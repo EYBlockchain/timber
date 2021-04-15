@@ -32,8 +32,8 @@ beforeEach('Redeploy contract', async () => {
   await contractDeployer.deploy(contractName);
 });
 
-// eslint-disable-next-line func-names
-describe(`Adding ${numberOfBatches * batchSize} leaves in batches of ${batchSize}`, async function() {
+describe(`Adding ${numberOfBatches * batchSize}
+  leaves in batches of ${batchSize}`, async () => {
   this.timeout(10000000); // surprisingly, this.timeout() doesn't work inside an arrow function!
 
   // await merkleTree.insertTreeHeight(contractName, treeHeight);

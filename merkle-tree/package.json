@@ -14,6 +14,7 @@
     "Michael Connor <Michael.Connor@uk.ey.com>"
   ],
   "dependencies": {
+    "@eyblockchain/zkp-utils": "^1.0.10",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "express": "^4.16.4",

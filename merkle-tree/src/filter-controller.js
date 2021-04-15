@@ -231,14 +231,14 @@ async function getFromBlock(db, contractName) {
 
   if (blockNumber === undefined) {
     let receipt;
-    let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
+    const transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
     logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
 
     if (transactionHash) {
       receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
       logger.info(`receipt: ${receipt}`);
     }
-    
+
     blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
     logger.warn(
       `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,

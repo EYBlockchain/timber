@@ -1,24 +1,16 @@
 module.exports = {
-  extends: ['codfish', 'codfish/docker', 'codfish/dapp'],
+  extends: [require.resolve('eslint-config-codfish')].filter(Boolean),
   root: true,
-  env: {
-    node: true,
-  },
   rules: {
     'no-console': 'off',
     'no-plusplus': 'off',
-    'no-restricted-syntax': 'off',
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        'devDependencies': ['integration-test/test.js', 'integration-test/testData.js'],
-      },
-    ],
+    'no-bitwise': 'off',
+    'no-restricted-syntax': 'off'
   },
   env: {
     mocha: true,
   },
   globals: {
-  'BigInt':true
-},
+    'BigInt':true
+  },
 };

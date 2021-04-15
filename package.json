@@ -5,6 +5,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "start": "babel-node ./src/index.js",
     "test": "truffle test"
   },
@@ -26,18 +27,18 @@
     }
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.4",
+    "@babel/cli": "^7.13.10",
     "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
     "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "nodemon": "^1.19.4",
-    "eslint": "^5.16.0",
-    "eslint-config-codfish": "^2.5.0",
-    "prettier": "^1.18.2",
+    "eslint": "^6.8.0",
+    "eslint-config-codfish": "3.0.0",
     "husky": "^4.2.5",
-    "lint-staged": "^8.2.1"
+    "lint-staged": "^8.2.1",
+    "nodemon": "^1.19.4",
+    "prettier": "1.18.2"
   }
 }

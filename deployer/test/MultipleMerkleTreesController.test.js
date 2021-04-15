@@ -13,7 +13,7 @@ const contractName = config.contractNames[1];
 let contractInstance;
 let coinbase;
 
-const numberOfBatches = 1;
+// const numberOfBatches = 1;
 const batchSize = 16;
 
 describe(`${contractName}`, async () => {
@@ -95,7 +95,7 @@ describe(`${contractName}`, async () => {
         // const { gasUsedB } = txReceiptB.gasUsed;
         // const gasUsed = gasUsedA + gasUsedB;
         gasUsedArray.push(gasUsed);
-        gasUsed = txReceiptB.gasUsed;
+        ({ gasUsed } = txReceiptB);
         gasUsedArray.push(gasUsed);
       }
     });
@@ -172,7 +172,7 @@ describe(`${contractName}`, async () => {
       // const { gasUsedB } = txReceiptB.gasUsed;
       // const gasUsed = gasUsedA + gasUsedB;
       gasUsedArray.push(gasUsed);
-      gasUsed = txReceiptB.gasUsed;
+      ({ gasUsed } = txReceiptB);
       gasUsedArray.push(gasUsed);
     });
 

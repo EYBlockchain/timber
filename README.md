@@ -140,7 +140,7 @@ Start Docker:
 If you have pulled new changes from the repo, then first run:  
 
 ```sh
-docker-compose build
+docker-compose build --build-arg GPR_TOKEN=${GPR_TOKEN}
 ```
 Start all microservices:  
 

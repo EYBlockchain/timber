@@ -26,7 +26,7 @@ module.exports = {
   // Tree parameters. You also need to set these in the MerkleTree.sol contract.
 
   HASH_TYPE: process.env.HASH_TYPE,
-  CURVE: process.env.CURVE,
+  CURVE: process.env.CURVE || 'ALT_BN_254',
   LEAF_HASHLENGTH: 32, // expected length of leaves' values in bytes
   NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
   TREE_HEIGHT: 32, // the height of the Merkle tree
