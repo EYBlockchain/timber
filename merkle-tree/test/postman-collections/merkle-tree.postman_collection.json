@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5d4dcae2-10cb-418a-9ec9-b32f329d243c",
+		"_postman_id": "d4983996-3257-40ee-807c-2a1a1422bad9",
 		"name": "merkle-tree",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\",\n\t\"leaf\": {\n\t\t\"value\": \"0xabc123-7\",\n\t\t\"leafIndex\": 2,\n\t\t\"blockNumber\": 60000000\n\t}\n}"
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\",\n\t\"leaf\": {\n\t\t\"value\": \"0xabc002\",\n\t\t\"leafIndex\": 2,\n\t\t\"blockNumber\": 60000000\n\t}\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/leaf",
@@ -1005,7 +1005,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\",\n\t\"contractInterface\": \"{ \"pretend\": \"this is a stringified json interface\" }\"\n}"
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\",\n\t\"contractInterface\": \"{ pretend: this is a stringified json interface }\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9000/metadata/contractInterface",
@@ -1541,6 +1541,38 @@
 							"port": "9000",
 							"path": [
 								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/calculate-root-from-frontier",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"contractName\": \"MerkleTreeControllerSHA\",\n\t\"frontier\": [\n                \"0xabc002\",\n                \"0x55eacc37b6c177133d5f1bb08e04b2124849d514ff2a4fa272dedc\",\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null,\n                null\n            ],\n    \"leafIndex\": 2\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9000/calculate-root-from-frontier",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"calculate-root-from-frontier"
 							]
 						}
 					},
