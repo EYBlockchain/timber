@@ -255,7 +255,7 @@ async function updateNodes(leafValues, currentLeafCount, frontier, height, updat
         logger.silly(`left input ${nodeValue}`);
         logger.silly(`right input ${config.ZERO}`);
         nodeValueFull = utils.concatenateThenHash(nodeValue, config.ZERO); // the parentValue, but will become the nodeValue of the next level
-        nodeValue = `0x${nodeValueFull.slice(-config.NODE_HASHLENGTH * 2)}`; // truncate hashed value, so it 'fits' into the next hash.
+        nodeValue = utils.ensure0x(nodeValueFull.slice(-config.NODE_HASHLENGTH * 2)); // truncate hashed value, so it 'fits' into the next hash.
         logger.silly(`output ${nodeValue}`);
       }
       nodeIndex = parentNodeIndex(nodeIndex); // move one row up the tree
