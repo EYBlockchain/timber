@@ -7,7 +7,7 @@
 import { LeafService, MetadataService } from '../db/service';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
-
+import amqp from 'amqplib';
 /**
  * Add a new leaf to the tree's 'nodes' db.
  * req.body {

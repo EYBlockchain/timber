@@ -10,6 +10,7 @@
 import fs from 'fs';
 import Web3 from './web3';
 import logger from './logger';
+import _ from 'lodash';
 
 const web3 = Web3.connect();
 
@@ -206,7 +207,7 @@ async function subscribeToEvent(
     type: 'event',
     signature: '0x881cc8af0159324ccea314ad98a0cf26fe0e460c2afa693c92f591613d4de7b2' }
   */
-  const eventJsonInterface = web3.utils._.find(
+  const eventJsonInterface = _.find(
     contractInstance._jsonInterface, // eslint-disable-line no-underscore-dangle
     o => o.name === eventName && o.type === 'event',
   );
