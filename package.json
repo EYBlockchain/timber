@@ -31,13 +31,13 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/node": "^7.6.3",
     "@babel/register": "^7.6.2",
-    "@commitlint/cli": "^11.0.0",
+    "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^11.0.0",
     "nodemon": "^1.19.4",
     "eslint": "^5.16.0",
     "eslint-config-codfish": "^2.5.0",
     "prettier": "^1.18.2",
-    "husky": "^4.2.5",
+    "husky": "^8.0.3",
     "lint-staged": "^8.2.1"
   }
 }
