@@ -2,7 +2,7 @@ name: Mend SCA Scan
 on:
   push:
     branches:
-      - users/carlosyoque/TAX-5194
+      - taxgrid-v2.2
 
 permissions:
   id-token: write
