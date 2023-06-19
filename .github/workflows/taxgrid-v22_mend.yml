@@ -1,0 +1,46 @@
+name: Mend SCA Scan
+on:
+  push:
+    branches:
+      - taxgrid-v2.2
+
+permissions:
+  id-token: write
+  contents: write
+  actions: write
+  deployments: write
+  packages: write
+  repository-projects: write
+
+jobs:
+  processes:
+    runs-on: ubuntu-latest
+    name: Mend 
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.16.0'
+
+      - name: Install Modules
+        run: npm install
+        env:
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}   
+
+      - name: Download unified agent
+        run: |
+            curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+        env:
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }} 
+
+      - name: Run whitesource unified agent
+        run: |
+            echo "userkey: " ${{ secrets.MEND_USER_KEY }}
+            cat /home/runner/work/timber/timber/wss-unified-agent.config
+            java -jar wss-unified-agent.jar -c /home/runner/work/timber/timber/wss-unified-agent.config -apikey $MEND_API_KEY -userkey $MEND_USER_KEY
+        env:
+          MEND_API_KEY: ${{ secrets.MEND_API_KEY }}
+          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
