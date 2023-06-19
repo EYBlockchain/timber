@@ -2,7 +2,7 @@ name: Checkmarx SAST Scan
 on:
   push:
     branches:
-      - users/carlosyoque/TAX-5193
+      - taxgrid-v2.2
 jobs:
   build:
     runs-on: ubuntu-latest
