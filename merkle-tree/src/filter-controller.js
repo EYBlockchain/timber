@@ -150,7 +150,7 @@ const responseFunctions = {
 An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
-async function filterBlock(db, contractName, contractInstance, fromBlock, treeId) {
+async function filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId) {
   logger.debug(
     `src/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
@@ -256,14 +256,14 @@ async function getFromBlock(db, contractName) {
 /**
 Commence filtering
 */
-async function start(db, contractName, contractInstance, treeId) {
+async function start(db, contractName, contractInstance, treeId, contractId) {
   try {
     logger.info('Starting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
     const fromBlock = await getFromBlock(db, contractName); // the blockNumber we get is the next WHOLE block to start filtering.
-
+    logger.info(`fromBlock result: ${fromBlock}`)
     // Now we filter indefinitely:
-    await filterBlock(db, contractName, contractInstance, fromBlock, treeId);
+    await filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId);
     return true;
   } catch (err) {
     throw new Error(err);

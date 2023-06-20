@@ -19,13 +19,16 @@ export default class DB {
     this.username = username;
     this.contractId = contractId;
     if (!username) return;
-    this.createModelsForUser(contractName, treeId);
+    this.createModelsForUser(contractName, treeId, contractId);
   }
 
   /**
   A model is a class with which we construct documents
   */
   createModelsForUser(contractName, treeId, contractId) {
+
+    logger.info(`I'm creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`);
+    
     if (treeId === undefined || treeId === '') {
       if (contractId === undefined || contractId === '') {
         this.Models = {
