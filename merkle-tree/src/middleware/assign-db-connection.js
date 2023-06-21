@@ -6,8 +6,8 @@ import logger from '../logger';
 const { admin } = config.get('mongo');
 
 export default async function(req, res, next) {
-  logger.debug('src/middleware/assign-db-connection');
-  logger.silly(
+  logger.info('src/middleware/assign-db-connection');
+  logger.info(
     `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
@@ -34,7 +34,7 @@ export default async function(req, res, next) {
       }
     }
     const treeId = req.body.treeId || req.query.treeId;
-    logger.silly(`treeId: ${treeId}`);
+    logger.info(`treeId: ${treeId}`);
     req.user = {};
     // give all requesters admin privileges:
     req.user.connection = adminDbConnection;

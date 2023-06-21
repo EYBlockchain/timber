@@ -25,7 +25,7 @@ const newLeafResponseFunction = async (eventObject, args) => {
   const eventName = args.eventName === undefined ? 'NewLeaf' : args.eventName; // hardcoded, as inextricably linked to the name of this function.
 
   let eventParams;
-  logger.debug(`eventname: ${eventName}`);
+  logger.info(`eventname: ${eventName}`);
 
   if (treeId === undefined || treeId === '') {
     eventParams = config.contracts[contractName].events[eventName].parameters;
@@ -47,7 +47,7 @@ const newLeafResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
+  logger.info(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
 
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
@@ -97,7 +97,7 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
+  logger.info(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
 
@@ -127,7 +127,7 @@ This function is triggered by the 'event' contract subscription, every time a ne
 @param {object} eventObject - An event object.
 */
 const newEventResponder = async (eventObject, responseFunction, responseFunctionArgs = {}) => {
-  logger.debug('Responding to New Event...');
+  logger.info('Responding to New Event...');
   /*
     Although this function appears to be redundant (because it's passing data straight through), we retain it for the sake of example. Hopefully it demonstrates most generally how this eventResponder structure can be applied to respond to other events.
   */
@@ -151,7 +151,7 @@ An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
 async function filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId) {
-  logger.debug(
+  logger.info(
     `src/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
   const metadataService = new MetadataService(db);
@@ -188,7 +188,7 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
     const responseFunction =
       eventName === eventNames[0] ? responseFunctions.NewLeaf : responseFunctions.NewLeaves;
     const responseFunctionArgs = { db, contractName, eventName, treeId };
-
+  
     const eventSubscription = await utilsWeb3.subscribeToEvent(
       contractName,
       contractInstance,
@@ -208,7 +208,9 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 Check which block was the last to be filtered.
 @return {number} the next blockNumber which should be filtered.
 */
-async function getFromBlock(db, contractName) {
+
+// Extended this with contractId, we'll need to change the logic to use our cached info from Mongo, instead of Truffle's interface file
+async function getFromBlock(db, contractName, contractId) {
   const metadataService = new MetadataService(db);
 
   const metadata = await metadataService.getLatestLeaf();
@@ -260,7 +262,9 @@ async function start(db, contractName, contractInstance, treeId, contractId) {
   try {
     logger.info('Starting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-    const fromBlock = await getFromBlock(db, contractName); // the blockNumber we get is the next WHOLE block to start filtering.
+    console.log(`using getFromBlock for ${db}, ${contractName}, ${contractId}`);
+    const fromBlock = await getFromBlock(db, contractName, contractId); // the blockNumber we get is the next WHOLE block to start filtering.
+
     logger.info(`fromBlock result: ${fromBlock}`)
     // Now we filter indefinitely:
     await filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId);

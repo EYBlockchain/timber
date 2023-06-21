@@ -69,7 +69,7 @@ Gets a web3 contract instance a contract, and checks its consistency with the me
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
 async function getContractInstanceFromMongoDB(db, contractName) {
-  logger.debug(
+  logger.info(
     `src/contract-controller getContractInstanceFromMongoDB(db, contractName=${contractName})`,
   );
 
@@ -86,7 +86,7 @@ async function getContractInstanceFromMongoDB(db, contractName) {
 }
 
 async function getContractInstanceFromContractsFolder(db, contractName, contractAddress) {
-  logger.debug(
+  logger.info(
     `src/contract-controller getContractInstanceFromContractsFolder(db, contractName=${contractName}, contractAddress=${contractAddress})`,
   );
 
@@ -106,7 +106,7 @@ async function getContractInstanceFromContractsFolder(db, contractName, contract
 }
 
 async function getContractInstanceFromBuildFolder(db, contractName, contractAddress) {
-  logger.debug(
+  logger.info(
     `\nsrc/contract-controller getContractInstanceFromBuildFolder(db, contractName=${contractName})`,
   );
 
@@ -136,7 +136,7 @@ Gets a web3 contract instance a contract, and checks its consistency with the me
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
 async function instantiateContract(db, contractName, contractAddress) {
-  logger.debug(
+  logger.info(
     `src/contract-controller instantiateContract(db, contractName=${contractName}, contractAddress=${contractAddress})`,
   );
   let contractInstance;

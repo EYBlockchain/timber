@@ -12,10 +12,10 @@ const { contractsPath } = config;
 const { buildPath } = config;
 
 const getSolcVersion = contractName => {
-  logger.debug('getSolcVersion...');
+  logger.info('getSolcVersion...');
   const contractsFiles = fs.readdirSync(contractsPath);
   const source = {};
-  logger.debug(`CONTRACTSFILES: ${JSON.stringify(contractsFiles)}`);
+  logger.info(`CONTRACTSFILES: ${JSON.stringify(contractsFiles)}`);
 
   contractsFiles.forEach(fileName => {
     if (contractName === path.basename(fileName, '.sol')) {

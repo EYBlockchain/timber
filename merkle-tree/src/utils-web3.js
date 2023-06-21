@@ -56,11 +56,11 @@ Returns a block matching the block number or block hash.
 @returns {Object} Returns a transaction object based on a block hash or number and the transactions index position.
 */
 async function getTransactionFromBlock(hashStringOrNumber, indexNumber) {
-  logger.debug(`Getting transaction ${indexNumber} from Block ${hashStringOrNumber}`);
+  logger.info(`Getting transaction ${indexNumber} from Block ${hashStringOrNumber}`);
 
   const txReceipt = await web3.eth.getTransactionFromBlock(hashStringOrNumber, indexNumber);
 
-  logger.silly(`txReceipt.input: ${JSON.stringify(txReceipt.input, null, 2)}`);
+  logger.info(`txReceipt.input: ${JSON.stringify(txReceipt.input, null, 2)}`);
 
   return txReceipt;
 }
@@ -71,51 +71,51 @@ async function getTransactionFromBlock(hashStringOrNumber, indexNumber) {
 let events = {};
 
 function getContractInterface(contractName) {
-  logger.debug(`./src/utils-web3 getContractInterface(${contractName})`);
+  logger.info(`./src/utils-web3 getContractInterface(${contractName})`);
 
   const path = `./build/contracts/${contractName}.json`;
   const contractInterface = JSON.parse(fs.readFileSync(path));
-  logger.silly(`contractInterface: ${JSON.stringify(contractInterface, null, 2)}`);
+  logger.debug(`contractInterface: ${JSON.stringify(contractInterface, null, 2)}`);
   return contractInterface;
 }
 
 async function getContractAddress(contractName) {
-  logger.debug(`./src/utils-web3 getContractAddress(${contractName})`);
+  logger.info(`./src/utils-web3 getContractAddress(${contractName})`);
   let deployedAddress;
   const contractInterface = getContractInterface(contractName);
 
   const networkId = await web3.eth.net.getId();
-  logger.silly(`networkId: ${networkId}`);
+  logger.info(`networkId: ${networkId}`);
 
   if (contractInterface && contractInterface.networks && contractInterface.networks[networkId]) {
     deployedAddress = contractInterface.networks[networkId].address;
   }
 
-  logger.silly(`deployed address: ${deployedAddress}`);
+  logger.info(`deployed address: ${deployedAddress}`);
 
   return deployedAddress;
 }
 
 async function getDeployedContractTransactionHash(contractName) {
-  logger.debug(`./src/utils-web3 getDeployedContractTransactionHash(${contractName})`);
+  logger.info(`./src/utils-web3 getDeployedContractTransactionHash(${contractName})`);
   let transactionHash;
   const contractInterface = getContractInterface(contractName);
 
   const networkId = await web3.eth.net.getId();
-  logger.silly(`networkId: ${networkId}`);
+  logger.info(`networkId: ${networkId}`);
 
   if (contractInterface && contractInterface.networks && contractInterface.networks[networkId]) {
     transactionHash = contractInterface.networks[networkId].transactionHash;
   }
 
-  logger.silly(`deployed transactionHash: ${transactionHash}`);
+  logger.info(`deployed transactionHash: ${transactionHash}`);
 
   return transactionHash;
 }
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
 async function getContractInstance(contractName, deployedAddress) {
-  logger.debug(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress})`);
+  logger.info(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress})`);
 
   // interface:
   const contractInterface = getContractInterface(contractName);
@@ -139,7 +139,7 @@ async function getContractInstance(contractName, deployedAddress) {
 function getContractBytecode(contractName) {
   const contractInterface = getContractInterface(contractName);
   const { bytecode } = contractInterface;
-  logger.silly(`bytecode: ${JSON.stringify(bytecode, null, 2)}`);
+  logger.info(`bytecode: ${JSON.stringify(bytecode, null, 2)}`);
   return bytecode;
 }
 
@@ -247,7 +247,7 @@ async function subscribeToEvent(
   */
   eventSubscription.on('data', eventData => {
     logger.info(`New ${contractName}, ${eventName}, event detected`);
-    logger.silly(`Event Data: ${JSON.stringify(eventData, null, 2)}`);
+    logger.info(`Event Data: ${JSON.stringify(eventData, null, 2)}`);
 
     const eventObject = {
       eventData,
@@ -257,7 +257,7 @@ async function subscribeToEvent(
     // let's add the eventObject to the list of events:
     events = addNewEvent(eventObject, events);
 
-    logger.silly(`events: ${JSON.stringify(events, null, 2)}, { depth: null }`);
+    logger.info(`events: ${JSON.stringify(events, null, 2)}, { depth: null }`);
 
     responder(eventObject, responseFunction, responseFunctionArgs);
   });
@@ -265,15 +265,15 @@ async function subscribeToEvent(
 }
 
 async function unsubscribe(subscription) {
-  logger.debug('Unsubscribing...');
+  logger.info('Unsubscribing...');
   if (!subscription) {
     logger.warn('There is nothing to unsubscribe from');
     return;
   }
-  logger.silly(JSON.stringify(subscription, null, 2));
+  logger.info(JSON.stringify(subscription, null, 2));
   // unsubscribes the subscription
   await subscription.unsubscribe((error, success) => {
-    logger.silly(`we're in subscription.unsubscribe, ${error}, ${success}`);
+    logger.info(`we're in subscription.unsubscribe, ${error}, ${success}`);
     if (success) {
       logger.info('Successfully unsubscribed!');
     }

@@ -105,7 +105,7 @@ export default class DB {
       // Save the document to the db:
       const dbResponse = await doc.save();
 
-      logger.debug('src/db/mongodb/db save()');
+      logger.info('src/db/mongodb/db save()');
 
       return Promise.resolve(dbResponse);
     } catch (e) {
@@ -127,8 +127,8 @@ export default class DB {
       // insert the documents into the db:
       const dbResponse = await Model.insertMany(docs); // insertMany uses a single write operation, rather than iterating through.
 
-      logger.debug('src/db/mongodb/db insertMany()');
-      logger.silly(`dbResponse ${JSON.stringify(dbResponse, null, 2)}`);
+      logger.info('src/db/mongodb/db insertMany()');
+      logger.info(`dbResponse ${JSON.stringify(dbResponse, null, 2)}`);
 
       return Promise.resolve(dbResponse);
     } catch (e) {
@@ -148,8 +148,8 @@ export default class DB {
       const Model = this.Models[modelName];
       const doc = await Model.findOne(query, projections);
 
-      logger.debug('src/db/mongodb/db getDoc()');
-      logger.silly(`doc ${JSON.stringify(doc, null, 2)}`);
+      logger.info('src/db/mongodb/db getDoc()');
+      logger.info(`doc ${JSON.stringify(doc, null, 2)}`);
 
       return Promise.resolve(doc);
     } catch (e) {
@@ -174,8 +174,8 @@ export default class DB {
         .limit(limit) // output only the 'top' n results
         .exec();
 
-      logger.debug('src/db/mongodb/db getDocs()');
-      logger.silly(`docs ${JSON.stringify(docs, null, 2)}`);
+      logger.info('src/db/mongodb/db getDocs()');
+      logger.info(`docs ${JSON.stringify(docs, null, 2)}`);
 
       return Promise.resolve(docs);
     } catch (e) {
@@ -197,8 +197,8 @@ export default class DB {
       const Model = this.Models[modelName];
       const doc = await Model.updateOne(query, updateData, options);
 
-      logger.debug('src/db/mongodb/db updateDoc()');
-      logger.silly(`doc ${JSON.stringify(doc, null, 2)}`);
+      logger.info('src/db/mongodb/db updateDoc()');
+      logger.info(`doc ${JSON.stringify(doc, null, 2)}`);
 
       return Promise.resolve(doc);
     } catch (e) {
@@ -220,8 +220,8 @@ export default class DB {
       const Model = this.Models[modelName];
       const dbResponse = await Model.collection.bulkWrite(bulkUpdates); // CAUTION: we've used 'Model.collection...' rather than mongoose's built-in 'Model.' '' functions, and so validation might be being skipped!
 
-      logger.debug('src/db/mongodb/db bulkWrite()');
-      logger.silly(`dbResponse ${JSON.stringify(dbResponse, null, 2)}`);
+      logger.info('src/db/mongodb/db bulkWrite()');
+      logger.info(`dbResponse ${JSON.stringify(dbResponse, null, 2)}`);
 
       return Promise.resolve(dbResponse);
     } catch (e) {
@@ -270,8 +270,8 @@ export default class DB {
       const Model = this.Models[modelName];
       const count = await Model.countDocuments(query);
 
-      logger.debug('src/db/mongodb/db countDocuments()');
-      logger.silly(`count ${JSON.stringify(count, null, 2)}`);
+      logger.info('src/db/mongodb/db countDocuments()');
+      logger.info(`count ${JSON.stringify(count, null, 2)}`);
 
       return Promise.resolve(count);
     } catch (e) {

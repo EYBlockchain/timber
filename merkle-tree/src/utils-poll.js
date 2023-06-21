@@ -57,9 +57,9 @@ EXAMPLE ONLY - an example of a pollingFunction
 @returns {boolean} - ALWAYS!!!
 */
 const examplePollingFunction = async () => {
-  logger.debug('in pollingFunction');
+  logger.info('in pollingFunction');
   const response = await exampleQuery();
-  logger.silly(`response: ${response}`);
+  logger.info(`response: ${response}`);
   return response;
 };
 

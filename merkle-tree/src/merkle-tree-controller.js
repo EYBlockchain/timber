@@ -17,7 +17,7 @@ Check the leaves of the tree are all there.
 @return {integer} maxReliableLeafIndex - the left-most reliable leafIndex (by 'reliable' we mean that there are no missing leaves in the db from 0 to this maxReliableLeafIndex). Returns -1 if no leaves exist in the tree yet.
 */
 async function checkLeaves(db) {
-  logger.debug('src/merkle-tree-controller checkLeaves()');
+  logger.info('src/merkle-tree-controller checkLeaves()');
 
   const leafService = new LeafService(db);
 
@@ -86,7 +86,7 @@ Update the latestLeaf metadata with the leaf object of the highest-indexed leaf 
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
 async function updateLatestLeaf(db) {
-  logger.debug('src/merkle-tree-controller updateLatestLeaf()');
+  logger.info('src/merkle-tree-controller updateLatestLeaf()');
 
   const leafService = new LeafService(db);
   const metadataService = new MetadataService(db);
@@ -115,7 +115,7 @@ Calculate the path (each parent up the tree) from a given leaf to the root.
 @param {integer} leafIndex - the index of the leaf for which we are computing the path
 */
 async function getPathByLeafIndex(db, leafIndex) {
-  logger.debug('src/merkle-tree-controller getPathByLeafIndex()');
+  logger.info('src/merkle-tree-controller getPathByLeafIndex()');
   const metadataService = new MetadataService(db);
   // update the metadata db (based on currently stored leaves):
   const { treeHeight } = await metadataService.getTreeHeight();
@@ -124,13 +124,13 @@ async function getPathByLeafIndex(db, leafIndex) {
 
   // construct an array of indices to query from the db:
   const pathIndices = utilsMT.getPathIndices(nodeIndex);
-  logger.silly(`pathIndices to retreive: ${JSON.stringify(pathIndices, null, 2)}`);
+  logger.info(`pathIndices to retreive: ${JSON.stringify(pathIndices, null, 2)}`);
 
   // get the actual nodes from the db:
   const nodeService = new NodeService(db);
   const nodes = await nodeService.getNodesByNodeIndices(pathIndices);
 
-  logger.debug(`${JSON.stringify(nodes, null, 2)}`);
+  logger.info(`${JSON.stringify(nodes, null, 2)}`);
 
   // Check whether some nodeIndices don't yet exist in the db. If they don't, we'll presume their values are zero, and add these to the 'nodes' before returning them.
   // eslint-disable-next-line no-shadow
@@ -154,7 +154,7 @@ Calculate the siblingPath or 'witness path' for a given leaf.
 @param {integer} leafIndex - the index of the leaf for which we are computing the siblingPath
 */
 async function getSiblingPathByLeafIndex(db, leafIndex) {
-  logger.debug('src/merkle-tree-controller getSiblingPathByLeafIndex()');
+  logger.info('src/merkle-tree-controller getSiblingPathByLeafIndex()');
   const metadataService = new MetadataService(db);
   // update the metadata db (based on currently stored leaves):
   const { treeHeight } = await metadataService.getTreeHeight();
@@ -163,7 +163,7 @@ async function getSiblingPathByLeafIndex(db, leafIndex) {
 
   // construct an array of indices to query from the db:
   const siblingPathIndices = utilsMT.getSiblingPathIndices(nodeIndex);
-  logger.silly(`siblingPathIndices to retreive: ${JSON.stringify(siblingPathIndices, null, 2)}`);
+  logger.info(`siblingPathIndices to retreive: ${JSON.stringify(siblingPathIndices, null, 2)}`);
 
   // get the actual nodes from the db:
   const nodeService = new NodeService(db);
@@ -188,11 +188,11 @@ async function getSiblingPathByLeafIndex(db, leafIndex) {
 const nodes = [];
 let hashCount = 0;
 async function updateNodes(node) {
-  logger.silly(`node ${node}`);
+  logger.info(`node ${node}`);
   nodes.push(node);
   hashCount += 1;
-  logger.silly(`hashCount, ${hashCount}`);
-  logger.silly(`numberOfHashes, ${this.numberOfHashes}`);
+  logger.info(`hashCount, ${hashCount}`);
+  logger.info(`numberOfHashes, ${this.numberOfHashes}`);
   if (nodes.length === config.BULK_WRITE_BUFFER_SIZE) {
     await this.nodeService.updateNodes(nodes);
     nodes.length = 0; // empty the array to start again
@@ -208,7 +208,7 @@ Updates the entire tree based on the latest-stored leaves.
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
 async function update(db) {
-  logger.debug('src/merkle-tree-controller update()');
+  logger.info('src/merkle-tree-controller update()');
 
   const leafService = new LeafService(db);
   const nodeService = new NodeService(db);
@@ -245,7 +245,7 @@ async function update(db) {
     logger.info(`Updating the tree from leaf ${fromLeafIndex} to leaf ${toLeafIndex}`);
 
     const numberOfHashes = utilsMT.getNumberOfHashes(toLeafIndex, fromLeafIndex, treeHeight);
-    logger.debug(`${numberOfHashes} hashes are required to update the tree...`);
+    logger.info(`${numberOfHashes} hashes are required to update the tree...`);
 
     let { frontier } = latestRecalculation;
     frontier = frontier === undefined ? [] : frontier;
