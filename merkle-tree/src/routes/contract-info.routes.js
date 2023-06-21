@@ -16,12 +16,19 @@ import DB from '../db/mongodb/db';
 async function addContractInfo(req, res, next) {
   logger.info(`addContractInfo called}`);
   try {
+    const { contractId, contractAddress, txHash, blockNumber } = req.body;
+    console.log(JSON.stringify(req.body))
+    console.log(`Received contractId: ${contractId}, contractAddress: ${contractAddress}, txHash: ${txHash}, blockNumber: ${blockNumber}`);
+
     const db = new DB(adminDbConnection, 'admin', undefined, undefined, undefined, true);
-    await db.save('deployments', {
-      contractId: "0xtesttest",
-      txHash: "testtest",
-      blockNumber: 50
-    })
+
+    // For some reason there's nothing like .insert() or .insertOne() in merkle-tree/src/db/mongodb/db.js and .save() will overwrite what was earlier there.
+    await db.insertMany('deployments', [{
+      contractId: contractId,
+      contractAddress: contractAddress,
+      txHash: txHash,
+      blockNumber: blockNumber
+    }])
     logger.info('Done');
     res.data = 'Done';
     next();

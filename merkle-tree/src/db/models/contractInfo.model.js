@@ -7,6 +7,10 @@ export default new Schema(
       type: String,
       unique: true
     },
+    contractAddress: {
+      type: String,
+      unique: true
+    },
     txHash: {
         type: String,
         unique: true
