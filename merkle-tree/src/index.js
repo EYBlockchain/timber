@@ -18,7 +18,7 @@ import {
   logError,
 } from './middleware';
 
-import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes } from './routes';
+import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes, contractInfoRoutes } from './routes';
 
 Web3.connect();
 const app = express();
@@ -53,6 +53,7 @@ leafRoutes(router);
 nodeRoutes(router);
 metadataRoutes(router);
 merkleTreeRoutes(router);
+contractInfoRoutes(router);
 
 // Response
 app.use(formatResponse);

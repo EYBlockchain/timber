@@ -16,31 +16,36 @@ export default async function(req, res, next) {
   );
 
   try {
+    // Use a different logic for `/addContractInfo`
+    logger.info(req._parsedUrl.pathname);
 
-    
+    if (req._parsedUrl.pathname !== '/addContractInfo') {
+      const contractId = req.body.contractId;
+      logger.info(`Hey, middleware here. This is what I got from the incoming request`);
+      logger.info(`Received contractId: ${contractId}`);
+      logger.info(`Full Body: ${JSON.stringify(req.body)}`);
 
-    const contractId = req.body.contractId;
-    logger.info(`Hey, middleware here. This is what I got from the incoming request`);
-    logger.info(`Received contractId: ${contractId}`);
-    logger.info(`Full Body: ${JSON.stringify(req.body)}`)
-
-    let contractName = req.body.contractName || req.query.contractName;
-    if (contractName === undefined) {
-      const contractNameTest = req.body[0].contractName;
-      if (contractNameTest === undefined) {
-        throw new Error('No contractName key provided in req.body.');
-      } else {
-        contractName = contractNameTest;
+      let contractName = req.body.contractName || req.query.contractName;
+      if (contractName === undefined) {
+        const contractNameTest = req.body[0].contractName;
+        if (contractNameTest === undefined) {
+          throw new Error('No contractName key provided in req.body.');
+        } else {
+          contractName = contractNameTest;
+        }
       }
+      const treeId = req.body.treeId || req.query.treeId;
+      logger.info(`treeId: ${treeId}`);
+      req.user = {};
+      // give all requesters admin privileges:
+      req.user.connection = adminDbConnection;
+
+      req.user.db = new DB(req.user.connection, admin, contractName, treeId, contractId);
+    } else {
+      logger.info(
+        "You've called /addContractInfo. We'll build the db model later."
+      );
     }
-    const treeId = req.body.treeId || req.query.treeId;
-    logger.info(`treeId: ${treeId}`);
-    req.user = {};
-    // give all requesters admin privileges:
-    req.user.connection = adminDbConnection;
-
-    req.user.db = new DB(req.user.connection, admin, contractName, treeId, contractId);
-
     return next();
   } catch (err) {
     logger.error(err);

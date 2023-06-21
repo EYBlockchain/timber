@@ -60,7 +60,6 @@ async function startEventFilter(req, res, next) {
       );
       logger.info(`Received contract instance with address: ${contractInstance.options.address}}`)
       // start an event filter on this contractInstance:
-
       logger.info(`Calling filterController.start for ${db}, ${contractName}, ${contractInstance}, ${treeId}, ${contractId}`)
       const started = await filterController.start(db, contractName, contractInstance, treeId, contractId);
 
@@ -71,8 +70,6 @@ async function startEventFilter(req, res, next) {
         alreadyStarted[({contractName, contractId}, treeId)] = started; // true/false
         alreadyStarting[({contractName, contractId}, treeId)] = false;
       }
-
-
       logger.info(`Added ${JSON.stringify({contractName, contractId})} to alreadyStarted`)
       res.data = { message: 'filter started' };
     }

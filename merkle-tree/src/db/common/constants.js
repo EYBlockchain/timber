@@ -3,4 +3,5 @@
 export const COLLECTIONS = {
   NODE: 'node',
   METADATA: 'metadata',
+  DEPLOYMENTS: 'deployments'
 };
