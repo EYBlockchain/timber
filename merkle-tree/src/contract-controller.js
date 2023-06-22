@@ -105,11 +105,13 @@ async function getContractInstanceFromContractsFolder(db, contractName, contract
   return contractInstance;
 }
 
-async function getContractInstanceFromBuildFolder(db, contractName, contractAddress) {
+async function getContractInstanceFromBuildFolder(db, contractName, contractAddress, contractId) {
   logger.info(
     `\nsrc/contract-controller getContractInstanceFromBuildFolder(db, contractName=${contractName})`,
   );
 
+  // old logic if contractId is not there 
+  if (!contractId){
   const metadataService = new MetadataService(db);
 
   // if no address specified in the API call, then let's try to get one from the contract's json interface in the build folder"
@@ -129,13 +131,23 @@ async function getContractInstanceFromBuildFolder(db, contractName, contractAddr
   await metadataService.insertContractAddress({ contractAddress });
 
   return contractInstance;
+    } else {
+      // we need this
+      const metadataService = new MetadataService(db);
+      logger.info(`Adding contractAddress ${contractAddress} to the merkle-tree's metadata db...`);
+      await metadataService.insertContractAddress({ contractAddress });
+
+      const contractInstance = await utilsWeb3.getContractInstance(contractName, contractAddress, contractId);
+      return contractInstance;
+
+    }
 }
 
 /**
 Gets a web3 contract instance a contract, and checks its consistency with the merkle tree's existing metadata db.
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
-async function instantiateContract(db, contractName, contractAddress) {
+async function instantiateContract(db, contractName, contractAddress, contractId) {
   logger.info(
     `src/contract-controller instantiateContract(db, contractName=${contractName}, contractAddress=${contractAddress})`,
   );
@@ -166,6 +178,7 @@ async function instantiateContract(db, contractName, contractAddress) {
       );
       break;
 
+      // Let's add contractId only here, we don't care about other cases now
     default:
       // 'default' - get the (truffle-compiled) contract interface json from the /app/build folder. Infer the contract's address from this json file. A web3 contract instance is created from these components and assigned to contractInstance:
       logger.info(`Getting contract from contractOrigin '/app/build/'...`);
@@ -173,6 +186,7 @@ async function instantiateContract(db, contractName, contractAddress) {
         db,
         contractName,
         contractAddress,
+        contractId
       );
   }
   return contractInstance;

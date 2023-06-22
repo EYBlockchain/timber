@@ -24,30 +24,38 @@ async function startEventFilter(req, res, next) {
   const { contractName, treeId, contractAddress, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
 
-  logger.info(`Received contractId: ${contractId}`)
-  
   logger.info(`Received data: contractName: ${contractName}, treeId: ${treeId}, contractAddress: ${contractAddress}, contractId: ${contractId}`)
+  logger.info(`Current state of alreadyStarted: ${JSON.stringify(alreadyStarted)}`);
+  logger.info(`Current state of alreadyStarting: ${JSON.stringify(alreadyStarting)}`);
+
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
+
+  // I think due to a weird JS quirk, using objects as object keys does something weird. Stringifying them makes it work.
+
   try {
-    if (alreadyStarted[{contractName, contractId}] && (treeId === undefined || treeId === '')) {
-      res.data = { message: `filter already started for ${{contractName, contractId}}` };
-    } else if (alreadyStarted[({contractName, contractId}, treeId)]) {
-      res.data = { message: `filter already started for ${{contractName, contractId}}.${treeId}` };
-    } else if (alreadyStarting[{contractName, contractId}] && (treeId === undefined || treeId === '')) {
+    if (alreadyStarted[`${contractName} ${contractId}`] && (treeId === undefined || treeId === '')) {
+      logger.info(`filter already started for ${`${contractName} ${contractId}`}`)
+      res.data = { message: `filter already started for ${`${contractName} ${contractId}`}` };
+    } else if (alreadyStarted[(`${contractName} ${contractId}`, treeId)]) {
+      logger.info(`filter already started for ${`${contractName} ${contractId}`}.${treeId}`)
+      res.data = { message: `filter already started for ${`${contractName} ${contractId}`}.${treeId}` };
+    } else if (alreadyStarting[`${contractName} ${contractId}`] && (treeId === undefined || treeId === '')) {
+      logger.info(`filter is already in the process of being started for ${`${contractName} ${contractId}`}`)
       res.data = {
-        message: `filter is already in the process of being started for ${{contractName, contractId}}`,
+        message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
       };
-    } else if (alreadyStarting[({contractName, contractId}, treeId)]) {
+    } else if (alreadyStarting[(`${contractName} ${contractId}`, treeId)]) {
+      logger.info(`filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`)
       res.data = {
-        message: `filter is already in the process of being started for ${{contractName, contractId}}.${treeId}`,
+        message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
       };
     } else {
       if (treeId === undefined || treeId === '') {
-        alreadyStarting[{contractName, contractId}] = true;
-        logger.info(`starting filter for ${JSON.stringify({contractName, contractId})}`); // made it readable in the console
+        alreadyStarting[`${contractName} ${contractId}`] = true;
+        logger.info(`starting filter for ${JSON.stringify(`${contractName} ${contractId}`)}`); // made it readable in the console
       } else {
-        alreadyStarting[({contractName, contractId}, treeId)] = true;
-        logger.info(`starting filter for ${{contractName, contractId}}.${treeId}`);
+        alreadyStarting[(`${contractName} ${contractId}`, treeId)] = true;
+        logger.info(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
       }
 
 
@@ -57,6 +65,7 @@ async function startEventFilter(req, res, next) {
         db,
         contractName,
         contractAddress,
+        contractId
       );
       logger.info(`Received contract instance with address: ${contractInstance.options.address}}`)
       // start an event filter on this contractInstance:
@@ -64,13 +73,13 @@ async function startEventFilter(req, res, next) {
       const started = await filterController.start(db, contractName, contractInstance, treeId, contractId);
 
       if (treeId === undefined || treeId === '') {
-        alreadyStarted[{contractName, contractId}] = started; // true/false
-        alreadyStarting[{contractName, contractId}] = false;
+        alreadyStarted[`${contractName} ${contractId}`] = started; // true/false
+        alreadyStarting[`${contractName} ${contractId}`] = false;
       } else {
-        alreadyStarted[({contractName, contractId}, treeId)] = started; // true/false
-        alreadyStarting[({contractName, contractId}, treeId)] = false;
+        alreadyStarted[(`${contractName} ${contractId}`, treeId)] = started; // true/false
+        alreadyStarting[(`${contractName} ${contractId}`, treeId)] = false;
       }
-      logger.info(`Added ${JSON.stringify({contractName, contractId})} to alreadyStarted`)
+      logger.info(`Added ${JSON.stringify(`${contractName} ${contractId}`)} to alreadyStarted`)
       res.data = { message: 'filter started' };
     }
     next();

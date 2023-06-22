@@ -114,9 +114,11 @@ async function getDeployedContractTransactionHash(contractName) {
 }
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
-async function getContractInstance(contractName, deployedAddress) {
-  logger.info(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress})`);
+async function getContractInstance(contractName, deployedAddress, contractId) {
+  logger.info(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`);
 
+  // old logic if there's not contractId
+  if (!contractId){
   // interface:
   const contractInterface = getContractInterface(contractName);
 
@@ -133,6 +135,14 @@ async function getContractInstance(contractName, deployedAddress) {
     contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   }
   return contractInstance;
+} else {
+
+  // I think it's fine temporarily (before we put abis in db), it doesn't care about the address, only about the actual abi
+  const contractInterface = getContractInterface(contractName);
+  const contractInstance = new web3.eth.Contract(contractInterface.abi, contractId);
+  return contractInstance;
+
+}
 }
 
 // returns a web3 contract instance (rather than a truffle-contract instance)
