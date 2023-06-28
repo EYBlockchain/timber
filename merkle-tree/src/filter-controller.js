@@ -218,7 +218,7 @@ async function getFromBlock(db, contractName, contractId) {
   let latestLeaf;
   let blockNumber;
 
-  logger.info(`Fetched metadata (should be empty for the first call but not null): ${metadata}`)
+  logger.debug(`Fetched metadata (should be empty for the first call but not null): ${metadata}`);
   switch (metadata) {
     case null: // no document exists in the metadata db
       throw new Error('Unexpected null response from db: no document found in the metadata db.');
@@ -236,65 +236,73 @@ async function getFromBlock(db, contractName, contractId) {
   // Instead of figuring out the hash and calculating the block number, we'll just ask Mongo to give us the block number by looking up the contract
 
   // only from this line, the logic changes
-  if (!contractId){
-  if (blockNumber === undefined) {
-    let receipt;
-    let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
-    logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
+  if (!contractId) {
+    if (blockNumber === undefined) {
+      let receipt;
+      let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
+      logger.debug(` ${contractName} deployed transactionHash:  ${transactionHash}`);
 
-    if (transactionHash) {
-      receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
-      logger.info(`receipt: ${receipt}`);
+      if (transactionHash) {
+        receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
+        logger.debug(`receipt: ${receipt}`);
+      }
+
+      blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
+      logger.warn(
+        `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
+      );
     }
-    
-    blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
-    logger.warn(
-      `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
+
+    const currentBlockNumber = await utilsWeb3.getBlockNumber();
+    logger.debug(`Current blockNumber: ${currentBlockNumber}`);
+
+    logger.debug(
+      `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
     );
+
+    return blockNumber;
+  } else {
+    // Logic with contract ID
+    // We need to build a new db connection because the one points to the nodes/metadata collections and we need access to the deployments collection.
+    // We have the contractID, let's look it up
+
+    // this points us to the
+    const deploymentsDBCollection = new DB(
+      adminDbConnection,
+      'admin',
+      undefined,
+      undefined,
+      undefined,
+      true,
+    );
+
+    if (blockNumber === undefined) {
+      const result = await deploymentsDBCollection.getDoc(
+        'deployments',
+        {
+          contractId: contractId,
+        },
+        ['blockNumber', '-_id'],
+      );
+
+      logger.debug(`Fetched block ID for ${contractId} from Mongo`);
+      logger.debug(result);
+      logger.debug(result.blockNumber);
+
+      blockNumber = result ? result.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
+      logger.warn(
+        `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
+      );
+    }
+
+    const currentBlockNumber = await utilsWeb3.getBlockNumber();
+    logger.debug(`Current blockNumber: ${currentBlockNumber}`);
+
+    logger.debug(
+      `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
+    );
+    return blockNumber;
   }
-
-  const currentBlockNumber = await utilsWeb3.getBlockNumber();
-  logger.info(`Current blockNumber: ${currentBlockNumber}`);
-
-  logger.info(`The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`);
-
-  return blockNumber;
-} else {
-  // Logic with contract ID
-  // We need to build a new db connection because the one points to the nodes/metadata collections and we need access to the deployments collection.
-  // We have the contractID, let's look it up
-
-  // this points us to the 
-  const deploymentsDBCollection = new DB(adminDbConnection, 'admin', undefined, undefined, undefined, true);
-
-  if (blockNumber === undefined) {
-
-    const result = await deploymentsDBCollection.getDoc('deployments', {
-      contractId: contractId
-    },
-    ['blockNumber', '-_id']
-    );
-
-   
-
-    logger.info(`Fetched block ID for ${contractId} from Mongo`)
-    logger.info(result)
-    logger.info(result.blockNumber)
-
-    blockNumber = result ? result.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
-    logger.warn(
-      `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
-    );
-  }
-
-  const currentBlockNumber = await utilsWeb3.getBlockNumber();
-  logger.info(`Current blockNumber: ${currentBlockNumber}`);
-
-  logger.info(`The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`);
-  return blockNumber;
-
-
-}
 }
 
 /**
@@ -305,7 +313,6 @@ async function start(db, contractName, contractInstance, treeId, contractId) {
     logger.info('Starting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
     const fromBlock = await getFromBlock(db, contractName, contractId); // the blockNumber we get is the next WHOLE block to start filtering.
-    logger.info(`fromBlock result: ${fromBlock}`)
     // Now we filter indefinitely:
     await filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId);
     return true;

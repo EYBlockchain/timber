@@ -11,7 +11,7 @@ import logger from '../../logger';
 export default class LeafService {
   constructor(_db) {
     this.db = _db;
-    logger.info(`LeafService: I've initiated ${this.db}`)
+    logger.debug(`LeafService: I've initiated ${this.db}`);
   }
 
   // INSERTS
@@ -22,10 +22,10 @@ export default class LeafService {
   @param {object} leaf
   */
   async insertLeaf(treeHeight, leaf) {
-    logger.info(`data before mapping: ${JSON.stringify(leaf, null, 2)}`);
-    logger.info('src/db/service/leaf.service insertLeaf()');
+    logger.debug(`data before mapping: ${JSON.stringify(leaf, null, 2)}`);
+    logger.debug('src/db/service/leaf.service insertLeaf()');
     const mappedData = leafMapper(treeHeight, leaf);
-    logger.info(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
+    logger.debug(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
     // insert the leaf into the 'nodes' collection:
     try {
@@ -48,8 +48,8 @@ export default class LeafService {
   @param {array} leaves - an array of leaf objects ('documents')
   */
   async insertLeaves(treeHeight, leaves) {
-    logger.info('src/db/service/leaf.service insertLeaves()');
-    logger.info(`data before mapping: ${JSON.stringify(leaves, null, 2)}`);
+    logger.debug('src/db/service/leaf.service insertLeaves()');
+    logger.debug(`data before mapping: ${JSON.stringify(leaves, null, 2)}`);
     const mappedData = leaves.map(leaf => leafMapper(treeHeight, leaf));
     logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
@@ -80,7 +80,7 @@ export default class LeafService {
   @returns {object} the leaf object
   */
   async getLeafByLeafIndex(leafIndex) {
-    logger.info('src/db/service/leaf.service getLeafByLeafIndex()');
+    logger.debug('src/db/service/leaf.service getLeafByLeafIndex()');
 
     const doc = await this.db.getDoc(COLLECTIONS.NODE, {
       leafIndex,
@@ -95,7 +95,7 @@ export default class LeafService {
   @returns {array} an array of leaf objects
   */
   async getLeavesByLeafIndices(leafIndices) {
-    logger.info('src/db/service/leaf.service getLeavesByLeafIndices()');
+    logger.debug('src/db/service/leaf.service getLeavesByLeafIndices()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -114,7 +114,7 @@ export default class LeafService {
   @returns {array} an array of leaf objects
   */
   async getLeavesByLeafIndexRange(minIndex, maxIndex) {
-    logger.info('src/db/service/leaf.service getLeavesByLeafIndexRange()');
+    logger.debug('src/db/service/leaf.service getLeavesByLeafIndexRange()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -132,13 +132,13 @@ export default class LeafService {
   @returns {object} the leaf object(s)
   */
   async getLeafByValue(value) {
-    logger.info('src/db/service/leaf.service getLeafByValue()');
+    logger.debug('src/db/service/leaf.service getLeafByValue()');
 
     const docs = await this.db.getDoc(COLLECTIONS.NODE, {
       value,
     });
-    logger.info(`getLeafByValue from leaf.service.js, I've accessed: ${COLLECTIONS.NODE}`)
-    logger.info(`getLeafByValue from leaf.service.js, I've fetched: ${docs}`)
+    logger.debug(`getLeafByValue from leaf.service.js, I've accessed: ${COLLECTIONS.NODE}`);
+    logger.debug(`getLeafByValue from leaf.service.js, I've fetched: ${docs}`);
     return docs;
   }
 
@@ -148,7 +148,7 @@ export default class LeafService {
   @returns {array} an array of leaf objects
   */
   async getLeavesByValues(values) {
-    logger.info('src/db/service/leaf.service getLeavesByValues()');
+    logger.debug('src/db/service/leaf.service getLeavesByValues()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -165,7 +165,7 @@ export default class LeafService {
   @returns {array} an array of leaf objects
   */
   async getLeaves() {
-    logger.info('src/db/service/leaf.service getLeaves()');
+    logger.debug('src/db/service/leaf.service getLeaves()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -183,7 +183,7 @@ export default class LeafService {
   @returns {array} an array of leaf values, in ascending order (by leafIndex)
   */
   async getLeafValues() {
-    logger.info('src/db/service/leaf.service getLeafValues()');
+    logger.debug('src/db/service/leaf.service getLeafValues()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -199,7 +199,7 @@ export default class LeafService {
   Get the leaf document for the latest leaf (i.e. the one with the max index)
   */
   async getLatestLeaf() {
-    logger.info('src/db/service/leaf.service getLatestLeaf()');
+    logger.debug('src/db/service/leaf.service getLatestLeaf()');
 
     // insert the leaf into the 'nodes' collection:
     const doc = await this.db.getDocs(
@@ -219,7 +219,7 @@ export default class LeafService {
   Count the number of leaves stored in the merkle tree
   */
   async countLeaves() {
-    logger.info('src/db/service/leaf.service countLeaves()');
+    logger.debug('src/db/service/leaf.service countLeaves()');
 
     const leafCount = await this.db.countDocuments(COLLECTIONS.NODE, {
       leafIndex: { $exists: true },
@@ -232,7 +232,7 @@ export default class LeafService {
   Get the maximum leafIndex stored in the db
   */
   async maxLeafIndex() {
-    logger.info('src/db/service/leaf.service maxLeafIndex()');
+    logger.debug('src/db/service/leaf.service maxLeafIndex()');
 
     const doc = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -248,7 +248,7 @@ export default class LeafService {
   }
 
   async findMissingLeaves(startLeafIndex, endLeafIndex) {
-    logger.info('src/db/service/leaf.service findMissingLeaves()');
+    logger.debug('src/db/service/leaf.service findMissingLeaves()');
 
     const missingLeaves = await this.db.aggregate(
       COLLECTIONS.NODE,

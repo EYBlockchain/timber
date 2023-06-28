@@ -18,7 +18,13 @@ import {
   logError,
 } from './middleware';
 
-import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes, contractInfoRoutes } from './routes';
+import {
+  leafRoutes,
+  nodeRoutes,
+  metadataRoutes,
+  merkleTreeRoutes,
+  contractInfoRoutes,
+} from './routes';
 
 Web3.connect();
 const app = express();
@@ -62,7 +68,7 @@ app.use(errorHandler);
 app.use(logError);
 
 const server = app.listen(80, '0.0.0.0', () => {
-  logger.info("Pawel's Debug Version")
+  logger.info('Timber - Multiple Contracts POC version');
   logger.info('merkle-tree RESTful API server started on ::: 80');
   if (process.env.AUTOSTART) autostart();
 });

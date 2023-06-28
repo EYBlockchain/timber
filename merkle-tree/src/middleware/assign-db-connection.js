@@ -17,13 +17,12 @@ export default async function(req, res, next) {
 
   try {
     // Use a different logic for `/addContractInfo`
-    logger.info(req._parsedUrl.pathname);
+    logger.debug(req._parsedUrl.pathname);
 
     if (req._parsedUrl.pathname !== '/addContractInfo') {
       const contractId = req.body.contractId;
-      logger.info(`Hey, middleware here. This is what I got from the incoming request`);
-      logger.info(`Received contractId: ${contractId}`);
-      logger.info(`Full Body: ${JSON.stringify(req.body)}`);
+      logger.debug(`Received contractId: ${contractId}`);
+      logger.debug(`Full Body: ${JSON.stringify(req.body)}`);
 
       let contractName = req.body.contractName || req.query.contractName;
       if (contractName === undefined) {
@@ -42,9 +41,7 @@ export default async function(req, res, next) {
 
       req.user.db = new DB(req.user.connection, admin, contractName, treeId, contractId);
     } else {
-      logger.info(
-        "You've called /addContractInfo. We'll build the db model later."
-      );
+      logger.debug("Called /addContractInfo. We'll build the db model later.");
     }
     return next();
   } catch (err) {

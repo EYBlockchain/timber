@@ -27,7 +27,7 @@ export default class DB {
   A model is a class with which we construct documents
   */
   createModelsForUser(contractName, treeId, contractId, isAddContractInfo) {
-    logger.info(
+    logger.debug(
       `I'm creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, isAddContractInfo: ${isAddContractInfo}`,
     );
 
@@ -94,11 +94,8 @@ export default class DB {
     } else {
       // Build a schema to access the deployments collection
       this.Models = {
-        deployments: this.connection.model(
-          "deployments",
-          contractInfoSchema
-        )
-      }
+        deployments: this.connection.model('deployments', contractInfoSchema),
+      };
     }
   }
 
