@@ -24,6 +24,7 @@ async function startEventFilter(req, res, next) {
   const { contractName, treeId, contractAddress, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
 
+
   logger.info(`Received data: contractName: ${contractName}, treeId: ${treeId}, contractAddress: ${contractAddress}, contractId: ${contractId}`)
   logger.info(`Current state of alreadyStarted: ${JSON.stringify(alreadyStarted)}`);
   logger.info(`Current state of alreadyStarting: ${JSON.stringify(alreadyStarting)}`);
@@ -52,7 +53,7 @@ async function startEventFilter(req, res, next) {
     } else {
       if (treeId === undefined || treeId === '') {
         alreadyStarting[`${contractName} ${contractId}`] = true;
-        logger.info(`starting filter for ${JSON.stringify(`${contractName} ${contractId}`)}`); // made it readable in the console
+        logger.info(`starting filter for ${`${contractName} ${contractId}`}`);
       } else {
         alreadyStarting[(`${contractName} ${contractId}`, treeId)] = true;
         logger.info(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
@@ -67,9 +68,9 @@ async function startEventFilter(req, res, next) {
         contractAddress,
         contractId
       );
-      logger.info(`Received contract instance with address: ${contractInstance.options.address}}`)
+      logger.info(`Received contract instance: ${contractInstance}`)
       // start an event filter on this contractInstance:
-      logger.info(`Calling filterController.start for ${db}, ${contractName}, ${contractInstance}, ${treeId}, ${contractId}`)
+
       const started = await filterController.start(db, contractName, contractInstance, treeId, contractId);
 
       if (treeId === undefined || treeId === '') {
@@ -79,7 +80,9 @@ async function startEventFilter(req, res, next) {
         alreadyStarted[(`${contractName} ${contractId}`, treeId)] = started; // true/false
         alreadyStarting[(`${contractName} ${contractId}`, treeId)] = false;
       }
-      logger.info(`Added ${JSON.stringify(`${contractName} ${contractId}`)} to alreadyStarted`)
+
+
+
       res.data = { message: 'filter started' };
     }
     next();
@@ -99,8 +102,8 @@ async function startEventFilter(req, res, next) {
  * @param {*} res
  */
 async function getSiblingPathByLeafIndex(req, res, next) {
-  logger.info('src/routes/merkle-tree.routes getSiblingPathByLeafIndex()');
-  logger.info(`req.params: ${JSON.stringify(req.params, null, 2)}`);
+  logger.debug('src/routes/merkle-tree.routes getSiblingPathByLeafIndex()');
+  logger.silly(`req.params: ${JSON.stringify(req.params, null, 2)}`);
 
   const { db } = req.user;
   let { leafIndex } = req.params;
@@ -130,8 +133,8 @@ async function getSiblingPathByLeafIndex(req, res, next) {
  * @param {*} res
  */
 async function getPathByLeafIndex(req, res, next) {
-  logger.info('src/routes/merkle-tree.routes getPathByLeafIndex()');
-  logger.info(`req.params: ${JSON.stringify(req.params, null, 2)}`);
+  logger.debug('src/routes/merkle-tree.routes getPathByLeafIndex()');
+  logger.silly(`req.params: ${JSON.stringify(req.params, null, 2)}`);
 
   const { db } = req.user;
   let { leafIndex } = req.params;
@@ -158,7 +161,7 @@ async function getPathByLeafIndex(req, res, next) {
  * @param {*} res - returns the tree's metadata
  */
 async function update(req, res, next) {
-  logger.info('src/routes/merkle-tree.routes update()');
+  logger.debug('src/routes/merkle-tree.routes update()');
 
   const { db } = req.user;
 

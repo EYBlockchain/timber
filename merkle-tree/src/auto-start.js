@@ -37,7 +37,7 @@ const autoStart = async () => {
     }
     // Now that we are fairly sure calling start will work, we can go ahead.
     try {
-      logger.info(
+      logger.debug(
         `Calling /start for Timber, with contractName '${contractName}' and url localhost`,
       );
       axios.post('http://localhost/start', data, {

@@ -180,7 +180,7 @@ async function updateNodes(req, res, next) {
  * @param {*} res
  */
 async function countNodes(req, res, next) {
-  logger.info('src/routes/leaf.routes countLeaves()');
+  logger.debug('src/routes/leaf.routes countLeaves()');
 
   try {
     const nodeService = new NodeService(req.user.db);

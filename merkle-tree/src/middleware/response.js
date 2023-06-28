@@ -14,7 +14,7 @@ export function formatResponse(req, res, next) {
 }
 
 export function formatError(err, req, res, next) {
-  logger.info('src/middleware/response formatError()');
+  logger.debug('src/middleware/response formatError()');
   logger.error(`error: ${JSON.stringify(err, null, 2)}`);
 
   next({
@@ -26,7 +26,7 @@ export function formatError(err, req, res, next) {
 }
 
 export function errorHandler(err, req, res, next) {
-  logger.info('src/middleware/response errorHandler()');
+  logger.debug('src/middleware/response errorHandler()');
   logger.error(`error: ${JSON.stringify(err, null, 2)}`);
 
   res.status(err.status || 500).send({
@@ -37,7 +37,7 @@ export function errorHandler(err, req, res, next) {
 }
 
 export function logError(err, req, res, next) {
-  logger.info('src/middleware/response logError()');
+  logger.debug('src/middleware/response logError()');
   logger.error(`error: ${JSON.stringify(err, null, 2)}`);
   next(err);
 }

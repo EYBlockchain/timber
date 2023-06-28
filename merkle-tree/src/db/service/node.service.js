@@ -20,10 +20,10 @@ export default class NodeService {
   @param {object} node
   */
   async insertNode(node) {
-    logger.info('src/db/service/node.service insertNode()');
-    logger.info(`data before mapping: ${JSON.stringify(node, null, 2)}`);
+    logger.debug('src/db/service/node.service insertNode()');
+    logger.silly(`data before mapping: ${JSON.stringify(node, null, 2)}`);
     const mappedData = nodeMapper(node);
-    logger.info(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
+    logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
     // insert the node into the 'nodes' collection:
     const dbResponse = await this.db.save(COLLECTIONS.NODE, mappedData);
@@ -39,10 +39,10 @@ export default class NodeService {
   @param {object} data
   */
   async updateNodeByNodeIndex(nodeIndex, data) {
-    logger.info('src/db/service/node.service updateNodeByNodeIndex()');
-    logger.info(`data before mapping: ${JSON.stringfy(data, null, 2)}`);
+    logger.debug('src/db/service/node.service updateNodeByNodeIndex()');
+    logger.silly(`data before mapping: ${JSON.stringfy(data, null, 2)}`);
     const mappedData = nodeMapper(data);
-    logger.info(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
+    logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
     const doc = await this.db.updateDoc(
       COLLECTIONS.NODE,
@@ -60,10 +60,10 @@ export default class NodeService {
   @param {array} nodes an array of node objects
   */
   async updateNodes(nodes) {
-    logger.info('src/db/service/node.service updateNodes()');
-    logger.info(`data before mapping: ${JSON.stringify(nodes, null, 2)}`);
+    logger.debug('src/db/service/node.service updateNodes()');
+    logger.silly(`data before mapping: ${JSON.stringify(nodes, null, 2)}`);
     const mappedData = nodes.map(nodeMapper);
-    logger.info(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
+    logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
     const bulkUpdates = mappedData.map(item => ({
       updateOne: {
@@ -90,7 +90,7 @@ export default class NodeService {
   @returns {object} the node object
   */
   async getNodeByNodeIndex(nodeIndex) {
-    logger.info('src/db/service/node.service getNodeByNodeIndex()');
+    logger.debug('src/db/service/node.service getNodeByNodeIndex()');
 
     const doc = await this.db.getDoc(
       COLLECTIONS.NODE,
@@ -108,7 +108,7 @@ export default class NodeService {
   @returns {array} an array of node objects
   */
   async getNodesByNodeIndices(nodeIndices) {
-    logger.info('src/db/service/node.service getNodesByNodeIndices()');
+    logger.debug('src/db/service/node.service getNodesByNodeIndices()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -127,7 +127,7 @@ export default class NodeService {
   @returns {array} an array of node objects
   */
   async getNodesByNodeIndexRange(minIndex, maxIndex) {
-    logger.info('src/db/service/node.service getNodesByNodeIndexRange()');
+    logger.debug('src/db/service/node.service getNodesByNodeIndexRange()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -145,7 +145,7 @@ export default class NodeService {
   @returns {object} the node object(s)
   */
   async getNodeByValue(value) {
-    logger.info('src/db/service/node.service getNodeByValue()');
+    logger.debug('src/db/service/node.service getNodeByValue()');
 
     const docs = await this.db.getDoc(COLLECTIONS.NODE, {
       value,
@@ -160,7 +160,7 @@ export default class NodeService {
   @returns {array} an array of node objects
   */
   async getNodesByValues(values) {
-    logger.info('src/db/service/node.service getNodesByValues()');
+    logger.debug('src/db/service/node.service getNodesByValues()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -177,7 +177,7 @@ export default class NodeService {
   @returns {array} an array of node objects
   */
   async getNodes() {
-    logger.info('src/db/service/node.service getNodes()');
+    logger.debug('src/db/service/node.service getNodes()');
 
     const docs = await this.db.getDocs(
       COLLECTIONS.NODE,
@@ -194,7 +194,7 @@ export default class NodeService {
   @returns {object} the root's node object
   */
   async getRoot() {
-    logger.info('src/db/service/node.service getRoot()');
+    logger.debug('src/db/service/node.service getRoot()');
 
     const doc = await this.db.getDoc(COLLECTIONS.NODE, {
       nodeIndex: { $eq: 0 },
@@ -209,7 +209,7 @@ export default class NodeService {
   Count the number of nodes stored in the merkle tree
   */
   async countNodes() {
-    logger.info('src/db/service/node.service countNodes()');
+    logger.debug('src/db/service/node.service countNodes()');
 
     const nodeCount = await this.db.countDocuments(COLLECTIONS.NODE, {
       nodeIndex: { $exists: true },

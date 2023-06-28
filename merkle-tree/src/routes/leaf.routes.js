@@ -23,8 +23,8 @@ import logger from '../logger';
  * @param {*} res
  */
 async function insertLeaf(req, res, next) {
-  logger.info('src/routes/leaf.routes insertLeaf()');
-  logger.info(`req.body: ${req.body}`);
+  logger.debug('src/routes/leaf.routes insertLeaf()');
+  logger.silly(`req.body: ${req.body}`);
   try {
     const { leaf } = req.body;
     const metadataService = new MetadataService(req.user.db);
@@ -48,8 +48,8 @@ async function insertLeaf(req, res, next) {
  * @param {*} res
  */
 async function getLeafByLeafIndex(req, res, next) {
-  logger.info('src/routes/leaf.routes getLeafByLeafIndex()');
-  logger.info(
+  logger.debug('src/routes/leaf.routes getLeafByLeafIndex()');
+  logger.silly(
     `req.params: ${JSON.stringify(req.params, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
@@ -76,7 +76,7 @@ async function getLeafByLeafIndex(req, res, next) {
  * @param {*} res
  */
 async function getLeafByValue(req, res, next) {
-  logger.info('src/routes/leaf.routes getLeafByValue()');
+  logger.debug('src/routes/leaf.routes getLeafByValue()');
   logger.info(
     `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
@@ -105,8 +105,8 @@ async function getLeafByValue(req, res, next) {
  * @param {*} res
  */
 async function getLeaves(req, res, next) {
-  logger.info('src/routes/leaf.routes getLeaves()');
-  logger.info(
+  logger.debug('src/routes/leaf.routes getLeaves()');
+  logger.silly(
     `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
@@ -122,10 +122,10 @@ async function getLeaves(req, res, next) {
     const maxIndex = req.body.maxIndex || req.query.maxIndex;
 
     // not necessarily, not all of these destructurings will be possible
-    logger.info(`leafIndices: ${JSON.stringify(leafIndices, null, 2)}`);
-    logger.info(`values: ${JSON.stringify(values, null, 2)}`);
-    logger.info(`minIndex: ${minIndex}`);
-    logger.info(`maxIndex: ${maxIndex}`);
+    logger.silly(`leafIndices: ${JSON.stringify(leafIndices, null, 2)}`);
+    logger.silly(`values: ${JSON.stringify(values, null, 2)}`);
+    logger.silly(`minIndex: ${minIndex}`);
+    logger.silly(`maxIndex: ${maxIndex}`);
 
     if (leafIndices) {
       res.data = await leafService.getLeavesByLeafIndices(leafIndices);
@@ -160,8 +160,8 @@ async function getLeaves(req, res, next) {
  * @param {*} res
  */
 async function insertLeaves(req, res, next) {
-  logger.info('src/routes/leaf.routes insertLeaves()');
-  logger.info(`req.body: ${JSON.stringify(req.body, null, 2)}`);
+  logger.debug('src/routes/leaf.routes insertLeaves()');
+  logger.silly(`req.body: ${JSON.stringify(req.body, null, 2)}`);
   try {
     const metadataService = new MetadataService(req.user.db);
     const leafService = new LeafService(req.user.db);
@@ -202,7 +202,7 @@ async function checkLeaves(req, res, next) {
  * @param {*} res
  */
 async function countLeaves(req, res, next) {
-  logger.info('src/routes/leaf.routes countLeaves()');
+  logger.debug('src/routes/leaf.routes countLeaves()');
 
   try {
     const leafService = new LeafService(req.user.db);

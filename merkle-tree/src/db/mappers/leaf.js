@@ -7,7 +7,7 @@ export default function(treeHeight, { value, nodeIndex, leafIndex, blockNumber }
   const checkNodeIndex = utilsMT.leafIndexToNodeIndex(leafIndex, treeHeight);
   if (!nodeIndex) {
     nodeIndex = checkNodeIndex; // eslint-disable-line no-param-reassign
-    logger.info(`Inserting a nodeIndex of ${nodeIndex} for leafIndex ${leafIndex}`);
+    logger.debug(`Inserting a nodeIndex of ${nodeIndex} for leafIndex ${leafIndex}`);
   } else if (nodeIndex !== checkNodeIndex) {
     throw new Error(
       `Intercepted an incorrect nodeIndex of ${nodeIndex} for leafIndex ${leafIndex}. The nodeIndex should have been ${checkNodeIndex}`,
