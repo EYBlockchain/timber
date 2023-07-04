@@ -12,74 +12,50 @@ Class created from within src/middleware/assign-db-connection
 @param {object} connection - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy)
 @param {string} username - username
 @param {string} contractName - contractName of the contract which relates to this db
-@param {string} isAddContractInfo - true if it's called by the /addContractInfo endpoint where we don't need to specify which collection we'll operate on
 */
 export default class DB {
-  constructor(connection, username, contractName, treeId, contractId, isAddContractInfo) {
+  constructor(connection, username, contractName, treeId, contractId) {
     this.connection = connection;
     this.username = username;
     this.contractId = contractId;
     if (!username) return;
-    this.createModelsForUser(contractName, treeId, contractId, isAddContractInfo);
+    this.createModelsForUser(contractName, treeId, contractId);
   }
 
   /**
   A model is a class with which we construct documents
   */
-  createModelsForUser(contractName, treeId, contractId, isAddContractInfo) {
-    logger.debug(
-      `I'm creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, isAddContractInfo: ${isAddContractInfo}`,
+  createModelsForUser(contractName, treeId, contractId) {
+    logger.info(
+      `I'm creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
     );
 
-    if (!isAddContractInfo) {
-      if (treeId === undefined || treeId === '') {
-        if (contractId === undefined || contractId === '') {
-          this.Models = {
-            node: this.connection.model(
-              `${this.username}_${contractName}_${COLLECTIONS.NODE}`,
-              nodeSchema,
-            ),
-            metadata: this.connection.model(
-              `${this.username}_${contractName}_${COLLECTIONS.METADATA}`,
-              metadataSchema,
-            ),
-          };
-        } else {
-          this.Models = {
-            node: this.connection.model(
-              `${this.username}_${contractName}_${contractId}_${COLLECTIONS.NODE}`,
-              nodeSchema,
-            ),
-            metadata: this.connection.model(
-              `${this.username}_${contractName}_${contractId}_${COLLECTIONS.METADATA}`,
-              metadataSchema,
-            ),
-          };
-        }
+    if (treeId === undefined || treeId === '') {
+      if (contractId === undefined || contractId === '') {
+        this.Models = {
+          node: this.connection.model(
+            `${this.username}_${contractName}_${COLLECTIONS.NODE}`,
+            nodeSchema,
+          ),
+          metadata: this.connection.model(
+            `${this.username}_${contractName}_${COLLECTIONS.METADATA}`,
+            metadataSchema,
+          ),
+        };
       } else {
-        if (contractId === undefined || contractId === '') {
-          this.Models = {
-            node: this.connection.model(
-              `${this.username}_${contractName}_${treeId}_${COLLECTIONS.NODE}`,
-              nodeSchema,
-            ),
-            metadata: this.connection.model(
-              `${this.username}_${contractName}_${treeId}_${COLLECTIONS.METADATA}`,
-              metadataSchema,
-            ),
-          };
-        } else {
-          this.Models = {
-            node: this.connection.model(
-              `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.NODE}`,
-              nodeSchema,
-            ),
-            metadata: this.connection.model(
-              `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.METADATA}`,
-              metadataSchema,
-            ),
-          };
-        }
+        this.Models = {
+          node: this.connection.model(
+            `${this.username}_${contractName}_${contractId}_${COLLECTIONS.NODE}`,
+            nodeSchema,
+          ),
+          metadata: this.connection.model(
+            `${this.username}_${contractName}_${contractId}_${COLLECTIONS.METADATA}`,
+            metadataSchema,
+          ),
+        };
+      }
+    } else {
+      if (contractId === undefined || contractId === '') {
         this.Models = {
           node: this.connection.model(
             `${this.username}_${contractName}_${treeId}_${COLLECTIONS.NODE}`,
@@ -90,11 +66,27 @@ export default class DB {
             metadataSchema,
           ),
         };
+      } else {
+        this.Models = {
+          node: this.connection.model(
+            `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.NODE}`,
+            nodeSchema,
+          ),
+          metadata: this.connection.model(
+            `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.METADATA}`,
+            metadataSchema,
+          ),
+        };
       }
-    } else {
-      // Build a schema to access the deployments collection
       this.Models = {
-        deployments: this.connection.model('deployments', contractInfoSchema),
+        node: this.connection.model(
+          `${this.username}_${contractName}_${treeId}_${COLLECTIONS.NODE}`,
+          nodeSchema,
+        ),
+        metadata: this.connection.model(
+          `${this.username}_${contractName}_${treeId}_${COLLECTIONS.METADATA}`,
+          metadataSchema,
+        ),
       };
     }
   }

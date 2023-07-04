@@ -3,7 +3,7 @@
 @desc file that starts up the filter
 @author iAmMichaelConnor
 */
-
+const axios = require('axios');
 import config from 'config';
 import utilsWeb3 from './utils-web3';
 
@@ -267,29 +267,18 @@ async function getFromBlock(db, contractName, contractId) {
     // We have the contractID, let's look it up
 
     // this points us to the
-    const deploymentsDBCollection = new DB(
-      adminDbConnection,
-      'admin',
-      undefined,
-      undefined,
-      undefined,
-      true,
-    );
+    
 
+    const contractInfo = await axios.get("http://contractapi:1234/contracts/" + contractId); // Replace with a real API
+    
     if (blockNumber === undefined) {
-      const result = await deploymentsDBCollection.getDoc(
-        'deployments',
-        {
-          contractId: contractId,
-        },
-        ['blockNumber', '-_id'],
-      );
+      const result = contractInfo.data.deploymentBlock
 
-      logger.debug(`Fetched block ID for ${contractId} from Mongo`);
-      logger.debug(result);
-      logger.debug(result.blockNumber);
+      logger.info(`Fetched block ID for ${contractId} from API`);
+      logger.info(result);
 
-      blockNumber = result ? result.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
+
+      blockNumber = result ? result : config.FILTER_GENESIS_BLOCK_NUMBER; // if result is undefined, use the genesis from config
       logger.warn(
         `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
       );

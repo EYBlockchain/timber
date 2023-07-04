@@ -11,7 +11,7 @@ import logger from '../../logger';
 export default class LeafService {
   constructor(_db) {
     this.db = _db;
-    logger.debug(`LeafService: I've initiated ${this.db}`);
+    logger.debug(`LeafService: I've initiated ${this.db}`)
   }
 
   // INSERTS

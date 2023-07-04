@@ -105,7 +105,7 @@ async function getContractInstanceFromContractsFolder(db, contractName, contract
   return contractInstance;
 }
 
-async function getContractInstanceFromBuildFolder(db, contractName, contractAddress) {
+async function getContractInstanceFromBuildFolder(db, contractName, contractAddress, contractId) {
   logger.debug(
     `\nsrc/contract-controller getContractInstanceFromBuildFolder(db, contractName=${contractName})`,
   );
