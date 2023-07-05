@@ -139,7 +139,7 @@ async function getContractInstance(contractName, deployedAddress, contractId) {
 
   // I think it's fine temporarily (before we put abis in db), it doesn't care about the address, only about the actual abi
   const contractInterface = getContractInterface(contractName);
-  const contractInstance = new web3.eth.Contract(contractInterface.abi, contractId);
+  const contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   return contractInstance;
 
 }

@@ -8,6 +8,7 @@ import contractController from '../contract-controller';
 import filterController from '../filter-controller';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
+const axios = require('axios');
 
 const alreadyStarted = {}; // initialises as false
 const alreadyStarting = {}; // initialises as false
@@ -21,32 +22,47 @@ const alreadyStarting = {}; // initialises as false
 async function startEventFilter(req, res, next) {
   logger.debug('src/routes/merkle-tree.routes startEventFilter()');
 
-  const { contractName, treeId, contractAddress, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
+  const { contractName, treeId, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
+
   const { db } = req.user;
 
-
-  logger.debug(`Received data: contractName: ${contractName}, treeId: ${treeId}, contractAddress: ${contractAddress}, contractId: ${contractId}`)
+  logger.debug(
+    `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
+  );
   logger.debug(`Current state of alreadyStarted: ${JSON.stringify(alreadyStarted)}`);
   logger.debug(`Current state of alreadyStarting: ${JSON.stringify(alreadyStarting)}`);
+
 
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
 
   // I think due to a weird JS quirk, using objects as object keys does something weird. Stringifying them makes it work.
 
   try {
-    if (alreadyStarted[`${contractName} ${contractId}`] && (treeId === undefined || treeId === '')) {
-      logger.debug(`filter already started for ${`${contractName} ${contractId}`}`)
+    if (
+      alreadyStarted[`${contractName} ${contractId}`] &&
+      (treeId === undefined || treeId === '')
+    ) {
+      logger.debug(`filter already started for ${`${contractName} ${contractId}`}`);
       res.data = { message: `filter already started for ${`${contractName} ${contractId}`}` };
     } else if (alreadyStarted[(`${contractName} ${contractId}`, treeId)]) {
-      logger.debug(`filter already started for ${`${contractName} ${contractId}`}.${treeId}`)
-      res.data = { message: `filter already started for ${`${contractName} ${contractId}`}.${treeId}` };
-    } else if (alreadyStarting[`${contractName} ${contractId}`] && (treeId === undefined || treeId === '')) {
-      logger.debug(`filter is already in the process of being started for ${`${contractName} ${contractId}`}`)
+      logger.debug(`filter already started for ${`${contractName} ${contractId}`}.${treeId}`);
+      res.data = {
+        message: `filter already started for ${`${contractName} ${contractId}`}.${treeId}`,
+      };
+    } else if (
+      alreadyStarting[`${contractName} ${contractId}`] &&
+      (treeId === undefined || treeId === '')
+    ) {
+      logger.debug(
+        `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
+      );
       res.data = {
         message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
       };
     } else if (alreadyStarting[(`${contractName} ${contractId}`, treeId)]) {
-      logger.debug(`filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`)
+      logger.debug(
+        `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
+      );
       res.data = {
         message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
       };
@@ -59,19 +75,31 @@ async function startEventFilter(req, res, next) {
         logger.debug(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
       }
 
+      // Resolve the address only when we need it
+      const response = await axios.get('http://contractapi:1234/contracts/' + contractId)
+      const contractAddress = response.data.address;
+    
+      console.log("Axios test " + contractAddress);
+    
+      logger.info(`Resolved ${contractId} to address: ${contractAddress}`);
 
-      
       // get a web3 contractInstance we can work with:
       const contractInstance = await contractController.instantiateContract(
         db,
         contractName,
         contractAddress,
-        contractId
+        contractId,
       );
-      logger.debug(`Received contract instance: ${contractInstance}`)
+      logger.debug(`Received contract instance: ${contractInstance}`);
       // start an event filter on this contractInstance:
 
-      const started = await filterController.start(db, contractName, contractInstance, treeId, contractId);
+      const started = await filterController.start(
+        db,
+        contractName,
+        contractInstance,
+        treeId,
+        contractId,
+      );
 
       if (treeId === undefined || treeId === '') {
         alreadyStarted[`${contractName} ${contractId}`] = started; // true/false
@@ -80,8 +108,6 @@ async function startEventFilter(req, res, next) {
         alreadyStarted[(`${contractName} ${contractId}`, treeId)] = started; // true/false
         alreadyStarting[(`${contractName} ${contractId}`, treeId)] = false;
       }
-
-
 
       res.data = { message: 'filter started' };
     }
