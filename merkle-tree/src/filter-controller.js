@@ -269,7 +269,7 @@ async function getFromBlock(db, contractName, contractId) {
     // this points us to the
     
 
-    const contractInfo = await axios.get("http://contractapi:1234/contracts/" + contractId); // Replace with a real API
+    const contractInfo = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId); // Replace with a real API
     
     if (blockNumber === undefined) {
       const result = contractInfo.data.deploymentBlock

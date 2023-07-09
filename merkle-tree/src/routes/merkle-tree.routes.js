@@ -76,7 +76,7 @@ async function startEventFilter(req, res, next) {
       }
 
       // Resolve the address only when we need it
-      const response = await axios.get('http://contractapi:1234/contracts/' + contractId)
+      const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId)
       const contractAddress = response.data.address;
     
       console.log("Axios test " + contractAddress);
