@@ -5,7 +5,7 @@
  */
 
 import { COLLECTIONS } from '../common/constants';
-import { nodeSchema, metadataSchema, contractInfoSchema } from '../models';
+import { nodeSchema, metadataSchema } from '../models';
 import logger from '../../logger';
 /**
 Class created from within src/middleware/assign-db-connection
@@ -26,8 +26,8 @@ export default class DB {
   A model is a class with which we construct documents
   */
   createModelsForUser(contractName, treeId, contractId) {
-    logger.info(
-      `I'm creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
+    logger.debug(
+      `Creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
     );
 
     if (treeId === undefined || treeId === '') {

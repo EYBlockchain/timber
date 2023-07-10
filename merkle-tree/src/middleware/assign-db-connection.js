@@ -17,10 +17,6 @@ export default async function(req, res, next) {
 
   try {
     const contractId = req.body.contractId;
-    logger.debug(`Hey, middleware here. This is what I got from the incoming request`);
-    logger.debug(`Received contractId: ${contractId}`);
-    logger.debug(`Full Body: ${JSON.stringify(req.body)}`);
-
     let contractName = req.body.contractName || req.query.contractName;
     if (contractName === undefined) {
       const contractNameTest = req.body[0].contractName;

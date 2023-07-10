@@ -115,34 +115,30 @@ async function getDeployedContractTransactionHash(contractName) {
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
 async function getContractInstance(contractName, deployedAddress, contractId) {
-  logger.debug(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`);
+  logger.debug(
+    `./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`,
+  );
 
-  // old logic if there's not contractId
-  if (!contractId){
-  // interface:
-  const contractInterface = getContractInterface(contractName);
-
-  // address:
-  // eslint-disable-next-line no-param-reassign
-  if (!deployedAddress) deployedAddress = await getContractAddress(contractName);
-
-  // instance:
   let contractInstance;
 
-  if (!deployedAddress) {
-    contractInstance = new web3.eth.Contract(contractInterface.abi);
+  const contractInterface = getContractInterface(contractName);
+
+  if (!contractId) {
+    // address:
+    // eslint-disable-next-line no-param-reassign
+    if (!deployedAddress) deployedAddress = await getContractAddress(contractName);
+
+    // instance:
+    if (!deployedAddress) {
+      contractInstance = new web3.eth.Contract(contractInterface.abi);
+    } else {
+      contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
+    }
   } else {
+    // I think it's fine temporarily (before we put abis in db), it doesn't care about the address, only about the actual abi
     contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   }
   return contractInstance;
-} else {
-
-  // I think it's fine temporarily (before we put abis in db), it doesn't care about the address, only about the actual abi
-  const contractInterface = getContractInterface(contractName);
-  const contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
-  return contractInstance;
-
-}
 }
 
 // returns a web3 contract instance (rather than a truffle-contract instance)
@@ -217,15 +213,16 @@ async function subscribeToEvent(
     signature: '0x881cc8af0159324ccea314ad98a0cf26fe0e460c2afa693c92f591613d4de7b2' }
   */
 
-
   // changed below for sepolia ws url - NOT TESTED ON ANY OTHER BLOCKCHAIN
-  
+
   // const eventJsonInterface = web3.utils._.find(
   //   contractInstance._jsonInterface, // eslint-disable-line no-underscore-dangle
   //   o => o.name === eventName && o.type === 'event',
   // );
 
-  const eventJsonInterface = contractInstance._jsonInterface.find(o => o.name === eventName && o.type === 'event');
+  const eventJsonInterface = contractInstance._jsonInterface.find(
+    o => o.name === eventName && o.type === 'event',
+  );
 
   logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
 

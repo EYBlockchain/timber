@@ -11,7 +11,6 @@ import logger from '../../logger';
 export default class LeafService {
   constructor(_db) {
     this.db = _db;
-    logger.debug(`LeafService: I've initiated ${this.db}`)
   }
 
   // INSERTS
@@ -22,10 +21,10 @@ export default class LeafService {
   @param {object} leaf
   */
   async insertLeaf(treeHeight, leaf) {
-    logger.debug(`data before mapping: ${JSON.stringify(leaf, null, 2)}`);
+    logger.silly(`data before mapping: ${JSON.stringify(leaf, null, 2)}`);
     logger.debug('src/db/service/leaf.service insertLeaf()');
     const mappedData = leafMapper(treeHeight, leaf);
-    logger.debug(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
+    logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
     // insert the leaf into the 'nodes' collection:
     try {
@@ -49,7 +48,7 @@ export default class LeafService {
   */
   async insertLeaves(treeHeight, leaves) {
     logger.debug('src/db/service/leaf.service insertLeaves()');
-    logger.debug(`data before mapping: ${JSON.stringify(leaves, null, 2)}`);
+    logger.silly(`data before mapping: ${JSON.stringify(leaves, null, 2)}`);
     const mappedData = leaves.map(leaf => leafMapper(treeHeight, leaf));
     logger.silly(`data after mapping: ${JSON.stringify(mappedData, null, 2)}`);
 
@@ -137,8 +136,7 @@ export default class LeafService {
     const docs = await this.db.getDoc(COLLECTIONS.NODE, {
       value,
     });
-    logger.debug(`getLeafByValue from leaf.service.js, I've accessed: ${COLLECTIONS.NODE}`);
-    logger.debug(`getLeafByValue from leaf.service.js, I've fetched: ${docs}`);
+    logger.silly(`getLeafByValue from leaf.service.js, I've accessed: ${COLLECTIONS.NODE}`);
     return docs;
   }
 

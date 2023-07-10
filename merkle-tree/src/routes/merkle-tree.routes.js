@@ -29,14 +29,8 @@ async function startEventFilter(req, res, next) {
   logger.debug(
     `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
   );
-  logger.debug(`Current state of alreadyStarted: ${JSON.stringify(alreadyStarted)}`);
-  logger.debug(`Current state of alreadyStarting: ${JSON.stringify(alreadyStarting)}`);
-
 
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
-
-  // I think due to a weird JS quirk, using objects as object keys does something weird. Stringifying them makes it work.
-
   try {
     if (
       alreadyStarted[`${contractName} ${contractId}`] &&
@@ -76,12 +70,14 @@ async function startEventFilter(req, res, next) {
       }
 
       // Resolve the address only when we need it
-      const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId)
-      const contractAddress = response.data.address;
-    
-      console.log("Axios test " + contractAddress);
-    
-      logger.info(`Resolved ${contractId} to address: ${contractAddress}`);
+
+      let contractAddress;
+
+      if (process.env.CONTRACT_API_ENDPOINT) {
+        const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId);
+        contractAddress = response.data.addresss;
+        logger.debug(`Resolved ${contractId} to address: ${contractAddress}`);
+      }
 
       // get a web3 contractInstance we can work with:
       const contractInstance = await contractController.instantiateContract(

@@ -9,8 +9,6 @@ import utilsWeb3 from './utils-web3';
 
 import { LeafService, MetadataService } from './db/service';
 import logger from './logger';
-import adminDbConnection from '../src/db/common/adminDbConnection';
-import DB from '../src/db/mongodb/db';
 
 // global subscriptions object:
 const subscriptions = {};
@@ -152,7 +150,7 @@ const responseFunctions = {
 An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
-async function filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId) {
+async function filterBlock(db, contractName, contractInstance, fromBlock, treeId) {
   logger.debug(
     `src/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
@@ -210,7 +208,6 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 Check which block was the last to be filtered.
 @return {number} the next blockNumber which should be filtered.
 */
-// Extended this with contractId, we'll need to change the logic to use our cached info from Mongo, instead of Truffle's interface file
 async function getFromBlock(db, contractName, contractId) {
   const metadataService = new MetadataService(db);
   const metadata = await metadataService.getLatestLeaf();
@@ -218,7 +215,6 @@ async function getFromBlock(db, contractName, contractId) {
   let latestLeaf;
   let blockNumber;
 
-  logger.debug(`Fetched metadata (should be empty for the first call but not null): ${metadata}`);
   switch (metadata) {
     case null: // no document exists in the metadata db
       throw new Error('Unexpected null response from db: no document found in the metadata db.');
@@ -232,10 +228,6 @@ async function getFromBlock(db, contractName, contractId) {
     `Stats at restart, from the merkle-tree's mongodb: latestLeaf, ${latestLeaf}; blockNumber, ${blockNumber}`,
   );
 
-  // lines above are common regardless if there is contractId or not, so we'll keep them. Our main interest is the line with getDeployedContractTransactionHash(contractName);
-  // Instead of figuring out the hash and calculating the block number, we'll just ask Mongo to give us the block number by looking up the contract
-
-  // only from this line, the logic changes
   if (!contractId) {
     if (blockNumber === undefined) {
       let receipt;
@@ -253,45 +245,24 @@ async function getFromBlock(db, contractName, contractId) {
       );
     }
 
-    const currentBlockNumber = await utilsWeb3.getBlockNumber();
-    logger.debug(`Current blockNumber: ${currentBlockNumber}`);
-
-    logger.debug(
-      `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
-    );
-
-    return blockNumber;
   } else {
-    // Logic with contract ID
-    // We need to build a new db connection because the one points to the nodes/metadata collections and we need access to the deployments collection.
-    // We have the contractID, let's look it up
-
-    // this points us to the
-    
-
-    const contractInfo = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId); // Replace with a real API
-    
     if (blockNumber === undefined) {
+      const contractInfo = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId);
       const result = contractInfo.data.deploymentBlock
-
-      logger.info(`Fetched block ID for ${contractId} from API`);
-      logger.info(result);
-
 
       blockNumber = result ? result : config.FILTER_GENESIS_BLOCK_NUMBER; // if result is undefined, use the genesis from config
       logger.warn(
         `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
       );
     }
-
-    const currentBlockNumber = await utilsWeb3.getBlockNumber();
-    logger.debug(`Current blockNumber: ${currentBlockNumber}`);
-
-    logger.debug(
-      `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
-    );
-    return blockNumber;
   }
+  
+  const currentBlockNumber = await utilsWeb3.getBlockNumber();
+  logger.debug(`Current blockNumber: ${currentBlockNumber}`);
+  logger.debug(
+    `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
+  );
+  return blockNumber;
 }
 
 /**
@@ -303,7 +274,7 @@ async function start(db, contractName, contractInstance, treeId, contractId) {
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
     const fromBlock = await getFromBlock(db, contractName, contractId); // the blockNumber we get is the next WHOLE block to start filtering.
     // Now we filter indefinitely:
-    await filterBlock(db, contractName, contractInstance, fromBlock, treeId, contractId);
+    await filterBlock(db, contractName, contractInstance, fromBlock, treeId);
     return true;
   } catch (err) {
     throw new Error(err);

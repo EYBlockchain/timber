@@ -77,7 +77,7 @@ async function getLeafByLeafIndex(req, res, next) {
  */
 async function getLeafByValue(req, res, next) {
   logger.debug('src/routes/leaf.routes getLeafByValue()');
-  logger.debug(
+  logger.silly(
     `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
