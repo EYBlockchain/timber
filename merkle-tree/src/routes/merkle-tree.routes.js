@@ -23,23 +23,19 @@ async function startEventFilter(req, res, next) {
   logger.debug('src/routes/merkle-tree.routes startEventFilter()');
 
   const { contractName, treeId, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
-
   const { db } = req.user;
 
   logger.debug(
     `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
   );
-
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
   try {
     if (
       alreadyStarted[`${contractName} ${contractId}`] &&
       (treeId === undefined || treeId === '')
     ) {
-      logger.debug(`filter already started for ${`${contractName} ${contractId}`}`);
       res.data = { message: `filter already started for ${`${contractName} ${contractId}`}` };
     } else if (alreadyStarted[(`${contractName} ${contractId}`, treeId)]) {
-      logger.debug(`filter already started for ${`${contractName} ${contractId}`}.${treeId}`);
       res.data = {
         message: `filter already started for ${`${contractName} ${contractId}`}.${treeId}`,
       };
@@ -47,26 +43,20 @@ async function startEventFilter(req, res, next) {
       alreadyStarting[`${contractName} ${contractId}`] &&
       (treeId === undefined || treeId === '')
     ) {
-      logger.debug(
-        `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
-      );
       res.data = {
         message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
       };
     } else if (alreadyStarting[(`${contractName} ${contractId}`, treeId)]) {
-      logger.debug(
-        `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
-      );
       res.data = {
         message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
       };
     } else {
       if (treeId === undefined || treeId === '') {
         alreadyStarting[`${contractName} ${contractId}`] = true;
-        logger.debug(`starting filter for ${`${contractName} ${contractId}`}`);
+        logger.info(`starting filter for ${`${contractName} ${contractId}`}`);
       } else {
         alreadyStarting[(`${contractName} ${contractId}`, treeId)] = true;
-        logger.debug(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
+        logger.info(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
       }
 
       // Resolve the address only when we need it
@@ -88,7 +78,7 @@ async function startEventFilter(req, res, next) {
         contractAddress,
         contractId,
       );
-      
+
       // start an event filter on this contractInstance:
       const started = await filterController.start(
         db,

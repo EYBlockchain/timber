@@ -232,11 +232,11 @@ async function getFromBlock(db, contractName, contractId) {
     if (blockNumber === undefined) {
       let receipt;
       let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
-      logger.debug(` ${contractName} deployed transactionHash:  ${transactionHash}`);
+      logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
 
       if (transactionHash) {
         receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
-        logger.debug(`receipt: ${receipt}`);
+        logger.info(`receipt: ${receipt}`);
       }
 
       blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
@@ -258,8 +258,8 @@ async function getFromBlock(db, contractName, contractId) {
   }
   
   const currentBlockNumber = await utilsWeb3.getBlockNumber();
-  logger.debug(`Current blockNumber: ${currentBlockNumber}`);
-  logger.debug(
+  logger.info(`Current blockNumber: ${currentBlockNumber}`);
+  logger.info(
     `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
   );
   return blockNumber;

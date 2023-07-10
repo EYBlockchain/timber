@@ -134,7 +134,6 @@ async function getContractInstance(contractName, deployedAddress, contractId) {
       contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
     }
   } else {
-    // I think it's fine temporarily (before we put abis in db), it doesn't care about the address, only about the actual abi
     contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   }
   return contractInstance;
@@ -223,7 +222,7 @@ async function subscribeToEvent(
     o => o.name === eventName && o.type === 'event',
   );
 
-  logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
+  logger.silly(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
 
   const eventSubscription = await contractInstance.events[eventName]({
     fromBlock,
