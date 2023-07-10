@@ -74,9 +74,11 @@ async function startEventFilter(req, res, next) {
       let contractAddress;
 
       if (process.env.CONTRACT_API_ENDPOINT) {
-        const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId);
-        contractAddress = response.data.addresss;
-        logger.debug(`Resolved ${contractId} to address: ${contractAddress}`);
+        if (contractId) {
+          const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId);
+          contractAddress = response.data.address;
+          logger.debug(`Resolved ${contractId} to address: ${contractAddress}`);
+        }
       }
 
       // get a web3 contractInstance we can work with:
@@ -86,9 +88,8 @@ async function startEventFilter(req, res, next) {
         contractAddress,
         contractId,
       );
-      logger.debug(`Received contract instance: ${contractInstance}`);
+      
       // start an event filter on this contractInstance:
-
       const started = await filterController.start(
         db,
         contractName,

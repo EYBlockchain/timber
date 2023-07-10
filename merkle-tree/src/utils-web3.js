@@ -120,7 +120,6 @@ async function getContractInstance(contractName, deployedAddress, contractId) {
   );
 
   let contractInstance;
-
   const contractInterface = getContractInterface(contractName);
 
   if (!contractId) {
