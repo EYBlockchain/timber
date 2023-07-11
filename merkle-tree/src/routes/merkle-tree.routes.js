@@ -31,32 +31,32 @@ async function startEventFilter(req, res, next) {
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
   try {
     if (
-      alreadyStarted[`${contractName} ${contractId}`] &&
+      alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] &&
       (treeId === undefined || treeId === '')
     ) {
-      res.data = { message: `filter already started for ${`${contractName} ${contractId}`}` };
-    } else if (alreadyStarted[(`${contractName} ${contractId}`, treeId)]) {
+      res.data = { message: `filter already started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}` };
+    } else if (alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`]) {
       res.data = {
-        message: `filter already started for ${`${contractName} ${contractId}`}.${treeId}`,
+        message: `filter already started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
       };
     } else if (
-      alreadyStarting[`${contractName} ${contractId}`] &&
+      alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] &&
       (treeId === undefined || treeId === '')
     ) {
       res.data = {
-        message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}`,
+        message: `filter is already in the process of being started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
       };
-    } else if (alreadyStarting[(`${contractName} ${contractId}`, treeId)]) {
+    } else if (alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`]) {
       res.data = {
-        message: `filter is already in the process of being started for ${`${contractName} ${contractId}`}.${treeId}`,
+        message: `filter is already in the process of being started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
       };
     } else {
       if (treeId === undefined || treeId === '') {
-        alreadyStarting[`${contractName} ${contractId}`] = true;
-        logger.info(`starting filter for ${`${contractName} ${contractId}`}`);
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = true;
+        logger.info(`starting filter for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`);
       } else {
-        alreadyStarting[(`${contractName} ${contractId}`, treeId)] = true;
-        logger.info(`starting filter for ${`${contractName} ${contractId}`}.${treeId}`);
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = true;
+        logger.info(`starting filter for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`);
       }
 
       // Resolve the address only when we need it
@@ -89,11 +89,11 @@ async function startEventFilter(req, res, next) {
       );
 
       if (treeId === undefined || treeId === '') {
-        alreadyStarted[`${contractName} ${contractId}`] = started; // true/false
-        alreadyStarting[`${contractName} ${contractId}`] = false;
+        alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = started; // true/false
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = false;
       } else {
-        alreadyStarted[(`${contractName} ${contractId}`, treeId)] = started; // true/false
-        alreadyStarting[(`${contractName} ${contractId}`, treeId)] = false;
+        alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = started; // true/false
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = false;
       }
 
       res.data = { message: 'filter started' };
