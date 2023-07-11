@@ -118,24 +118,12 @@ async function getContractInstance(contractName, deployedAddress, contractId) {
   logger.debug(
     `./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`,
   );
-
   let contractInstance;
   const contractInterface = getContractInterface(contractName);
-
-  if (!contractId) {
-    // address:
-    // eslint-disable-next-line no-param-reassign
-    if (!deployedAddress) deployedAddress = await getContractAddress(contractName);
-
-    // instance:
-    if (!deployedAddress) {
-      contractInstance = new web3.eth.Contract(contractInterface.abi);
-    } else {
-      contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
-    }
-  } else {
-    contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
-  }
+  
+  if (!deployedAddress && !contractId) deployedAddress = await getContractAddress(contractName);
+  if (!deployedAddress) contractInstance = new web3.eth.Contract(contractInterface.abi);
+  else contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   return contractInstance;
 }
 
