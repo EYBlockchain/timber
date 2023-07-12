@@ -22,11 +22,11 @@ const alreadyStarting = {}; // initialises as false
 async function startEventFilter(req, res, next) {
   logger.debug('src/routes/merkle-tree.routes startEventFilter()');
 
-  const { contractName, treeId, contractId } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
+  const { contractName, treeId, contractId, contractAddress } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
 
   logger.debug(
-    `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
+    `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, contractAddress: ${contractAddress}`,
   );
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
   try {
@@ -57,18 +57,6 @@ async function startEventFilter(req, res, next) {
       } else {
         alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = true;
         logger.info(`starting filter for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`);
-      }
-
-      // Resolve the address only when we need it
-
-      let contractAddress;
-
-      if (process.env.CONTRACT_API_ENDPOINT) {
-        if (contractId) {
-          const response = await axios.get(process.env.CONTRACT_API_ENDPOINT + contractId);
-          contractAddress = response.data.address;
-          logger.debug(`Resolved ${contractId} to address: ${contractAddress}`);
-        }
       }
 
       // get a web3 contractInstance we can work with:
