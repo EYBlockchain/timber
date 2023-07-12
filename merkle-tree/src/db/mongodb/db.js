@@ -29,66 +29,18 @@ export default class DB {
     logger.debug(
       `Creating Models. contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}`,
     );
-
-    if (treeId === undefined || treeId === '') {
-      if (contractId === undefined || contractId === '') {
-        this.Models = {
-          node: this.connection.model(
-            `${this.username}_${contractName}_${COLLECTIONS.NODE}`,
-            nodeSchema,
-          ),
-          metadata: this.connection.model(
-            `${this.username}_${contractName}_${COLLECTIONS.METADATA}`,
-            metadataSchema,
-          ),
-        };
-      } else {
-        this.Models = {
-          node: this.connection.model(
-            `${this.username}_${contractName}_${contractId}_${COLLECTIONS.NODE}`,
-            nodeSchema,
-          ),
-          metadata: this.connection.model(
-            `${this.username}_${contractName}_${contractId}_${COLLECTIONS.METADATA}`,
-            metadataSchema,
-          ),
-        };
-      }
-    } else {
-      if (contractId === undefined || contractId === '') {
-        this.Models = {
-          node: this.connection.model(
-            `${this.username}_${contractName}_${treeId}_${COLLECTIONS.NODE}`,
-            nodeSchema,
-          ),
-          metadata: this.connection.model(
-            `${this.username}_${contractName}_${treeId}_${COLLECTIONS.METADATA}`,
-            metadataSchema,
-          ),
-        };
-      } else {
-        this.Models = {
-          node: this.connection.model(
-            `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.NODE}`,
-            nodeSchema,
-          ),
-          metadata: this.connection.model(
-            `${this.username}_${contractName}_${treeId}_${contractId}_${COLLECTIONS.METADATA}`,
-            metadataSchema,
-          ),
-        };
-      }
-      this.Models = {
-        node: this.connection.model(
-          `${this.username}_${contractName}_${treeId}_${COLLECTIONS.NODE}`,
-          nodeSchema,
-        ),
-        metadata: this.connection.model(
-          `${this.username}_${contractName}_${treeId}_${COLLECTIONS.METADATA}`,
-          metadataSchema,
-        ),
-      };
-    }
+    const contractIdStr = contractId ? `_${contractId}` : ``;
+    const treeIdStr = treeId ? `_${treeId}` : ``;
+    this.Models = {
+      node: this.connection.model(
+        `${this.username}_${contractName}${treeIdStr}${contractIdStr}_${COLLECTIONS.NODE}`,
+        nodeSchema,
+      ),
+      metadata: this.connection.model(
+        `${this.username}_${contractName}${treeIdStr}${contractIdStr}_${COLLECTIONS.METADATA}`,
+        metadataSchema,
+      ),
+    };
   }
 
   /**
