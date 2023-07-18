@@ -136,7 +136,7 @@ export default class LeafService {
     const docs = await this.db.getDoc(COLLECTIONS.NODE, {
       value,
     });
-
+    logger.silly(`getLeafByValue from leaf.service.js, I've accessed: ${COLLECTIONS.NODE}`);
     return docs;
   }
 
