@@ -114,24 +114,16 @@ async function getDeployedContractTransactionHash(contractName) {
 }
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
-async function getContractInstance(contractName, deployedAddress) {
-  logger.debug(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress})`);
-
-  // interface:
-  const contractInterface = getContractInterface(contractName);
-
-  // address:
-  // eslint-disable-next-line no-param-reassign
-  if (!deployedAddress) deployedAddress = await getContractAddress(contractName);
-
-  // instance:
+async function getContractInstance(contractName, deployedAddress, contractId) {
+  logger.debug(
+    `./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`,
+  );
   let contractInstance;
-
-  if (!deployedAddress) {
-    contractInstance = new web3.eth.Contract(contractInterface.abi);
-  } else {
-    contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
-  }
+  const contractInterface = getContractInterface(contractName);
+  
+  if (!deployedAddress && !contractId) deployedAddress = await getContractAddress(contractName);
+  if (!deployedAddress) contractInstance = new web3.eth.Contract(contractInterface.abi);
+  else contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
   return contractInstance;
 }
 
@@ -207,17 +199,18 @@ async function subscribeToEvent(
     signature: '0x881cc8af0159324ccea314ad98a0cf26fe0e460c2afa693c92f591613d4de7b2' }
   */
 
-
   // changed below for sepolia ws url - NOT TESTED ON ANY OTHER BLOCKCHAIN
-  
+
   // const eventJsonInterface = web3.utils._.find(
   //   contractInstance._jsonInterface, // eslint-disable-line no-underscore-dangle
   //   o => o.name === eventName && o.type === 'event',
   // );
 
-  const eventJsonInterface = contractInstance._jsonInterface.find(o => o.name === eventName && o.type === 'event');
+  const eventJsonInterface = contractInstance._jsonInterface.find(
+    o => o.name === eventName && o.type === 'event',
+  );
 
-  logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
+  logger.silly(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
 
   const eventSubscription = await contractInstance.events[eventName]({
     fromBlock,

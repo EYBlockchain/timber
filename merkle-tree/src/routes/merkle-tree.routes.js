@@ -8,6 +8,7 @@ import contractController from '../contract-controller';
 import filterController from '../filter-controller';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
+const axios = require('axios');
 
 const alreadyStarted = {}; // initialises as false
 const alreadyStarting = {}; // initialises as false
@@ -21,48 +22,69 @@ const alreadyStarting = {}; // initialises as false
 async function startEventFilter(req, res, next) {
   logger.debug('src/routes/merkle-tree.routes startEventFilter()');
 
-  const { contractName, treeId, contractAddress } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
+  const { contractName, treeId, contractId, contractAddress, block } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
 
+  logger.debug(
+    `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, contractAddress: ${contractAddress}, block: ${block}`,
+  );
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
   try {
-    if (alreadyStarted[contractName] && (treeId === undefined || treeId === '')) {
-      res.data = { message: `filter already started for ${contractName}` };
-    } else if (alreadyStarted[(contractName, treeId)]) {
-      res.data = { message: `filter already started for ${contractName}.${treeId}` };
-    } else if (alreadyStarting[contractName] && (treeId === undefined || treeId === '')) {
+    if (
+      alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] &&
+      (treeId === undefined || treeId === '')
+    ) {
+      res.data = { message: `filter already started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}` };
+    } else if (alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`]) {
       res.data = {
-        message: `filter is already in the process of being started for ${contractName}`,
+        message: `filter already started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
       };
-    } else if (alreadyStarting[(contractName, treeId)]) {
+    } else if (
+      alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] &&
+      (treeId === undefined || treeId === '')
+    ) {
       res.data = {
-        message: `filter is already in the process of being started for ${contractName}.${treeId}`,
+        message: `filter is already in the process of being started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
+      };
+    } else if (alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`]) {
+      res.data = {
+        message: `filter is already in the process of being started for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`,
       };
     } else {
       if (treeId === undefined || treeId === '') {
-        alreadyStarting[contractName] = true;
-        logger.info(`starting filter for ${contractName}`);
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = true;
+        logger.info(`starting filter for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`);
       } else {
-        alreadyStarting[(contractName, treeId)] = true;
-        logger.info(`starting filter for ${contractName}.${treeId}`);
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = true;
+        logger.info(`starting filter for ${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`);
       }
+
       // get a web3 contractInstance we can work with:
       const contractInstance = await contractController.instantiateContract(
         db,
         contractName,
         contractAddress,
+        contractId,
       );
 
       // start an event filter on this contractInstance:
-      const started = await filterController.start(db, contractName, contractInstance, treeId);
+      const started = await filterController.start(
+        db,
+        contractName,
+        contractInstance,
+        treeId,
+        contractId,
+        block
+      );
 
       if (treeId === undefined || treeId === '') {
-        alreadyStarted[contractName] = started; // true/false
-        alreadyStarting[contractName] = false;
+        alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = started; // true/false
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = false;
       } else {
-        alreadyStarted[(contractName, treeId)] = started; // true/false
-        alreadyStarting[(contractName, treeId)] = false;
+        alreadyStarted[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = started; // true/false
+        alreadyStarting[`${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`] = false;
       }
+
       res.data = { message: 'filter started' };
     }
     next();
