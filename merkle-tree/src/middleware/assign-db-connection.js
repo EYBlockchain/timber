@@ -16,7 +16,6 @@ export default async function(req, res, next) {
   );
 
   try {
-    const contractId = req.body.contractId;
     let contractName = req.body.contractName || req.query.contractName;
     if (contractName === undefined) {
       const contractNameTest = req.body[0].contractName;
@@ -32,7 +31,7 @@ export default async function(req, res, next) {
     // give all requesters admin privileges:
     req.user.connection = adminDbConnection;
 
-    req.user.db = new DB(req.user.connection, admin, contractName, treeId, contractId);
+    req.user.db = new DB(req.user.connection, admin, contractName, treeId);
 
     return next();
   } catch (err) {

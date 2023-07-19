@@ -3,7 +3,7 @@
 @desc file that starts up the filter
 @author iAmMichaelConnor
 */
-const axios = require('axios');
+
 import config from 'config';
 import utilsWeb3 from './utils-web3';
 
@@ -208,8 +208,9 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
 Check which block was the last to be filtered.
 @return {number} the next blockNumber which should be filtered.
 */
-async function getFromBlock(db, contractName, contractId, block) {
+async function getFromBlock(db, contractName) {
   const metadataService = new MetadataService(db);
+
   const metadata = await metadataService.getLatestLeaf();
 
   let latestLeaf;
@@ -228,49 +229,39 @@ async function getFromBlock(db, contractName, contractId, block) {
     `Stats at restart, from the merkle-tree's mongodb: latestLeaf, ${latestLeaf}; blockNumber, ${blockNumber}`,
   );
 
-  if (!contractId) {
-    if (blockNumber === undefined) {
-      let receipt;
-      let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
-      logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
+  if (blockNumber === undefined) {
+    let receipt;
+    let transactionHash = await utilsWeb3.getDeployedContractTransactionHash(contractName);
+    logger.info(` ${contractName} deployed transactionHash:  ${transactionHash}`);
 
-      if (transactionHash) {
-        receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
-        logger.info(`receipt: ${receipt}`);
-      }
-
-      blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
-      logger.warn(
-        `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
-      );
+    if (transactionHash) {
+      receipt = await utilsWeb3.getTransactionReceipt(transactionHash);
+      logger.info(`receipt: ${receipt}`);
     }
-
-  } else {
-    if (blockNumber === undefined) {
-      // Replace the api call with the passed deployment block number
-      blockNumber = block ? block : config.FILTER_GENESIS_BLOCK_NUMBER; // if result is undefined, use the genesis from config
-      logger.warn(
-        `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
-      );
-    }
+    
+    blockNumber = receipt ? receipt.blockNumber : config.FILTER_GENESIS_BLOCK_NUMBER;
+    logger.warn(
+      `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
+    );
   }
-  
+
   const currentBlockNumber = await utilsWeb3.getBlockNumber();
   logger.info(`Current blockNumber: ${currentBlockNumber}`);
-  logger.info(
-    `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
-  );
+
+  logger.info(`The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`);
+
   return blockNumber;
 }
 
 /**
 Commence filtering
 */
-async function start(db, contractName, contractInstance, treeId, contractId, block) {
+async function start(db, contractName, contractInstance, treeId) {
   try {
     logger.info('Starting filter...');
     // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-    const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+    const fromBlock = await getFromBlock(db, contractName); // the blockNumber we get is the next WHOLE block to start filtering.
+
     // Now we filter indefinitely:
     await filterBlock(db, contractName, contractInstance, fromBlock, treeId);
     return true;
