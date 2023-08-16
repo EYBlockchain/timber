@@ -61,6 +61,7 @@ app.use(errorHandler);
 app.use(logError);
 
 const server = app.listen(80, '0.0.0.0', () => {
+  logger.info('Timber: OCM Version');
   logger.info('merkle-tree RESTful API server started on ::: 80');
   if (process.env.AUTOSTART) autostart();
 });
