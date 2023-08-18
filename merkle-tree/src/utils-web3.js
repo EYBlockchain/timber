@@ -74,7 +74,7 @@ function getContractInterface(contractName) {
   logger.debug(`./src/utils-web3 getContractInterface(${contractName})`);
   // Can't think of any other way to do it, I don't think we can use a symlink because the folder names are different
   const zappName = contractName.replace('Shield', "");
-  const path = `/app/zapp/zapps/${zappName}/contracts/build/${contractName}.json`;
+  const path = `/app/zapps/${zappName}/contracts/build/${contractName}.json`;
   const contractInterface = JSON.parse(fs.readFileSync(path));
   logger.silly(`contractInterface: ${JSON.stringify(contractInterface, null, 2)}`);
   return contractInterface;
