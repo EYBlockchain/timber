@@ -25,7 +25,7 @@ jobs:
           node-version: '16.16.0'
 
       - name: Install Modules
-        run:
+        run: |
             cd /home/runner/work/timber/timber/merkle-tree
             npm install
         env:  
