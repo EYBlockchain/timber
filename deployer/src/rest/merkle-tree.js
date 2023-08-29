@@ -1,4 +1,4 @@
-import request from 'request';
+import axios from 'axios';
 import config from 'config';
 import utilsPoll from '../utils-poll';
 
@@ -12,13 +12,13 @@ async function startEventFilter(contractName) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/start`,
-      method: 'POST',
-      json: true,
-      body: { contractName },
+      method: 'post',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -31,13 +31,13 @@ async function getSiblingPathByLeafIndex(contractName, leafIndex) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/siblingPath/${leafIndex}`,
-      method: 'POST',
-      json: true,
-      body: { contractName },
+      method: 'post',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -50,13 +50,13 @@ async function getContractInterface(contractName) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/metadata/contractInterface`,
-      method: 'GET',
-      json: true,
-      body: { contractName },
+      method: 'get',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -69,13 +69,13 @@ async function getContractAddress(contractName) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/metadata/contractAddress`,
-      method: 'GET',
-      json: true,
-      body: { contractName },
+      method: 'get',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -85,13 +85,14 @@ async function postInterface(contractName, contractInterface) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/metadata/contractInterface`,
-      method: 'POST',
+      method: 'post',
       json: true,
-      body: { contractName, contractInterface },
+      data: { contractName, contractInterface },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -132,13 +133,14 @@ async function postAddress(contractName, contractAddress) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/metadata/contractAddress`,
-      method: 'POST',
+      method: 'post',
       json: true,
-      body: { contractName, contractAddress },
+      data: { contractName, contractAddress },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body.data);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -181,13 +183,14 @@ async function insertTreeHeight(contractName, treeHeight) {
     return new Promise((resolve, reject) => {
       const options = {
         url: `${url}/metadata/treeHeight`,
-        method: 'POST',
+        method: 'post',
         json: true,
-        body: { contractName, treeHeight },
+        data: { contractName, treeHeight },
       };
-      request(options, (err, res, body) => {
-        if (err) reject(err);
-        else resolve(body.data);
+      axios(options).then(response => {
+        resolve(response.data);
+      }).catch(err => {
+        reject(err);
       });
     });
   } catch (err) {
@@ -204,13 +207,14 @@ async function insertLeaves(contractName, leaves) {
     return new Promise((resolve, reject) => {
       const options = {
         url: `${url}/leaves`,
-        method: 'POST',
+        method: 'post',
         json: true,
-        body: { contractName, leaves },
+        data: { contractName, leaves },
       };
-      request(options, (err, res, body) => {
-        if (err) reject(err);
-        else resolve(body.data);
+      axios(options).then(response => {
+        resolve(response.data);
+      }).catch(err => {
+        reject(err);
       });
     });
   } catch (err) {
@@ -223,13 +227,14 @@ async function update(contractName) {
     return new Promise((resolve, reject) => {
       const options = {
         url: `${url}/update`,
-        method: 'PATCH',
+        method: 'patch',
         json: true,
-        body: { contractName },
+        data: { contractName },
       };
-      request(options, (err, res, body) => {
-        if (err) reject(err);
-        else resolve(body.data);
+      axios(options).then(response => {
+        resolve(response.data);
+      }).catch(err => {
+        reject(err);
       });
     });
   } catch (err) {

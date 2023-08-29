@@ -4,7 +4,7 @@
  * @desc gateway for querying contract details from some external contract deployment microservice.
  */
 
-import request from 'request';
+import axios from 'axios';
 import config from 'config';
 import Web3 from '../web3';
 import logger from '../logger';
@@ -21,13 +21,13 @@ async function getContractInterface(contractName) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/contract/interface`,
-      method: 'GET',
-      json: true,
-      body: { contractName },
+      method: 'get',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
@@ -42,13 +42,13 @@ async function getContractAddress(contractName) {
   return new Promise((resolve, reject) => {
     const options = {
       url: `${url}/contract/address`,
-      method: 'GET',
-      json: true,
-      body: { contractName },
+      method: 'get',
+      data: { contractName },
     };
-    request(options, (err, res, body) => {
-      if (err) reject(err);
-      else resolve(body);
+    axios(options).then(response => {
+      resolve(response.data);
+    }).catch(err => {
+      reject(err);
     });
   });
 }
