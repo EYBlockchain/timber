@@ -87,5 +87,14 @@ module.exports = {
       // transactionSigner: new CustomTransactionSigner()
     },
   },
+  ETHERS_OPTIONS: {
+    host: process.env.BLOCKCHAIN_HOST,
+    port: process.env.BLOCKCHAIN_PORT,
+    options: {
+      gas: process.env.GAS || 1000000,
+      gasPrice: process.env.GAS_PRICE || '20',
+      from: process.env.FROM_ADDRESS || undefined,
+    },
+  },
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
 };

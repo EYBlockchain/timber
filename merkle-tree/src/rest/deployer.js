@@ -6,10 +6,8 @@
 
 import axios from 'axios';
 import config from 'config';
-import Web3 from '../web3';
 import logger from '../logger';
-
-const web3 = Web3.connect();
+import { getContractInstanceFromAddress } from '../ethers';
 
 /**
 Gets an instance of a MerkleTree.sol contract interface from some external contract deployment microservice, a.k.a. 'deployer'
@@ -66,7 +64,7 @@ async function getContractInstance(contractName) {
     const { abi } = contractInterface;
     logger.silly(`abi, ${JSON.stringify(abi, null, 2)}`);
 
-    const contractInstance = await new web3.eth.Contract(abi, contractAddress);
+    const contractInstance = await getContractInstanceFromAddress(contractAddress, abi);
 
     logger.silly(`MerkleTree.sol contract instance: ${JSON.stringify(contractInstance, null, 2)}`);
     if (typeof contractInstance === 'undefined')
