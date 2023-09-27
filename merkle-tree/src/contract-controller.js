@@ -11,10 +11,9 @@ import deployerRest from './rest/deployer';
 import { compileContract } from './compile';
 import utilsWeb3 from './utils-web3';
 import utilsPoll from './utils-poll';
-import Web3 from './web3';
 import logger from './logger';
+import { getContractInstanceFromAddress } from './ethers';
 
-const web3 = Web3.connect();
 
 /**
 Gets a web3 instance of a contract from some external contract deployment microservice (a.k.a. 'deployer') and assembles a contract instance
@@ -80,7 +79,7 @@ async function getContractInstanceFromMongoDB(db, contractName) {
 
   const { contractInterface } = (await metadataService.getContractInterface()) || {};
 
-  const contractInstance = await new web3.eth.Contract(contractInterface.abi, contractAddress);
+  const contractInstance = await getContractInstanceFromAddress(contractAddress, contractInterface.abi);
 
   return contractInstance;
 }
