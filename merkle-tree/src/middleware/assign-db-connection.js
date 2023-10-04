@@ -8,7 +8,7 @@ const { admin } = config.get('mongo');
 export default async function(req, res, next) {
   logger.debug('src/middleware/assign-db-connection');
   logger.silly(
-    `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
+    `req.path: ${req.path}, req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
       2,
@@ -36,7 +36,6 @@ export default async function(req, res, next) {
 
     return next();
   } catch (err) {
-    logger.error(err);
     return next(err);
   }
 }

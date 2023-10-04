@@ -11,6 +11,7 @@ import Web3 from './web3';
 import autostart from './auto-start';
 
 import {
+  logRequest,
   assignDbConnection,
   formatResponse,
   formatError,
@@ -44,6 +45,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 app.use(assignDbConnection);
+app.use(logRequest);
 
 // Routes
 const router = Router();
