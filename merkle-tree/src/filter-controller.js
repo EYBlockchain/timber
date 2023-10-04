@@ -13,6 +13,16 @@ import logger from './logger';
 // global subscriptions object:
 const subscriptions = {};
 
+const alreadyStarted = {}; // initialises as false
+const alreadyStarting = {}; // initialises as false
+
+const FilterStates = Object.freeze({
+  ALREADY_STARTING: "ALREADY_STARTING",
+	ALREADY_STARTED: "ALREADY_STARTED",
+  STARTED: "STARTED",
+  ERROR: "ERROR"
+});
+
 /**
 TODO: description
 */
@@ -150,7 +160,7 @@ const responseFunctions = {
 An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
-async function filterBlock(db, contractName, contractInstance, fromBlock, treeId) {
+async function filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId) {
   logger.debug(
     `src/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
@@ -200,7 +210,19 @@ async function filterBlock(db, contractName, contractInstance, fromBlock, treeId
       responseFunctionArgs,
     );
 
-    subscriptions[eventName] = eventSubscription; // keep the subscription object for this event in global memory; to enable 'unsubscribe' in future.
+    const filterId = getFilterId(contractName, contractId, treeId);
+
+    // keep the subscription object for this event in global memory; to enable 'unsubscribe' in future.
+    subscriptions[getFilterId(contractName, contractId, treeId)] = eventSubscription; 
+
+    eventSubscription.on('connected', (str) => {
+      logger.debug(`Event listener connected for ${filterId}`);
+    });
+    eventSubscription.on('error', (err) => {
+      logger.error(`Event listener stopped for ${filterId}: ${err}`);
+      alreadyStarting[filterId] = false;
+      alreadyStarted[filterId] = false;
+    });
   });
 }
 
@@ -267,18 +289,52 @@ async function getFromBlock(db, contractName, contractId, block) {
 Commence filtering
 */
 async function start(db, contractName, contractInstance, treeId, contractId, block) {
-  try {
-    logger.info('Starting filter...');
-    // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-    const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
-    // Now we filter indefinitely:
-    await filterBlock(db, contractName, contractInstance, fromBlock, treeId);
-    return true;
-  } catch (err) {
-    throw new Error(err);
+  const filterId = getFilterId(contractName, contractId, treeId);
+
+  if(alreadyStarted[filterId]) {
+    logger.info(`Filter already started for ${filterId}`);
+    return FilterStates.ALREADY_STARTED;
+  }
+  else if(alreadyStarting[filterId]) {
+    logger.info(`Filter already starting for ${filterId}`);
+    return FilterStates.ALREADY_STARTING;
+  }
+  else {
+    logger.info(`Starting filter for ${filterId}`);
+    alreadyStarting[filterId] = true;
+
+    // start an event filter on this contractInstance:
+    let started;
+    try {
+      logger.info('Starting filter...');
+      // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
+      const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+      // Now we filter indefinitely:
+      await filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId);
+      started = true;
+    } catch (err) {
+      logger.error('Unable to start filter: ' + err);
+      alreadyStarting[filterId] = false;
+      throw new Error(err);
+    }
+
+    if (treeId === undefined || treeId === '') {
+      alreadyStarted[filterId] = started; // true/false
+      alreadyStarting[filterId] = false;
+    } else {
+      alreadyStarted[filterId] = started; // true/false
+      alreadyStarting[filterId] = false;
+    }
+
+    return started ? FilterStates.STARTED : FilterStates.ERROR;
   }
 }
 
-export default {
+function getFilterId(contractName, contractId = undefined, treeId = undefined) {
+  return `${contractName}${contractId ? '_' + contractId : ''}${treeId ? '_' + treeId : ''}`;
+}
+
+export {
   start,
+  FilterStates
 };
