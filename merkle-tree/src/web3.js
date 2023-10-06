@@ -47,7 +47,7 @@ export default {
 		provider.on("close", (err) => {
 			logger.error(`Blockchain connection closed. Error code ${err.code}, reason "${err.reason}"`);
 			this.isConnectionOpen = false;
-ì			sleep(config.web3.autoReconnectInterval).then(() => {
+			sleep(config.web3.autoReconnectInterval).then(() => {
 				this.connect();
 			});
 		});
