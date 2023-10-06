@@ -31,7 +31,7 @@ jobs:
         build-args: |
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
-          ${{ secrets.GHCR_REGISTRY }}/eyblockchain/timber/timber-multicontract:latest
+          ghcr.io/eyblockchain/timber-multicontract:latest
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         push: true
