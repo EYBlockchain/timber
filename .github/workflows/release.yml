@@ -27,7 +27,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./merkle-tree
-        file: ./Dockerfile
         build-args: |
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
