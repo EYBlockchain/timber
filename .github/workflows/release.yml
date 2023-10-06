@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - fabio/connection-resilience
 
 jobs:
   release:
@@ -12,22 +12,22 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: codfish/semantic-release-action@master
-      id: semantic
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    # - uses: codfish/semantic-release-action@master
+    #   id: semantic
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    - name: Build docker merkle-tree image
-      run: docker build ./merkle-tree
+    # - name: Build docker merkle-tree image
+    #   run: docker build ./merkle-tree
 
-    - run: echo ${{ steps.semantic.outputs.release-version }}
+    # - run: echo ${{ steps.semantic.outputs.release-version }}
 
     - name: Docker push version
-      if: steps.semantic.outputs.new-release-published == 'true'
+      # if: steps.semantic.outputs.new-release-published == 'true'
       run: |
         docker login https://docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
-        docker build -t docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION ./merkle-tree
-        docker push docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION
+        docker build -t docker.pkg.github.com/eyblockchain/timber/timber-multicontract:$RELEASE_VERSION ./merkle-tree
+        docker push docker.pkg.github.com/eyblockchain/timber/timber-multicontract:$RELEASE_VERSION
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
