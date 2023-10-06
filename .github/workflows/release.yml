@@ -12,6 +12,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Login to Github Packages
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+  
     # - uses: codfish/semantic-release-action@master
     #   id: semantic
     #   env:
@@ -31,6 +38,6 @@ jobs:
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
           ghcr.io/eyblockchain/timber-multicontract:latest
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        # username: ${{ github.actor }}
+        # password: ${{ secrets.GITHUB_TOKEN }}
         push: true
