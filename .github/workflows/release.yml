@@ -23,11 +23,16 @@ jobs:
 
     # - run: echo ${{ steps.semantic.outputs.release-version }}
 
-    - name: Docker push version
-      # if: steps.semantic.outputs.new-release-published == 'true'
-      run: |
-        docker login https://docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
-        docker build -t docker.pkg.github.com/eyblockchain/timber/timber-multicontract:$RELEASE_VERSION ./merkle-tree
-        docker push docker.pkg.github.com/eyblockchain/timber/timber-multicontract:$RELEASE_VERSION
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push UI docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./merkle-tree
+        file: ./Dockerfile
+        build-args: |
+          GPR_TOKEN=${{ secrets.GPR_TOKEN }}
+        tags: |
+          ${{ secrets.GHCR_REGISTRY }}/eyblockchain/timber/timber-multicontract:$RELEASE_VERSION
+          ${{ secrets.GHCR_REGISTRY }}/eyblockchain/timber/timber-multicontract:latest
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        push: true
