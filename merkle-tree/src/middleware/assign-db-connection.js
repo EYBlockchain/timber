@@ -1,5 +1,5 @@
 import config from 'config';
-import adminDbConnection from '../db/common/adminDbConnection';
+import { getAdminConnection } from '../db/common/adminDbConnection';
 import DB from '../db/mongodb/db';
 import logger from '../logger';
 
@@ -29,7 +29,7 @@ export default async function(req, res, next) {
     logger.silly(`treeId: ${treeId}`);
     req.user = {};
     // give all requesters admin privileges:
-    req.user.connection = adminDbConnection;
+    req.user.connection = getAdminConnection(); // adminDbConnection;
 
     req.user.db = new DB(req.user.connection, admin, contractName, treeId);
 

@@ -17,6 +17,7 @@ import {
   logError,
 } from './middleware';
 import { connect as connectToEthers } from './ethers'
+import { connect as connectToDb } from './db/common/adminDbConnection';
 import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes } from './routes';
 
 const main = async () => {
@@ -45,6 +46,7 @@ const main = async () => {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   
+  await connectToDb();
   app.use(assignDbConnection);
   
   // Routes

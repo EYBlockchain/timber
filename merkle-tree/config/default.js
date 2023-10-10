@@ -63,8 +63,7 @@ module.exports = {
 
   // mongodb:
   mongo: {
-    host: process.env.MONGO_HOST || 'client',
-    port: process.env.MONGO_PORT || '27017',
+    dbUrl: process.env.MONGO_URL,
     databaseName: process.env.MONGO_DB || 'merkle_tree',
     admin: process.env.MONGO_USERNAME || 'admin',
     adminPassword: process.env.MONGO_PASSWORD || 'admin',
