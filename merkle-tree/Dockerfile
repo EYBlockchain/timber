@@ -1,4 +1,4 @@
-FROM node:16.0.0
+FROM node:20
 
 WORKDIR /app
 
@@ -7,6 +7,7 @@ COPY ./src ./src
 COPY ./test ./test
 COPY ./.babelrc ./
 COPY ./config ./config
+RUN npm install
 RUN npm ci
 
 EXPOSE 80
