@@ -3,7 +3,7 @@ name: Release multiple-contracts
 on:
   push:
     branches:
-      - fabio/multiple-contracts
+      - multiple-contracts
 
 jobs:
   release:
