@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - fabio/connection-resilience
+      - master
 
 jobs:
   release:
@@ -12,32 +12,22 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Login to Github Packages
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-  
-    # - uses: codfish/semantic-release-action@master
-    #   id: semantic
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - uses: codfish/semantic-release-action@master
+      id: semantic
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    # - name: Build docker merkle-tree image
-    #   run: docker build ./merkle-tree
+    - name: Build docker merkle-tree image
+      run: docker build ./merkle-tree
 
-    # - run: echo ${{ steps.semantic.outputs.release-version }}
+    - run: echo ${{ steps.semantic.outputs.release-version }}
 
-    - name: Build and push UI docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: ./merkle-tree
-        build-args: |
-          GPR_TOKEN=${{ secrets.GPR_TOKEN }}
-        tags: |
-          ghcr.io/eyblockchain/timber-multicontract:latest
-        # username: ${{ github.actor }}
-        # password: ${{ secrets.GITHUB_TOKEN }}
-        push: true
+    - name: Docker push version
+      if: steps.semantic.outputs.new-release-published == 'true'
+      run: |
+        docker login https://docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
+        docker build -t docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION ./merkle-tree
+        docker push docker.pkg.github.com/eyblockchain/timber/timber:$RELEASE_VERSION
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
