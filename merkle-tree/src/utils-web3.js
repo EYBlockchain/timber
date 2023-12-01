@@ -38,6 +38,22 @@ async function getTransactionReceipt(transactionHash) {
   return receipt;
 }
 
+/**
+Returns a block matching the block number or block hash.
+@param {String|Number} hashStringOrNumber A block number or hash. Or the string "genesis", "latest" or "pending" as in the default block parameter.
+@param {Number} indexNumber - The transactions index position.
+@returns {Object} Returns a transaction object based on a block hash or number and the transactions index position.
+*/
+async function getTransactionFromBlock(hashStringOrNumber, indexNumber) {
+  logger.debug(`Getting transaction ${indexNumber} from Block ${hashStringOrNumber}`);
+
+  const txReceipt = await web3.eth.getTransactionFromBlock(hashStringOrNumber, indexNumber);
+
+  logger.silly(`txReceipt.input: ${JSON.stringify(txReceipt.input, null, 2)}`);
+
+  return txReceipt;
+}
+
 // EVENTS!!!
 
 // a list for saving subscribed event instances
@@ -48,7 +64,6 @@ function getContractInterface(contractName) {
 
   const path = `./build/contracts/${contractName}.json`;
   const contractInterface = JSON.parse(fs.readFileSync(path));
-  // logger.silly(`contractInterface: ${JSON.stringify(contractInterface, null, 2)}`);
   return contractInterface;
 }
 

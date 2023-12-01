@@ -14,9 +14,9 @@ let etherjsProvider;
 export async function connect() {
   logger.info('Connecting to RPCProvider ...');
   try {
-    const { host, port } = config.ETHERS_OPTIONS;
-    const url = `${host}:${port}`;
-    etherjsProvider = new ethers.providers.WebSocketProvider(url, 15); // .JsonRpcProvider(connectionInfo, null);
+    const { host, port, rpcUrl, networkId } = config.ETHERS_OPTIONS;
+    const url = rpcUrl || `${host}:${port}`;
+    etherjsProvider = new ethers.providers.WebSocketProvider(url, networkId);
     const handleError = (err) => {
       logger.error(`RPCProvider error event: ${err.message}`);
       logger.info('Reconnecting...');

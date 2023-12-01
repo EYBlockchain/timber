@@ -8,8 +8,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import logger from './logger';
 import autostart from './auto-start';
+import config from 'config';
+
 
 import {
+  logRequest,
   assignDbConnection,
   formatResponse,
   formatError,
@@ -17,9 +20,12 @@ import {
   logError,
 } from './middleware';
 import { connect as connectToEthers } from './ethers'
+import { connect as connectToDb } from './db/common/adminDbConnection';
 import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes } from './routes';
 
 const main = async () => {
+
+  console.log(`CONFIG: ${JSON.stringify(config, null, 2)}`);
 
   // Connecting to ethers
   connectToEthers();
@@ -45,7 +51,8 @@ const main = async () => {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   
-  app.use(assignDbConnection);
+  await connectToDb();
+  app.use(logRequest);
   
   // Routes
   const router = Router();
@@ -62,8 +69,8 @@ const main = async () => {
   app.use(errorHandler);
   app.use(logError);
   
-  const server = app.listen(80, '0.0.0.0', () => {
-    logger.info('merkle-tree RESTful API server started on ::: 80');
+  const server = app.listen(3080, '0.0.0.0', () => {
+    logger.info('merkle-tree RESTful API server started on ::: 3080');
     if (process.env.AUTOSTART) autostart();
   });
   server.timeout = 0;

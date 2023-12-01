@@ -7,7 +7,6 @@ COPY ./src ./src
 COPY ./test ./test
 COPY ./.babelrc ./
 COPY ./config ./config
-RUN npm install
 RUN npm ci
 
 EXPOSE 80

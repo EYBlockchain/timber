@@ -63,8 +63,7 @@ module.exports = {
 
   // mongodb:
   mongo: {
-    host: process.env.MONGO_HOST || 'client',
-    port: process.env.MONGO_PORT || '27017',
+    dbUrl: process.env.MONGO_URL,
     databaseName: process.env.MONGO_DB || 'merkle_tree',
     admin: process.env.MONGO_USERNAME || 'admin',
     adminPassword: process.env.MONGO_PASSWORD || 'admin',
@@ -75,7 +74,8 @@ module.exports = {
   web3: {
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
-
+    rpcUrl: process.env.RPC_URL,
+    autoReconnectInterval: process.env.BLOCKCHAIN_RECONNECT_INTERVAL || 1000,
     options: {
       defaultAccount: '0x0',
       defaultBlock: '0', // e.g. the genesis block our blockchain
@@ -88,8 +88,10 @@ module.exports = {
     },
   },
   ETHERS_OPTIONS: {
+    networkId: process.env.NETWORK_ID,
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
+    rpcUrl: process.env.RPC_URL,
     options: {
       gas: process.env.GAS || 1000000,
       gasPrice: process.env.GAS_PRICE || '20',
