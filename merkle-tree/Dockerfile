@@ -9,7 +9,7 @@ COPY ./package.json ./package-lock.json ./
 COPY ./src ./src
 COPY ./test ./test
 COPY ./.babelrc ./
-RUN npm ci --production
+RUN npm i
 
 EXPOSE 80
 CMD npm start
