@@ -206,10 +206,8 @@ async function subscribeToEvent(
     type: 'event',
     signature: '0x881cc8af0159324ccea314ad98a0cf26fe0e460c2afa693c92f591613d4de7b2' }
   */
-  const eventJsonInterface = web3.utils._.find(
-    contractInstance._jsonInterface, // eslint-disable-line no-underscore-dangle
-    o => o.name === eventName && o.type === 'event',
-  );
+
+  const eventJsonInterface = contractInstance._jsonInterface.find(o => o.name === eventName && o.type === 'event');
 
   logger.silly(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
 
