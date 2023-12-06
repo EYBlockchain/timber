@@ -25,8 +25,6 @@ import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes } from './rout
 
 const main = async () => {
 
-  console.log(`CONFIG: ${JSON.stringify(config, null, 2)}`);
-
   // Connecting to ethers
   connectToEthers();
   const app = express();
