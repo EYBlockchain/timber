@@ -15,23 +15,23 @@
   ],
   "dependencies": {
     "axios": "^0.21.2",
+    "big-integer": "^1.6.48",
     "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-promise-router": "^3.0.3",
-    "request": "^2.88.2",
-    "cors": "^2.8.5",
-    "config": "^3.3.1",
-    "big-integer": "^1.6.48",
-    "web3": "4.2.1",
-    "mongoose": "^5.13.20",
-    "winston": "^3.11.0",
-    "winston-daily-rotate-file": "^4.7.1",
-    "safe-buffer": "^5.1.2",
-    "solc": "0.8.23",
     "fs-extra": "^8.1.0",
     "hex-to-binary": "^1.0.1",
+    "jsonfile": "^6.1.0",
     "keccak": "^2.1.0",
-    "jsonfile": "^6.1.0"
+    "mongoose": "^5.13.20",
+    "request": "^2.88.2",
+    "safe-buffer": "^5.1.2",
+    "solc": "0.8.23",
+    "web3": "4.2.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.4",
@@ -39,7 +39,7 @@
     "@babel/node": "^7.22.19",
     "@babel/preset-env": "^7.23.5",
     "@babel/register": "^7.22.15",
-    "nodemon": "^3.0.1",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1"
   }
 }
