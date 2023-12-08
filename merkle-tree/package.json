@@ -27,11 +27,11 @@
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^3.4.1",
     "safe-buffer": "^5.1.2",
-    "solc": "0.8.23",
+    "solc": "0.5.8",
     "fs-extra": "^8.1.0",
     "hex-to-binary": "^1.0.1",
     "keccak": "^2.1.0",
-    "jsonfile": "^5.0.0"
+    "jsonfile": "^6.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",
@@ -40,6 +40,6 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "nodemon": "^3.0.1",
-    "mocha": "^6.2.2"
+    "mocha": "^10.2.0"
   }
 }

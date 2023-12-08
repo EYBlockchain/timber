@@ -215,9 +215,8 @@ async function subscribeToEvent(
 
   const eventJsonInterface = contractInstance._jsonInterface.find(o => o.name === eventName && o.type === 'event');
 
-  logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null, 2)}`);
-
-
+  logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null
+        , 2)}`);
 
   const eventSubscription = await contractInstance.events[eventName]({
     fromBlock,
@@ -247,7 +246,11 @@ async function subscribeToEvent(
   */
   eventSubscription.on('data', eventData => {
     logger.info(`New ${contractName}, ${eventName}, event detected`);
-    logger.silly(`Event Data: ${JSON.stringify(eventData, null, 2)}`);
+    logger.silly(`Event Data: ${JSON.stringify(eventData, (key, value) =>
+    typeof value === 'bigint'
+        ? value.toString()
+        : value // return everything else unchanged
+        , 2)}`);
 
     const eventObject = {
       eventData,
@@ -257,7 +260,11 @@ async function subscribeToEvent(
     // let's add the eventObject to the list of events:
     events = addNewEvent(eventObject, events);
 
-    logger.silly(`events: ${JSON.stringify(events, null, 2)}, { depth: null }`);
+    logger.silly(`events: ${JSON.stringify(events,(key, value) =>
+      typeof value === 'bigint'
+          ? value.toString()
+          : value // return everything else unchanged
+          ,2)}, { depth: null }`);
 
     responder(eventObject, responseFunction, responseFunctionArgs);
   });
@@ -270,7 +277,11 @@ async function unsubscribe(subscription) {
     logger.warn('There is nothing to unsubscribe from');
     return;
   }
-  logger.silly(JSON.stringify(subscription, null, 2));
+  logger.silly(JSON.stringify(subscription, (key, value) =>
+  typeof value === 'bigint'
+      ? value.toString()
+      : value // return everything else unchanged
+      ,2));
   // unsubscribes the subscription
   await subscription.unsubscribe((error, success) => {
     logger.silly(`we're in subscription.unsubscribe, ${error}, ${success}`);

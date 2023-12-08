@@ -47,17 +47,23 @@ const newLeafResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
+  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, (key, value) =>
+    typeof value === 'bigint'
+        ? value.toString()
+        : value // return everything else unchanged
+        , 2)}`);
 
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
 
   // Now some bespoke code; specific to how our application needs to deal with this eventObject:
   // construct a 'leaf' document to store in the db:
-  const { blockNumber } = eventData;
-  const { leafIndex, leafValue } = eventInstance;
+ let { blockNumber } = eventData;
+  blockNumber = Number(blockNumber);
+  let { leafIndex, leafValue } = eventInstance;
+  leafIndex = Number(leafIndex);
   const leaf = {
-    value: leafValue,
+    value: leafValue.toString(),
     leafIndex,
     blockNumber,
   };
@@ -86,6 +92,7 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   // Now some generic eventObject handling code:
   const { eventData } = eventObject;
 
+
   /*
   extract each relevent event parameter from the eventData and create an eventInstance: {
     eventParamName_0: eventParamValue_0,
@@ -97,21 +104,27 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
+  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, (key, value) =>
+    typeof value === 'bigint'
+        ? value.toString()
+        : value // return everything else unchanged
+        , 2)}`);
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
 
   // Now some more bespoke code; specific to how our application needs to deal with this eventObject:
   // construct an array of 'leaf' documents to store in the db:
-  const { blockNumber } = eventData;
-  const { minLeafIndex, leafValues } = eventInstance;
+ 
+  let { blockNumber } = eventData;
+  blockNumber = Number(blockNumber);
+  let { minLeafIndex, leafValues } = eventInstance;
 
   const leaves = [];
   let leafIndex;
   leafValues.forEach((leafValue, index) => {
     leafIndex = Number(minLeafIndex) + Number(index);
     const leaf = {
-      value: leafValue,
+      value: leafValue.toString(),
       leafIndex,
       blockNumber,
     };
