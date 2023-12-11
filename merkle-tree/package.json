@@ -41,5 +41,8 @@
     "@babel/register": "^7.22.15",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.1"
+  },
+  "overrides": {
+    "tough-cookie": "4.1.3"
   }
 }
