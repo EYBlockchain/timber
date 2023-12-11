@@ -65,3 +65,8 @@ const server = app.listen(80, '0.0.0.0', () => {
   if (process.env.AUTOSTART) autostart();
 });
 server.timeout = 0;
+
+// support stringifying of BigInts
+BigInt.prototype.toJSON = function() {
+  return this.toString()
+};

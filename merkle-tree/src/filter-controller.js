@@ -47,11 +47,7 @@ const newLeafResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, (key, value) =>
-    typeof value === 'bigint'
-        ? value.toString()
-        : value // return everything else unchanged
-        , 2)}`);
+  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
 
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
@@ -104,11 +100,7 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   eventParams.forEach(param => {
     eventInstance[param] = eventData.returnValues[param];
   });
-  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, (key, value) =>
-    typeof value === 'bigint'
-        ? value.toString()
-        : value // return everything else unchanged
-        , 2)}`);
+  logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
   const metadataService = new MetadataService(db);
   const { treeHeight } = await metadataService.getTreeHeight();
 
