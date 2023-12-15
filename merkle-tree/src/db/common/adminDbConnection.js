@@ -9,7 +9,7 @@ else url = `mongodb://${host}:${port}`;
 
 dbConnections.admin = mongoose.createConnection(`${url}/${databaseName}`, {
   useNewUrlParser: true,
-  useCreateIndex: true,
+  useCreateIndex: true, 
 });
 
 const adminDbConnection = dbConnections.admin;

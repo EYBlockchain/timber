@@ -60,8 +60,15 @@ app.use(formatError);
 app.use(errorHandler);
 app.use(logError);
 
+// support stringifying of BigInts
+BigInt.prototype.toJSON = function() {
+  return this.toString()
+};
+
 const server = app.listen(80, '0.0.0.0', () => {
   logger.info('merkle-tree RESTful API server started on ::: 80');
   if (process.env.AUTOSTART) autostart();
 });
 server.timeout = 0;
+
+
