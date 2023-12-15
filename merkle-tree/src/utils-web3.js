@@ -208,11 +208,6 @@ async function subscribeToEvent(
   */
   // changed below for sepolia ws url - NOT TESTED ON ANY OTHER BLOCKCHAIN
 
-  // const eventJsonInterface = web3.utils._.find(
-  //   contractInstance._jsonInterface, // eslint-disable-line no-underscore-dangle
-  //   o => o.name === eventName && o.type === 'event',
-  // );
-
   const eventJsonInterface = contractInstance._jsonInterface.find(o => o.name === eventName && o.type === 'event');
 
   logger.info(`eventJsonInterface: ${JSON.stringify(eventJsonInterface, null
