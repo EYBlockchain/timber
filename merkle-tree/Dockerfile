@@ -11,7 +11,7 @@ COPY ./package.json ./package-lock.json ./
 COPY ./src ./src
 COPY ./test ./test
 COPY ./.babelrc ./
-RUN npm install
+RUN npm i
 
 USER $USERNAME:$USERNAME
 EXPOSE 80

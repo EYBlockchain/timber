@@ -105,37 +105,50 @@ async function getContractInstanceFromContractsFolder(db, contractName, contract
   return contractInstance;
 }
 
-async function getContractInstanceFromBuildFolder(db, contractName, contractAddress) {
+async function getContractInstanceFromBuildFolder(db, contractName, contractAddress, contractId) {
   logger.debug(
     `\nsrc/contract-controller getContractInstanceFromBuildFolder(db, contractName=${contractName})`,
   );
 
-  const metadataService = new MetadataService(db);
+  if (!contractId) {
+      const metadataService = new MetadataService(db);
 
-  // if no address specified in the API call, then let's try to get one from the contract's json interface in the build folder"
-  if (contractAddress === undefined)
-    contractAddress = await utilsWeb3.getContractAddress(contractName); // eslint-disable-line no-param-reassign
+    // if no address specified in the API call, then let's try to get one from the contract's json interface in the build folder"
+    if (contractAddress === undefined)
+        contractAddress = await utilsWeb3.getContractAddress(contractName); // eslint-disable-line no-param-reassig
 
-  if (contractAddress === undefined)
-    throw new Error(
-      `No deployed contract address found in the contract interface json for ${contractName}`,
+    if (contractAddress === undefined)
+        throw new Error(
+          `No deployed contract address found in the contract interface json for ${contractName}`,
+        );
+
+    // retrieve the contract from the 'build' folder, and create a web3 contract instance:
+    const contractInstance = await utilsWeb3.getContractInstance(contractName, contractAddress);
+
+    // Then add its address to the db:
+    logger.info(`Adding contractAddress ${contractAddress} to the merkle-tree's metadata db...`);
+    await metadataService.insertContractAddress({ contractAddress });
+
+    return contractInstance;
+  } else {
+    const metadataService = new MetadataService(db);
+    logger.info(`Adding contractAddress ${contractAddress} to the merkle-tree's metadata db...`);
+    await metadataService.insertContractAddress({ contractAddress });
+
+    const contractInstance = await utilsWeb3.getContractInstance(
+      contractName,
+      contractAddress,
+      contractId,
     );
-
-  // retrieve the contract from the 'build' folder, and create a web3 contract instance:
-  const contractInstance = await utilsWeb3.getContractInstance(contractName, contractAddress);
-
-  // Then add its address to the db:
-  logger.info(`Adding contractAddress ${contractAddress} to the merkle-tree's metadata db...`);
-  await metadataService.insertContractAddress({ contractAddress });
-
-  return contractInstance;
+    return contractInstance;
+  }
 }
 
 /**
 Gets a web3 contract instance a contract, and checks its consistency with the merkle tree's existing metadata db.
 @param {object} db - an instance of mongoose.createConnection (a 'Connection' instance in mongoose terminoligy). This contains permissions to access the merkle tree's databases.
 */
-async function instantiateContract(db, contractName, contractAddress) {
+async function instantiateContract(db, contractName, contractAddress, contractId) {
   logger.debug(
     `src/contract-controller instantiateContract(db, contractName=${contractName}, contractAddress=${contractAddress})`,
   );
@@ -163,6 +176,7 @@ async function instantiateContract(db, contractName, contractAddress) {
         db,
         contractName,
         contractAddress,
+        contractId,
       );
       break;
 

@@ -154,6 +154,7 @@ module.exports = {
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
     rpcUrl: process.env.RPC_URL,
+    autoReconnectInterval: process.env.BLOCKCHAIN_RECONNECT_INTERVAL || 1000,
     options: {
       defaultAccount: '0x0',
       defaultBlock: '0', // e.g. the genesis block our blockchain
