@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import config from 'config';
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
 const { host, port, databaseName, dbUrl } = config.get('mongo');
 const dbConnections = {};
 

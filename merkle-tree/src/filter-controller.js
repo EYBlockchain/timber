@@ -285,7 +285,7 @@ async function getFromBlock(db, contractName, contractId, block) {
   const currentBlockNumber = await utilsWeb3.getBlockNumber();
   logger.info(`Current blockNumber: ${currentBlockNumber}`);
   logger.info(
-    `The filter is ${currentBlockNumber - blockNumber} blocks behind the current block.`,
+    `The filter is ${Number(currentBlockNumber) - Number(blockNumber)} blocks behind the current block.`,
   );
   return blockNumber;
 }
