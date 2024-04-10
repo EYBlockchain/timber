@@ -230,7 +230,7 @@ export default class DB {
       const count = await Model.countDocuments(query);
 
       logger.debug('src/db/mongodb/db countDocuments()');
-      logger.silly(`count ${JSON.stringify(count, null, 2)}`);
+      logger.silly(`src/db/mongodb/db count ${JSON.stringify(count, null, 2)}`);
 
       return Promise.resolve(count);
     } catch (e) {
