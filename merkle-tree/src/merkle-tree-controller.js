@@ -22,9 +22,9 @@ async function checkLeaves(db) {
   const leafService = new LeafService(db);
 
   // count all the leaves
-  const leafCount = await leafService.countLeaves();
   // get the max leafIndex of all the leaves
-  let maxLeafIndex = await leafService.maxLeafIndex();
+  let {leafCount, maxLeafIndex} = await leafService.getCountAndMaxLeafIndex();
+  logger.debug(`leaf count: ${leafCount}, max leaf index: ${maxLeafIndex}`);
   if (maxLeafIndex === undefined) maxLeafIndex = -1;
 
   let maxReliableLeafIndex;
@@ -32,7 +32,7 @@ async function checkLeaves(db) {
   // then we can quickly see if there are NOT any missing leaves:
   if (leafCount < maxLeafIndex + 1) {
     // then we are missing values. Let's do a slower search to find the earliest missing value:
-    logger.warn(
+    logger.error(
       `There are missing leaves in the db. Found ${leafCount} leaves, but expected ${maxLeafIndex +
         1}. Performing a slower check to find the missing leaves...`,
     );
@@ -40,7 +40,7 @@ async function checkLeaves(db) {
 
     logger.warn(`missing leaves: ${JSON.stringify(missingLeaves, null, 2)}`);
 
-    const minMissingLeafIndex = missingLeaves[0];
+    const minMissingLeafIndex = missingLeaves[0] || 0;
 
     maxReliableLeafIndex = minMissingLeafIndex - 1;
 
@@ -220,6 +220,7 @@ async function update(db) {
   if (!latestLeaf) {
     logger.info('There are no (reliable) leaves in the tree. Nothing to update.'); // this might also be triggered if there are no _reliable_ leaves in the tree; in which case everything should be refiltered: (TODO)
     const metadata = await metadataService.getMetadata();
+    logger.silly(`Metadata: ${JSON.stringify(metadata,null,2)}`);
     return metadata;
   }
 

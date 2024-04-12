@@ -245,6 +245,25 @@ export default class LeafService {
     return leafIndex;
   }
 
+  async getCountAndMaxLeafIndex()  {
+    logger.debug('src/db/service/leaf.service getCountAndMaxLeafIndex()');
+
+    const docs = await this.db.getDocs(
+      COLLECTIONS.NODE,
+      { leafIndex: { $exists: true } },    // query
+      { leafIndex: 1, _id: 0 },            // projection (output only these keys)
+      { leafIndex: -1 },                   // sort by leafIndex in descending order (we'll then grab the top one)
+    );
+     
+    const { leafIndex } = docs[0] || {}; // this should give you the 'top' document
+    const leafCount = docs.length;
+
+    return {
+      maxLeafIndex: leafIndex,
+      leafCount
+    }
+  }
+
   async findMissingLeaves(startLeafIndex, endLeafIndex) {
     logger.debug('src/db/service/leaf.service findMissingLeaves()');
 
