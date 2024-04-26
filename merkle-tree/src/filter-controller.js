@@ -9,6 +9,7 @@ import utilsWeb3 from './utils-web3';
 
 import { LeafService, MetadataService } from './db/service';
 import logger from './logger';
+import { mutex } from './mutex-controller';
 
 // global subscriptions object:
 const subscriptions = {};
@@ -47,22 +48,24 @@ const newLeafResponseFunction = async (eventObject, args) => {
     eventInstance[param] = eventObject.args[index];
   });
   logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
-
-  const metadataService = new MetadataService(db);
-  const { treeHeight } = await metadataService.getTreeHeight();
-
-  // Now some bespoke code; specific to how our application needs to deal with this eventObject:
-  // construct a 'leaf' document to store in the db:
-  const { blockNumber } = eventObject;
-  const { leafIndex, leafValue } = eventInstance;
-  const leaf = {
-    value: leafValue,
-    leafIndex,
-    blockNumber,
-  };
-
-  const leafService = new LeafService(db);
-  leafService.insertLeaf(treeHeight, leaf); // no need to await this
+  
+  await mutex.runExclusive(async () => {
+    const metadataService = new MetadataService(db);
+    const { treeHeight } = await metadataService.getTreeHeight();
+  
+    // Now some bespoke code; specific to how our application needs to deal with this eventObject:
+    // construct a 'leaf' document to store in the db:
+    const { blockNumber } = eventObject;
+    const { leafIndex, leafValue } = eventInstance;
+    const leaf = {
+      value: leafValue,
+      leafIndex,
+      blockNumber,
+    };
+  
+    const leafService = new LeafService(db);
+    await leafService.insertLeaf(treeHeight, leaf); // no need to await this
+  });
 };
 
 /**
@@ -94,28 +97,31 @@ const newLeavesResponseFunction = async (eventObject, args) => {
     eventInstance[param] = eventObject.args[param];
   });
   logger.silly(`eventInstance: ${JSON.stringify(eventInstance, null, 2)}`);
-  const metadataService = new MetadataService(db);
-  const { treeHeight } = await metadataService.getTreeHeight();
 
-  // Now some more bespoke code; specific to how our application needs to deal with this eventObject:
-  // construct an array of 'leaf' documents to store in the db:
-  const { blockNumber } = eventObject;
-  const { minLeafIndex, leafValues } = eventInstance;
-
-  const leaves = [];
-  let leafIndex;
-  leafValues.forEach((leafValue, index) => {
-    leafIndex = Number(minLeafIndex) + Number(index);
-    const leaf = {
-      value: leafValue,
-      leafIndex,
-      blockNumber,
-    };
-    leaves.push(leaf);
+  await mutex.runExclusive(async () => {
+    const metadataService = new MetadataService(db);
+    const { treeHeight } = await metadataService.getTreeHeight();
+  
+    // Now some more bespoke code; specific to how our application needs to deal with this eventObject:
+    // construct an array of 'leaf' documents to store in the db:
+    const { blockNumber } = eventObject;
+    const { minLeafIndex, leafValues } = eventInstance;
+  
+    const leaves = [];
+    let leafIndex;
+    leafValues.forEach((leafValue, index) => {
+      leafIndex = Number(minLeafIndex) + Number(index);
+      const leaf = {
+        value: leafValue,
+        leafIndex,
+        blockNumber,
+      };
+      leaves.push(leaf);
+    });
+  
+    const leafService = new LeafService(db);
+    await leafService.insertLeaves(treeHeight, leaves);
   });
-
-  const leafService = new LeafService(db);
-  leafService.insertLeaves(treeHeight, leaves); // no need to await this
 };
 
 /**
