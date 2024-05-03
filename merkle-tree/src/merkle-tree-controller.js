@@ -25,7 +25,7 @@ async function checkLeaves(db) {
   // count all the leaves
   // get the max leafIndex of all the leaves
 
-  await mutex.runExclusive(async () => {
+  return await mutex.runExclusive(async () => {
     let { leafCount, maxLeafIndex } = await leafService.getCountAndMaxLeafIndex();
     logger.debug(`leaf count: ${leafCount}, max leaf index: ${maxLeafIndex}`);
     if (maxLeafIndex === undefined) maxLeafIndex = -1;
