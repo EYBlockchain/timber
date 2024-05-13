@@ -10,7 +10,6 @@ import utilsMT from './utils-merkle-tree';
 import logger from './logger';
 
 import { LeafService, NodeService, MetadataService } from './db/service';
-import { mutex } from './mutex-controller';
 
 /**
 Check the leaves of the tree are all there.
@@ -25,64 +24,62 @@ async function checkLeaves(db) {
   // count all the leaves
   // get the max leafIndex of all the leaves
 
-  return await mutex.runExclusive(async () => {
-    let { leafCount, maxLeafIndex } = await leafService.getCountAndMaxLeafIndex();
-    logger.debug(`leaf count: ${leafCount}, max leaf index: ${maxLeafIndex}`);
-    if (maxLeafIndex === undefined) maxLeafIndex = -1;
+  let { leafCount, maxLeafIndex } = await leafService.getCountAndMaxLeafIndex();
+  logger.debug(`leaf count: ${leafCount}, max leaf index: ${maxLeafIndex}`);
+  if (maxLeafIndex === undefined) maxLeafIndex = -1;
 
-    let maxReliableLeafIndex;
+  let maxReliableLeafIndex;
 
-    // then we can quickly see if there are NOT any missing leaves:
-    if (leafCount < maxLeafIndex + 1) {
-      // then we are missing values. Let's do a slower search to find the earliest missing value:
-      logger.error(
-        `There are missing leaves in the db. Found ${leafCount} leaves, but expected ${maxLeafIndex +
-        1}. Performing a slower check to find the missing leaves...`,
-      );
-      const missingLeaves = await leafService.findMissingLeaves(0, maxLeafIndex);
+  // then we can quickly see if there are NOT any missing leaves:
+  if (leafCount < maxLeafIndex + 1) {
+    // then we are missing values. Let's do a slower search to find the earliest missing value:
+    logger.error(
+      `There are missing leaves in the db. Found ${leafCount} leaves, but expected ${maxLeafIndex +
+      1}. Performing a slower check to find the missing leaves...`,
+    );
+    const missingLeaves = await leafService.findMissingLeaves(0, maxLeafIndex);
 
-      logger.warn(`missing leaves: ${JSON.stringify(missingLeaves, null, 2)}`);
+    logger.warn(`missing leaves: ${JSON.stringify(missingLeaves, null, 2)}`);
 
-      const minMissingLeafIndex = missingLeaves[0] || 0;
+    const minMissingLeafIndex = missingLeaves[0] || 0;
 
-      maxReliableLeafIndex = minMissingLeafIndex - 1;
+    maxReliableLeafIndex = minMissingLeafIndex - 1;
 
-      let fromBlock;
+    let fromBlock;
 
-      if (minMissingLeafIndex > 0) {
-        // get the prior leaf:
-        const latestConsecutiveLeaf = await leafService.getLeafByLeafIndex(maxReliableLeafIndex);
+    if (minMissingLeafIndex > 0) {
+      // get the prior leaf:
+      const latestConsecutiveLeaf = await leafService.getLeafByLeafIndex(maxReliableLeafIndex);
 
-        fromBlock = latestConsecutiveLeaf.blockNumber;
-      } else {
-        // start from scratch:
-        fromBlock = config.FILTER_GENESIS_BLOCK_NUMBER;
-        return maxReliableLeafIndex; // the maximum reliable leafIndex is -1; i.e. nothing's reliable. Let's start again.
-      }
-
-      const currentBlock = await utilsWeb3.getBlockNumber();
-
-      const lag = currentBlock - fromBlock;
-
-      const lagTolerance = config.tolerances.LAG_BEHIND_CURRENT_BLOCK;
-
-      if (lag <= lagTolerance) {
-        logger.info(
-          `Ideally, we would re-filter from block ${fromBlock}, but the filter is only ${lag} blocks behind the current block ${currentBlock}. Since the user's config specifies a 'lag' tolerance of ${lagTolerance} blocks, we will not re-filter.`,
-        );
-
-        return maxReliableLeafIndex; // return the latest reliable leaf index up to which we can update the tree
-      }
-      logger.error(
-        `We need to re-filter from block ${fromBlock}, but this feature hasn't been built yet!`,
-      );
-      // TODO: re-filter the blockchain for events from this fromBlock.
+      fromBlock = latestConsecutiveLeaf.blockNumber;
+    } else {
+      // start from scratch:
+      fromBlock = config.FILTER_GENESIS_BLOCK_NUMBER;
+      return maxReliableLeafIndex; // the maximum reliable leafIndex is -1; i.e. nothing's reliable. Let's start again.
     }
 
-    maxReliableLeafIndex = maxLeafIndex;
+    const currentBlock = await utilsWeb3.getBlockNumber();
 
-    return maxReliableLeafIndex;
-  });
+    const lag = currentBlock - fromBlock;
+
+    const lagTolerance = config.tolerances.LAG_BEHIND_CURRENT_BLOCK;
+
+    if (lag <= lagTolerance) {
+      logger.info(
+        `Ideally, we would re-filter from block ${fromBlock}, but the filter is only ${lag} blocks behind the current block ${currentBlock}. Since the user's config specifies a 'lag' tolerance of ${lagTolerance} blocks, we will not re-filter.`,
+      );
+
+      return maxReliableLeafIndex; // return the latest reliable leaf index up to which we can update the tree
+    }
+    logger.error(
+      `We need to re-filter from block ${fromBlock}, but this feature hasn't been built yet!`,
+    );
+    // TODO: re-filter the blockchain for events from this fromBlock.
+  }
+
+  maxReliableLeafIndex = maxLeafIndex;
+
+  return maxReliableLeafIndex;
 }
 
 /**

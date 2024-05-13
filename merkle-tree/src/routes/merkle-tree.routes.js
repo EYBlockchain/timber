@@ -8,6 +8,7 @@ import contractController from '../contract-controller';
 import filterController from '../filter-controller';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
+import { mutex } from '../mutex-controller';
 
 const alreadyStarted = {}; // initialises as false
 const alreadyStarting = {}; // initialises as false
@@ -90,11 +91,14 @@ async function getSiblingPathByLeafIndex(req, res, next) {
   leafIndex = Number(leafIndex); // force to number
 
   try {
-    // first update all nodes in the DB to be in line with the latest-known leaf:
-    await merkleTreeController.update(db);
-
-    // get the sibling path:
-    const siblingPath = await merkleTreeController.getSiblingPathByLeafIndex(db, leafIndex);
+    let siblingPath = null;
+    await mutex.runExclusive(async () => {
+      // first update all nodes in the DB to be in line with the latest-known leaf:
+      await merkleTreeController.update(db);
+  
+      // get the sibling path:
+      siblingPath = await merkleTreeController.getSiblingPathByLeafIndex(db, leafIndex);
+    });
 
     res.data = siblingPath;
     next();
