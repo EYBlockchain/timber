@@ -26,6 +26,7 @@ const FilterStates = Object.freeze({
 /**
 TODO: description
 */
+// new leag response function
 const newLeafResponseFunction = async (eventObject, args) => {
   // NEW - function remains the same, for detecting single leaves, but can now specify the event name
   // NOTE - events must have same parameters as newLeaf / newLeaves
