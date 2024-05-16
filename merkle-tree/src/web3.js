@@ -58,11 +58,10 @@ export default {
 
     this.web3.eth.subscribe('newBlockHeaders', function(error, result){
       if (!error) {
-        console.log('newBlockHeaders');
-        console.log(result);
-          return;
+        console.log('Timber - Received from Blockchain node the block: ', result.number);
+        return;
       }
-      console.error(error);
+      console.error('Timber - Subscribed newBlockHeaders events Error: ', error);
     })
     // .on("connected", function(subscriptionId){
     //   console.log('connected')
