@@ -63,15 +63,6 @@ export default {
       }
       console.error('Timber - Subscribed newBlockHeaders events Error: ', error);
     })
-    // .on("connected", function(subscriptionId){
-    //   console.log('connected')
-    //   console.log(subscriptionId);
-    // })
-    // .on("data", function(blockHeader){
-    //   console.log('data')
-    //   console.log(blockHeader.number);
-    // })
-    // .on("error", console.error);
     
     return this.web3;
   },
