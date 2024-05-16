@@ -37,7 +37,6 @@ export default {
 		logger.http("Blockchain Connecting...");
     const provider = new Web3.providers.WebsocketProvider(
       this.buildUrl(),
-      null,
       config.web3.options,
     );
 
@@ -56,6 +55,15 @@ export default {
 		this.web3 = new Web3(provider);
 		this.isConnectionOpen = true;
 
+
+    this.web3.eth.subscribe('newBlockHeaders', function(error, result){
+      if (!error) {
+        console.log('Timber - Received from Blockchain node the block: ', result.number);
+        return;
+      }
+      console.error('Timber - Subscribed newBlockHeaders events Error: ', error);
+    })
+    
     return this.web3;
   },
 
