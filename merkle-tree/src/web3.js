@@ -37,7 +37,6 @@ export default {
 		logger.http("Blockchain Connecting...");
     const provider = new Web3.providers.WebsocketProvider(
       this.buildUrl(),
-      null,
       config.web3.options,
     );
 
@@ -56,6 +55,25 @@ export default {
 		this.web3 = new Web3(provider);
 		this.isConnectionOpen = true;
 
+
+    this.web3.eth.subscribe('newBlockHeaders', function(error, result){
+      if (!error) {
+        console.log('newBlockHeaders');
+        console.log(result);
+          return;
+      }
+      console.error(error);
+    })
+    // .on("connected", function(subscriptionId){
+    //   console.log('connected')
+    //   console.log(subscriptionId);
+    // })
+    // .on("data", function(blockHeader){
+    //   console.log('data')
+    //   console.log(blockHeader.number);
+    // })
+    // .on("error", console.error);
+    
     return this.web3;
   },
 
