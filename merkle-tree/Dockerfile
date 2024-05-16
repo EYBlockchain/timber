@@ -8,10 +8,10 @@ RUN addgroup --gid 10001 $USERNAME && \
 WORKDIR /app
 
 COPY ./package.json ./package-lock.json ./
+RUN npm i
 COPY ./src ./src
 COPY ./test ./test
 COPY ./.babelrc ./
-RUN npm i
 
 USER $USERNAME:$USERNAME
 EXPOSE 80
