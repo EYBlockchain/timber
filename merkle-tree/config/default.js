@@ -147,7 +147,6 @@ module.exports = {
     adminPassword: 'admin',
     dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
   },
-  isLoggerEnabled: true,
 
   // web3:
   web3: {
@@ -166,5 +165,9 @@ module.exports = {
       // transactionSigner: new CustomTransactionSigner()
     },
   },
+
+  isLoggerEnabled: true,
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
+
+  REUSE_FILTERS: process.env.REUSE_FILTERS || false,
 };
