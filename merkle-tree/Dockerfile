@@ -1,4 +1,4 @@
-FROM node:iron-slim
+FROM node:18.19
 
 ENV USERNAME="app"
 
