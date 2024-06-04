@@ -271,7 +271,6 @@ async function getFromBlock(db, contractName, contractId, block) {
         `No filtering history found in mongodb, so starting filter from the contract's deployment block ${blockNumber}`,
       );
     }
-
   } else {
     if (blockNumber === undefined) {
       // Replace the api call with the passed deployment block number
@@ -281,7 +280,7 @@ async function getFromBlock(db, contractName, contractId, block) {
       );
     }
   }
-  
+
   const currentBlockNumber = await utilsWeb3.getBlockNumber();
   logger.info(`Current blockNumber: ${currentBlockNumber}`);
   logger.info(
@@ -296,7 +295,7 @@ Commence filtering
 async function start(db, contractName, contractInstance, treeId, contractId, block) {
   const filterId = getFilterId(contractName, contractId, treeId);
 
-  if(alreadyStarted[filterId]) {
+  if(alreadyStarted[filterId] && config.REUSE_FILTERS) {
     logger.info(`Filter already started for ${filterId}`);
     return FilterStates.ALREADY_STARTED;
   }
@@ -312,6 +311,12 @@ async function start(db, contractName, contractInstance, treeId, contractId, blo
     let started;
     try {
       logger.info('Starting filter...');
+
+      // stop filter if already going, to avoid leakage
+      if(subscriptions[filterId]) {
+        await utilsWeb3.unsubscribe(subscriptions[filterId]);
+      }
+
       // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
       const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
       // Now we filter indefinitely:
