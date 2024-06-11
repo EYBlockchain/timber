@@ -4,6 +4,8 @@
 
 This document describes how to build and push Docker images to GitHub Container Registry.
 
+## Usage
+
 ### Build
 
 This will build the Docker image with the name and tag `starlight-timber:latest`.
