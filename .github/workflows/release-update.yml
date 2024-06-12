@@ -42,8 +42,8 @@ jobs:
         # password: ${{ secrets.GITHUB_TOKEN }}
         push: true
 
-        ScanImage:
-    - name: Aquasec scan
+    ScanImage:
+      name: Aquasec scan
       runs-on: ubuntu-latest
       needs: [BuildDockerImage]
       steps:
