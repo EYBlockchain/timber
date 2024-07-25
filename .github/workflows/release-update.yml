@@ -51,7 +51,7 @@ jobs:
         with:
           owner: ${{ github.repository_owner }}
           repo: saas-platform-iac-automation
-          github_token: ${{ secrets.GPR_TOKEN_WITH_WORKFLOW_RIGHT }}
+          github_token: ${{ secrets.GPR_TOKEN }}
           workflow_file_name: image-scan-workflow.yml
           ref: master
           wait_interval: 11
