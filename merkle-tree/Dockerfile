@@ -1,4 +1,4 @@
-FROM node:18.20.3-alpine
+FROM node:lts-alpine
 
 ENV USERNAME="app"
 
