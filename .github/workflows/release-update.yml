@@ -37,7 +37,7 @@ jobs:
         build-args: |
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
-          ghcr.io/eyblockchain/timber-updated:latest
+          ${{ secrets.GHCR_REGISTRY }}/eyblockchain/timber-updated:latest
         # username: ${{ github.actor }}
         # password: ${{ secrets.GITHUB_TOKEN }}
         push: true
@@ -58,4 +58,4 @@ jobs:
           propagate_failure: true
           trigger_workflow: true
           wait_workflow: true
-          client_payload: '{"image": "ghcr.io/eyblockchain/timber-updated:latest"}'
+          client_payload: '{"image": "${{ secrets.GHCR_REGISTRY }}/eyblockchain/timber-updated:latest"}'
