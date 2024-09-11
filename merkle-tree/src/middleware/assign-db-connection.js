@@ -8,7 +8,7 @@ const { admin } = config.get('mongo');
 export default async function(req, res, next) {
   logger.debug('src/middleware/assign-db-connection');
   logger.silly(
-    `req.path: ${req.path}, req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
+    `req.query: ${JSON.stringify(req.query, null, 2)}, req.body: ${JSON.stringify(
       req.body,
       null,
       2,
@@ -16,7 +16,6 @@ export default async function(req, res, next) {
   );
 
   try {
-    const contractId = req.body.contractId;
     let contractName = req.body.contractName || req.query.contractName;
     if (contractName === undefined) {
       const contractNameTest = req.body[0].contractName;
@@ -32,10 +31,11 @@ export default async function(req, res, next) {
     // give all requesters admin privileges:
     req.user.connection = adminDbConnection;
 
-    req.user.db = new DB(req.user.connection, admin, contractName, treeId, contractId);
+    req.user.db = new DB(req.user.connection, admin, contractName, treeId);
 
     return next();
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
