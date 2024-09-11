@@ -11,6 +11,7 @@ import fs from 'fs';
 import Web3 from './web3';
 import logger from './logger';
 
+const web3 = Web3.connect();
 
 // GETTERS!!!
 
@@ -18,7 +19,6 @@ import logger from './logger';
 @returns {Number} Returns the current block number.
 */
 async function getBlockNumber() {
-  const web3 = Web3.connect();
   const blockNumber = await web3.eth.getBlockNumber();
   return blockNumber;
 }
@@ -30,7 +30,6 @@ Returns a block matching the block number or block hash.
 @returns {Object} Block. Returns a block matching the block number or block hash.
 */
 async function getBlock(blockHashOrBlockNumber, returnTransactionObjects) {
-  const web3 = Web3.connect();
   const block = await web3.eth.getBlock(blockHashOrBlockNumber, returnTransactionObjects);
   return block;
 }
@@ -41,13 +40,11 @@ Returns a block matching the block number or block hash.
 @returns {Number} Returns the number of transactions in a given block.
 */
 async function getBlockTransactionCount(blockHashOrBlockNumber) {
-  const web3 = Web3.connect();
   const blockTxCount = await web3.eth.getBlockTransactionCount(blockHashOrBlockNumber);
   return blockTxCount;
 }
 
 async function getTransactionReceipt(transactionHash) {
-  const web3 = Web3.connect();
   const receipt = await web3.eth.getTransactionReceipt(transactionHash);
   return receipt;
 }
@@ -61,7 +58,6 @@ Returns a block matching the block number or block hash.
 async function getTransactionFromBlock(hashStringOrNumber, indexNumber) {
   logger.debug(`Getting transaction ${indexNumber} from Block ${hashStringOrNumber}`);
 
-  const web3 = Web3.connect();
   const txReceipt = await web3.eth.getTransactionFromBlock(hashStringOrNumber, indexNumber);
 
   logger.silly(`txReceipt.input: ${JSON.stringify(txReceipt.input, null, 2)}`);
@@ -79,6 +75,7 @@ function getContractInterface(contractName) {
 
   const path = `./build/contracts/${contractName}.json`;
   const contractInterface = JSON.parse(fs.readFileSync(path));
+  logger.silly(`contractInterface: ${JSON.stringify(contractInterface, null, 2)}`);
   return contractInterface;
 }
 
@@ -87,7 +84,6 @@ async function getContractAddress(contractName) {
   let deployedAddress;
   const contractInterface = getContractInterface(contractName);
 
-  const web3 = Web3.connect();
   const networkId = await web3.eth.net.getId();
   logger.silly(`networkId: ${networkId}`);
 
@@ -105,7 +101,6 @@ async function getDeployedContractTransactionHash(contractName) {
   let transactionHash;
   const contractInterface = getContractInterface(contractName);
 
-  const web3 = Web3.connect();
   const networkId = await web3.eth.net.getId();
   logger.silly(`networkId: ${networkId}`);
 
@@ -119,17 +114,24 @@ async function getDeployedContractTransactionHash(contractName) {
 }
 
 // returns a web3 contract instance (as opposed to a truffle-contract instance)
-async function getContractInstance(contractName, deployedAddress, contractId) {
-  logger.debug(
-    `./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress}), ${contractId}`,
-  );
-  let contractInstance;
+async function getContractInstance(contractName, deployedAddress) {
+  logger.debug(`./src/utils-web3 getContractInstance(${contractName}, ${deployedAddress})`);
+
+  // interface:
   const contractInterface = getContractInterface(contractName);
-  
-  const web3 = Web3.connect();
-  if (!deployedAddress && !contractId) deployedAddress = await getContractAddress(contractName);
-  if (!deployedAddress) contractInstance = new web3.eth.Contract(contractInterface.abi);
-  else contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
+
+  // address:
+  // eslint-disable-next-line no-param-reassign
+  if (!deployedAddress) deployedAddress = await getContractAddress(contractName);
+
+  // instance:
+  let contractInstance;
+
+  if (!deployedAddress) {
+    contractInstance = new web3.eth.Contract(contractInterface.abi);
+  } else {
+    contractInstance = new web3.eth.Contract(contractInterface.abi, deployedAddress);
+  }
   return contractInstance;
 }
 
