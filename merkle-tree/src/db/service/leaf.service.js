@@ -136,7 +136,6 @@ export default class LeafService {
     const docs = await this.db.getDoc(COLLECTIONS.NODE, {
       value,
     });
-
     return docs;
   }
 

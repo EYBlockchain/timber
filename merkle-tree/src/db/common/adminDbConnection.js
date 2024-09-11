@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
 import config from 'config';
 
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
 const { host, port, databaseName, dbUrl } = config.get('mongo');
 const dbConnections = {};
-let url;
-if (dbUrl) url = dbUrl;
-else url = `mongodb://${host}:${port}`;
 
-dbConnections.admin = mongoose.createConnection(`${url}/${databaseName}`, {
-  useNewUrlParser: true,
-  useCreateIndex: true, 
-});
+let url;
+if (dbUrl)
+  url = dbUrl;
+else
+  url = `mongodb://${host}:${port}/${databaseName}`;
+
+dbConnections.admin = mongoose.createConnection(`${url}`);
 
 const adminDbConnection = dbConnections.admin;
 

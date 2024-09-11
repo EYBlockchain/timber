@@ -147,13 +147,13 @@ module.exports = {
     adminPassword: 'admin',
     dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
   },
-  isLoggerEnabled: true,
 
   // web3:
   web3: {
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
     rpcUrl: process.env.RPC_URL,
+    autoReconnectInterval: process.env.BLOCKCHAIN_RECONNECT_INTERVAL || 1000,
     options: {
       defaultAccount: '0x0',
       defaultBlock: '0', // e.g. the genesis block our blockchain
@@ -165,5 +165,9 @@ module.exports = {
       // transactionSigner: new CustomTransactionSigner()
     },
   },
+
+  isLoggerEnabled: true,
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
+
+  REUSE_FILTERS: process.env.REUSE_FILTERS || false,
 };
