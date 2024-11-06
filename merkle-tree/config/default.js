@@ -7,7 +7,7 @@
 let nodeHashLength;
 let zero;
 
-if (process.env.HASH_TYPE === 'mimc') {
+if (process.env.HASH_TYPE === 'mimc' || process.env.HASH_TYPE === 'poseidon') {
   nodeHashLength = 32;
   if (process.env.CURVE === 'BLS12_377') {
     zero = 0;
