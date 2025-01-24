@@ -3,7 +3,7 @@ name: Release updated
 on:
   push:
     branches:
-      - wenxing/updateImages
+      - swati/updateImages
 
 jobs:
   BuildDockerImage:
@@ -37,7 +37,7 @@ jobs:
         build-args: |
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
-          ghcr.io/eyblockchain/multiple-contracts:with-health-check
+          ghcr.io/eyblockchain/timber-updated:latest
         # username: ${{ github.actor }}
         # password: ${{ secrets.GITHUB_TOKEN }}
         push: true
