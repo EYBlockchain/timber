@@ -1,50 +1,67 @@
-/**
-@module default.js
-@author iAmMichaelConnor
-@desc constants used by a nubmer of other modules
-*/
-
-let nodeHashLength;
-let zero;
-
-if (process.env.HASH_TYPE === 'mimc') {
-  nodeHashLength = 32;
-  if (process.env.CURVE === 'BLS12_377') {
-    zero = 0;
-  } else {
-    zero = '0x0000000000000000000000000000000000000000000000000000000000000000';
-  }
-} else {
-  nodeHashLength = 27;
-  zero = '0x000000000000000000000000000000000000000000000000000000';
-}
-
 module.exports = {
-  // general:
-  ZERO: zero,
-
-  // Tree parameters. You also need to set these in the MerkleTree.sol contract.
-
-  HASH_TYPE: process.env.HASH_TYPE,
-  CURVE: process.env.CURVE,
+  LOG_LEVEL: process.env.LOG_LEVEL,
+  zokrates: {
+    url: process.env.ZOKRATES_ENDPOINT,
+  },
+  merkleTree: {
+    url: process.env.TIMBER_ENDPOINT,
+  },
+  transactionManager: {
+    url: process.env.TRANSACTION_MANAGER_ENDPOINT,
+  },
+  blockchainEventManager: {
+    url: process.env.BEM_ENDPOINT,
+  },
+  // merkle-tree stuff:
+  ZERO: '0',
+  HASH_TYPE: 'mimc',
+  CURVE: 'ALT_BN_254',
   LEAF_HASHLENGTH: 32, // expected length of leaves' values in bytes
-  NODE_HASHLENGTH: nodeHashLength, // expected length of nodes' values up the merkle tree, in bytes
-  TREE_HEIGHT: 32, // the height of the Merkle tree
-
+  NODE_HASHLENGTH: 32, // expected length of nodes' values up the merkle tree, in bytes
   POLLING_FREQUENCY: 6000, // milliseconds
   FILTER_GENESIS_BLOCK_NUMBER: 0, // blockNumber
+
+  BN128_GROUP_ORDER: BigInt(
+    '21888242871839275222246405745257275088548364400416034343698204186575808495617',
+  ),
+  BN128_PRIME_FIELD: BigInt(
+    '21888242871839275222246405745257275088696311157297823662689037894645226208583',
+  ),
+  // the various parameters needed to describe the Babyjubjub curve
+  // BABYJUBJUB
+  // Montgomery EC form is y^2 = x^3 + Ax^2 + Bx
+  // Montgomery EC form of BabyJubJub is y^2 = x^3 + 168698x^2 + x
+  // A = 168698 and B = 1
+  BABYJUBJUB: {
+    JUBJUBA: BigInt(168700),
+    JUBJUBD: BigInt(168696),
+    INFINITY: [BigInt(0), BigInt(1)],
+    GENERATOR: [
+      BigInt(
+        '16540640123574156134436876038791482806971768689494387082833631921987005038935',
+      ),
+      BigInt(
+        '20819045374670962167435360035096875258406992893633759881276124905556507972311',
+      ),
+    ],
+    JUBJUBE: BigInt(
+      '21888242871839275222246405745257275088614511777268538073601725287587578984328',
+    ),
+    JUBJUBC: BigInt(8),
+    MONTA: BigInt(168698),
+    MONTB: BigInt(1),
+  },
 
   tolerances: {
     LAG_BEHIND_CURRENT_BLOCK: 5, // add warnings for use of tree data which lags further behind the current block (e.g. due to anonymity concerns)
   },
-
-  UPDATE_FREQUENCY: 100, // TODO: recalculate the tree every 'x' leaves - NOT USED YET
   BULK_WRITE_BUFFER_SIZE: 1000, // number of documents to add to a buffer before bulk-writing them to the db
-
+  contractOrigin: process.env.CONTRACT_LOCATION,
   // contracts to filter:
   contracts: {
     // contract name:
-    MerkleTreeControllerMiMC_BN254: {
+    default: {
+      treeHeight: 32,
       events: {
         // filter for the following event names:
         NewLeaf: {
@@ -54,120 +71,65 @@ module.exports = {
         NewLeaves: {
           // filter for these event parameters:
           parameters: ['minLeafIndex', 'leafValues'],
-        },
-      },
-    },
-    MerkleTreeControllerMiMC_BLS12: {
-      events: {
-        // filter for the following event names:
-        NewLeaf: {
-          // filter for these event parameters:
-          parameters: ['leafIndex', 'leafValue'],
-        },
-        NewLeaves: {
-          // filter for these event parameters:
-          parameters: ['minLeafIndex', 'leafValues'],
-        },
-      },
-    },
-    // contract name:
-    MerkleTreeControllerSHA: {
-      events: {
-        // filter for the following event names:
-        NewLeaf: {
-          // filter for these event parameters:
-          parameters: ['leafIndex', 'leafValue'],
-        },
-        NewLeaves: {
-          // filter for these event parameters:
-          parameters: ['minLeafIndex', 'leafValues'],
-        },
-      },
-    },
-    // contract name:
-    MultipleMerkleTreesControllerSHA: {
-      treeId: {
-        a: {
-          treeHeight: 16,
-          events: {
-            // filter for the following event names:
-            NewLeafA: {
-              // filter for these event parameters when a single leaf is added:
-              parameters: ['leafIndex', 'leafValue'],
-            },
-            NewLeavesA: {
-              // filter for these event parameters when multiple leaves are added:
-              parameters: ['minLeafIndex', 'leafValues'],
-            },
-          },
-        },
-        b: {
-          treeHeight: 10,
-          events: {
-            // filter for the following event names:
-            NewLeafB: {
-              // filter for these event parameters:
-              parameters: ['leafIndex', 'leafValue'],
-            },
-            NewLeavesB: {
-              // filter for these event parameters:
-              parameters: ['minLeafIndex', 'leafValues'],
-            },
-          },
         },
       },
     },
   },
-
-  /*
-  # Where to find the contractInstances?
-  # Specify one of:
-  # - 'remote' (to GET them from a remote microservice); or
-  # - 'mongodb' (to get them from mongodb); or
-  # - 'compile' (to compile the contracts from /app/build to /app/build/contracts)
-  # - 'default' (to get them from the /app/build/contracts folder)
-  */
-  contractOrigin: process.env.CONTRACT_ORIGIN,
-
-  contractsPath: '/app/contracts/', // where to find contract .sol files (if applicable)
-  buildPath: '/app/build/contracts/', // where to find the contract interface json files
-
-  // external contract deployment microservice (which deploys the MerkleTree.sol contract):
-  deployer: {
-    host: process.env.DEPLOYER_HOST,
-    port: process.env.DEPLOYER_PORT,
-  },
-
   // mongodb:
+  // TODO: The latest Timber image has been edited... not sure how to create a 'user' for Timber anymore...
   mongo: {
-    host: 'mongo-merkle-tree',
+    host: 'timber-mongo',
     port: '27017',
-    databaseName: process.env.DB_NAME || 'merkle_tree',
+    databaseName: 'merkle_tree',
     admin: 'admin',
     adminPassword: 'admin',
-    dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
+    dbUrl: process.env.DB_URL
   },
-
+  MONGO_URL: process.env.MONGO_URI,
+  COMMITMENTS_DB: process.env.MONGO_NAME,
+  COMMITMENTS_COLLECTION: 'commitments',
+  INFO_COLLECTION: 'info',
+  isLoggerEnabled: true,
   // web3:
-  web3: {
+  deployer: {
     host: process.env.BLOCKCHAIN_HOST,
     port: process.env.BLOCKCHAIN_PORT,
+  },
+  // web3:
+  web3: {
+    // url: `${process.env.BLOCKCHAIN_HOST}:${process.env.BLOCKCHAIN_PORT}`,
+    url: process.env.RPC_URL,
     rpcUrl: process.env.RPC_URL,
+    defaultAccountMnemonic: process.env.DEFAULT_ACCOUNT_MNEMONIC,
+    key: process.env.KEY,
     autoReconnectInterval: process.env.BLOCKCHAIN_RECONNECT_INTERVAL || 1000,
+
     options: {
-      defaultAccount: '0x0',
-      defaultBlock: '0', // e.g. the genesis block our blockchain
-      defaultGas: 2000000,
-      defaultGasPrice: 20000000000,
-      transactionBlockTimeout: 50,
-      transactionConfirmationBlocks: 15,
-      transactionPollingTimeout: 480,
+      // defaultAccount: '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1',
+      defaultAccount: process.env.DEFAULT_ACCOUNT,
+      // defaultGas: 95221975,
+      defaultGas: 11511304,
+      defaultGasPrice: 30000000000,
+      // defaultBlock: '0', // e.g. the genesis block our blockchain
+      // defaultGas: 90000000,
+      // defaultGasPrice: 20000000000,
+      transactionBlockTimeout: 150,
+      // transactionConfirmationBlocks: 15,
+      // transactionPollingTimeout: 480,
       // transactionSigner: new CustomTransactionSigner()
+      clientConfig: {
+        // Useful to keep a connection alive
+        keepalive: true,
+        // Keep keepalive interval small so that socket doesn't die
+        keepaliveInterval: -1,
+      },
+      timeout: 0,
+      reconnect: {
+        auto: true,
+        delay: 5000, // ms
+        maxAttempts: 120,
+        onTimeout: false,
+      },
     },
   },
-
-  isLoggerEnabled: true,
-  LOG_LEVEL: process.env.LOG_LEVEL || 'info',
-
-  REUSE_FILTERS: process.env.REUSE_FILTERS || false,
 };
