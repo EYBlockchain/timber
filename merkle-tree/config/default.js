@@ -1,17 +1,5 @@
 module.exports = {
   LOG_LEVEL: process.env.LOG_LEVEL,
-  zokrates: {
-    url: process.env.ZOKRATES_ENDPOINT,
-  },
-  merkleTree: {
-    url: process.env.TIMBER_ENDPOINT,
-  },
-  transactionManager: {
-    url: process.env.TRANSACTION_MANAGER_ENDPOINT,
-  },
-  blockchainEventManager: {
-    url: process.env.BEM_ENDPOINT,
-  },
   // merkle-tree stuff:
   ZERO: '0',
   HASH_TYPE: 'mimc',
@@ -86,9 +74,6 @@ module.exports = {
     dbUrl: process.env.DB_URL
   },
   MONGO_URL: process.env.MONGO_URI,
-  COMMITMENTS_DB: process.env.MONGO_NAME,
-  COMMITMENTS_COLLECTION: 'commitments',
-  INFO_COLLECTION: 'info',
   isLoggerEnabled: true,
   // web3:
   deployer: {
@@ -105,18 +90,10 @@ module.exports = {
     autoReconnectInterval: process.env.BLOCKCHAIN_RECONNECT_INTERVAL || 1000,
 
     options: {
-      // defaultAccount: '0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1',
       defaultAccount: process.env.DEFAULT_ACCOUNT,
-      // defaultGas: 95221975,
       defaultGas: 11511304,
       defaultGasPrice: 30000000000,
-      // defaultBlock: '0', // e.g. the genesis block our blockchain
-      // defaultGas: 90000000,
-      // defaultGasPrice: 20000000000,
       transactionBlockTimeout: 150,
-      // transactionConfirmationBlocks: 15,
-      // transactionPollingTimeout: 480,
-      // transactionSigner: new CustomTransactionSigner()
       clientConfig: {
         // Useful to keep a connection alive
         keepalive: true,
