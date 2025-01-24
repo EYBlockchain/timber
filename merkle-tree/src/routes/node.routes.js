@@ -207,6 +207,15 @@ async function getRoot(req, res, next) {
   }
 }
 
+async function getHealthCheck(req, res, next) {
+  try {
+    res.data = "Ok";
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
 // initializing routes
 export default function(router) {
   // NODE ROUTES
@@ -237,4 +246,5 @@ export default function(router) {
   // ROOT ROUTES
 
   router.route('/root').get(getRoot);
+  router.route('/healthcheck').get(getHealthCheck);  
 }

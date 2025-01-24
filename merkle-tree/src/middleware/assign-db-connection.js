@@ -15,6 +15,11 @@ export default async function(req, res, next) {
     )}`,
   );
 
+  // no payload in /healthcheck
+  if (req.path === '/healthcheck') {
+    return next();
+  }
+
   try {
     const contractId = req.body.contractId;
     let contractName = req.body.contractName || req.query.contractName;
