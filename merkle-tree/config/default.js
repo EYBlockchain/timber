@@ -66,12 +66,12 @@ module.exports = {
   // mongodb:
   // TODO: The latest Timber image has been edited... not sure how to create a 'user' for Timber anymore...
   mongo: {
-    host: 'timber-mongo',
+    host: 'mongo-merkle-tree',
     port: '27017',
     databaseName: process.env.DB_NAME || 'merkle_tree',
     admin: 'admin',
     adminPassword: 'admin',
-    dbUrl: process.env.DB_URL
+    dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
   },
   isLoggerEnabled: true,
   // web3:
