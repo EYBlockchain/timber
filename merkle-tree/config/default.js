@@ -68,12 +68,11 @@ module.exports = {
   mongo: {
     host: 'timber-mongo',
     port: '27017',
-    databaseName: 'merkle_tree',
+    databaseName: process.env.DB_NAME || 'merkle_tree',
     admin: 'admin',
     adminPassword: 'admin',
     dbUrl: process.env.DB_URL
   },
-  MONGO_URL: process.env.MONGO_URI,
   isLoggerEnabled: true,
   // web3:
   deployer: {
