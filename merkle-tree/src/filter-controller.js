@@ -38,9 +38,9 @@ const newLeafResponseFunction = async (eventObject, args) => {
   logger.debug(`eventname: ${eventName}`);
 
   if (treeId === undefined || treeId === '') {
-    eventParams = config.contracts[contractName].events[eventName].parameters;
+    eventParams = config.contracts['default'].events[eventName].parameters;
   } else {
-    eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
+    eventParams = config.contracts['default'].treeId[treeId].events[eventName].parameters;
   }
 
   // Now some generic eventObject handling code:
@@ -90,9 +90,9 @@ const newLeavesResponseFunction = async (eventObject, args) => {
   let eventParams;
 
   if (treeId === undefined || treeId === '') {
-    eventParams = config.contracts[contractName].events[eventName].parameters;
+    eventParams = config.contracts['default'].events[eventName].parameters;
   } else {
-    eventParams = config.contracts[contractName].treeId[treeId].events[eventName].parameters;
+    eventParams = config.contracts['default'].treeId[treeId].events[eventName].parameters;
   }
 
   // Now some generic eventObject handling code:
@@ -175,18 +175,18 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
 
   // TODO: if possible, make this easier to read and follow. Fewer 'if' statements. Perhaps use 'switch' statements instead?
   if (treeId === undefined || treeId === '') {
-    eventNames = Object.keys(config.contracts[contractName].events);
+    eventNames = Object.keys(config.contracts['default'].events);
     if (config.treeHeight !== undefined || config.treeHeight !== '') {
       const { treeHeight } = config;
       metadataService.insertTreeHeight({ treeHeight });
     }
   } else {
     const { treeHeightDb } = await metadataService.getTreeHeight();
-    const { treeHeight } = config.contracts[contractName].treeId[treeId];
+    const { treeHeight } = config.contracts['default'].treeId[treeId];
     if (treeHeightDb !== treeHeight && (treeHeight !== undefined || treeHeight !== '')) {
       metadataService.insertTreeHeight({ treeHeight });
     }
-    eventNames = Object.keys(config.contracts[contractName].treeId[treeId].events);
+    eventNames = Object.keys(config.contracts['default'].treeId[treeId].events);
   }
 
   const { treeHeight } = await metadataService.getTreeHeight();
