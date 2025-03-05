@@ -262,7 +262,6 @@ async function unsubscribe(subscription) {
     logger.warn('There is nothing to unsubscribe from');
     return;
   }
-  logger.silly(JSON.stringify(subscription, null,2));
   // unsubscribes the subscription
   await subscription.unsubscribe((error, success) => {
     logger.silly(`we're in subscription.unsubscribe, ${error}, ${success}`);
