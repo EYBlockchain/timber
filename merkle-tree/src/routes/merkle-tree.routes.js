@@ -8,6 +8,8 @@ import contractController from '../contract-controller';
 import { start as startFilter, FilterStates } from '../filter-controller';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
+import verifySaasContext from '../middleware/verify-saas-context';
+
 const axios = require('axios');
 
 
@@ -22,6 +24,7 @@ async function startEventFilter(req, res, next) {
 
   const { contractName, treeId, contractId, contractAddress, block } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
+  const saasContext = req.context;
 
   logger.debug(
     `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, contractAddress: ${contractAddress}, block: ${block}`,
@@ -36,7 +39,7 @@ async function startEventFilter(req, res, next) {
   );
 
   try {
-    const filterState = await startFilter(db, contractName, contractInstance, treeId, contractId, block);
+    const filterState = await startFilter(db, contractName, contractInstance, treeId, contractId, block, saasContext);
     switch(filterState) {
       case FilterStates.STARTED:
         res.data = {
@@ -152,7 +155,7 @@ async function update(req, res, next) {
 
 // initializing routes
 export default function(router) {
-  router.route('/start').post(startEventFilter);
+  router.route('/start').post(verifySaasContext, startEventFilter);
 
   router.route('/update').patch(update);
 

@@ -24,6 +24,8 @@
     "fs-extra": "^8.1.0",
     "hex-to-binary": "^1.0.1",
     "jsonfile": "^6.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
     "keccak": "^2.1.0",
     "mongoose": "^6.13.6",
     "request": "^2.88.2",

@@ -9,6 +9,7 @@ import cors from 'cors';
 import logger from './logger';
 import Web3 from './web3';
 import autostart from './auto-start';
+import { BemConsumer } from './bem-integration/infra/kafka/consumers/bem-event-consumer';
 
 import {
   logRequest,
@@ -23,6 +24,10 @@ import { leafRoutes, nodeRoutes, metadataRoutes, merkleTreeRoutes } from './rout
 
 Web3.connect();
 const app = express();
+
+// Initialize Kafka connection here
+const bemConsumer = new BemConsumer();
+bemConsumer.start();
 
 // TODO: what is this? :
 app.use(function cros(req, res, next) {
