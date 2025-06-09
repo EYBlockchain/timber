@@ -130,7 +130,7 @@ export class BemConsumer extends KafkaConsumer {
     
     try {
         const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-        logger.debug(`Parsed Redis metadata: ${JSON.stringify(parsed)}`);
+        logger.info(`Parsed Redis metadata: ${JSON.stringify(parsed)}`);
         return parsed;
     } catch (e) {
         logger.warn(`Invalid Redis data for ${contractAddress}`);
