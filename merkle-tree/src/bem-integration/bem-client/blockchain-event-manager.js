@@ -3,7 +3,9 @@ import config from "config";
 import fs from "fs"
 import logger from "../../logger";
 import { BemException, BemConnectionError } from "./exceptions";
+import { redisClient } from "../infra/redis/redis-client";
 
+const REDIS_DATA_STORE_KEY = 'store-data';
 
 const handleBemException = (exception) => {
 	if (exception?.response?.data) {
@@ -12,14 +14,16 @@ const handleBemException = (exception) => {
 	throw new BemConnectionError(exception);
 }
 
-export const subscribeToBemEvents = async (contractAddress, eventSpecification, saasContext) => {
+export const subscribeToBemEvents = async (contractAddress, eventSpecification) => {
 	try {
 		logger.info(`Subscribing to bem with ${contractAddress}`);
+
+		const result = await redisClient.hget(REDIS_DATA_STORE_KEY, contractAddress)
 		const axiosConfig = {
 			method: "post",
 			url: `${process.env.BEM_ENDPOINT}/contract-event/subscribe`,
 			headers: {
-				context: JSON.stringify(saasContext),
+				context: result.context,
 			},
 			data: {
 				productIdentifier: 'ocm',

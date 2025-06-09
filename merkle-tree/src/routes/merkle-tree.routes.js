@@ -24,7 +24,6 @@ async function startEventFilter(req, res, next) {
 
   const { contractName, treeId, contractId, contractAddress, block } = req.body; // contractAddress & treeId are optional parameters. Address can instead be inferred by Timber in many cases.
   const { db } = req.user;
-  const saasContext = req.context;
 
   logger.debug(
     `Received data: contractName: ${contractName}, treeId: ${treeId}, contractId: ${contractId}, contractAddress: ${contractAddress}, block: ${block}`,
@@ -39,7 +38,7 @@ async function startEventFilter(req, res, next) {
   );
 
   try {
-    const filterState = await startFilter(db, contractName, contractInstance, treeId, contractId, block, saasContext);
+    const filterState = await startFilter(db, contractName, contractInstance, treeId, contractId, block);
     switch(filterState) {
       case FilterStates.STARTED:
         res.data = {

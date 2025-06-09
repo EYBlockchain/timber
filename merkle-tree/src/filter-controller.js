@@ -166,7 +166,7 @@ const responseFunctions = {
 An 'orchestrator' which oversees the various filtering steps of the filter
 @param {number} blockNumber
 */
-async function filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId, saasContext = null) {
+async function filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId) {
   logger.debug(
     `src/filter-controller filterBlock(db, contractInstance, fromBlock=${fromBlock}, treeId)`,
   );
@@ -206,7 +206,7 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
       );
 
       const contractAddress = contractInstance.options.address;
-	    await subscribeToBemEvents(contractAddress, eventJsonInterfaces, saasContext);
+	    await subscribeToBemEvents(contractAddress, eventJsonInterfaces);
   } else {
     eventNames.forEach(async eventName => {
       const responder = newEventResponder;
@@ -304,7 +304,7 @@ async function getFromBlock(db, contractName, contractId, block) {
 /**
 Commence filtering
 */
-async function start(db, contractName, contractInstance, treeId, contractId, block, saasContext = null) {
+async function start(db, contractName, contractInstance, treeId, contractId, block) {
   const filterId = getFilterId(contractName, contractId, treeId);
 
   if(alreadyStarted[filterId] && config.REUSE_FILTERS) {
@@ -332,7 +332,7 @@ async function start(db, contractName, contractInstance, treeId, contractId, blo
       // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
       const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
       // Now we filter indefinitely:
-      await filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId, saasContext);
+      await filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId);
       started = true;
     } catch (err) {
       logger.error('Unable to start filter: ' + err);

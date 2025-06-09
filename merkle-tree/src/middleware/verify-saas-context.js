@@ -1,8 +1,11 @@
 import { decode } from 'jsonwebtoken';
+import { redisClient } from '../bem-integration/infra/redis/redis-client'
 
-export default function verifySaasContext(req, res, next) {
+const REDIS_DATA_STORE_KEY = 'store-data';
+
+export default async function verifySaasContext(req, res, next) {
   try {
-    if (req.headers?.context) {
+    if (req.headers?.context && process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
       const context = JSON.parse(req.headers.context);
       if (typeof context !== 'object' || Array.isArray(context)) {
         throw new Error('Context must be a JSON object');
@@ -12,7 +15,7 @@ export default function verifySaasContext(req, res, next) {
       }
       req.context = context;
       
-    } else if (req.headers?.authorization) {
+    } else if (req.headers?.authorization && process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
       const token = req.headers.authorization.startsWith('Bearer ')
         ? req.headers.authorization.slice(7).trim()
         : req.headers.authorization.trim();
@@ -24,6 +27,18 @@ export default function verifySaasContext(req, res, next) {
       }
       req.context = decoded.custom_claims;
     } 
+    if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+      const { contractId, contractName, contractAddress } = req.body;
+
+      const data = {
+        contractAddress,
+        contractId,
+        contractName,
+        context: req.context
+      };
+
+      await redisClient.hset(REDIS_DATA_STORE_KEY, contractAddress, JSON.stringify(data));
+    }
   } catch (err) {
     console.warn(`Invalid context header: ${err.message}`);
   }
