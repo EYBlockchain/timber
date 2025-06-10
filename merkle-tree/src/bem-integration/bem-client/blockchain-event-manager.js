@@ -1,6 +1,4 @@
 import axios from "axios";
-import config from "config";
-import fs from "fs"
 import logger from "../../logger";
 import { BemException, BemConnectionError } from "./exceptions";
 import { redisClient } from "../infra/redis/redis-client";
@@ -18,20 +16,21 @@ export const subscribeToBemEvents = async (contractAddress, eventSpecification) 
 	try {
 		logger.info(`Subscribing to bem with ${contractAddress}`);
 
-		const result = await redisClient.hget(REDIS_DATA_STORE_KEY, contractAddress)
+		const context = JSON.parse(await redisClient.hget(REDIS_DATA_STORE_KEY, contractAddress) || '{}')?.context;
+		if (!context) throw new Error(`Context not found in Redis for ${contractAddress}`);
+
+		logger.debug('Fetched context details from Redis: ', context);
+
 		const axiosConfig = {
 			method: "post",
 			url: `${process.env.BEM_ENDPOINT}/contract-event/subscribe`,
-			headers: {
-				context: result.context,
-			},
+			headers: { context: JSON.stringify(context) }, timeout: 3600000,
 			data: {
 				productIdentifier: 'ocm',
 				contractAddress,
 				eventSpecification,
 				callbackTopicSuffix: process.env.CALLBACK_TOPIC_SUFFIX
 			},
-			timeout: 3600000,
 		};
 		await axios(axiosConfig);
 	} catch (error) {

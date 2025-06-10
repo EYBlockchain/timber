@@ -18,7 +18,7 @@ export function createRedisClient() {
                 servername: process.env.REDIS_HOST,
             };
         }
-        
+
         return new Redis(redisConfig);
     } catch (error) {
         logger.error('Failed while creating redis client', error);

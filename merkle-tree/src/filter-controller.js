@@ -199,7 +199,7 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
     await metadataService.updateLatestRecalculation({ latestRecalculation });
   }
 
-  // DATTATRAY call BEM to subscribe to get events for given contract template
+  // Call BEM to subscribe to get events for given contract template
   if(process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
       const eventJsonInterfaces = contractInstance._jsonInterface.filter(
         o => o.type === 'event' && eventNames.includes(o.name)

@@ -1,10 +1,9 @@
 import logger from '../../../../logger';
 import { KafkaMessageProcessingError } from '../kafka-exceptions';
 import { createKafkaClient } from "../kafka-client";
-import fs from "fs"
 
-export class KafkaConsumer{
-    constructor(topic, groupId, sessionTimeout = 300000){
+export class KafkaConsumer {
+    constructor(topic, groupId, sessionTimeout = 300000) {
         this.topic = topic;
         this.groupId = groupId;
         this.sessionTimeout = sessionTimeout;
@@ -12,19 +11,19 @@ export class KafkaConsumer{
     }
 
     async start() {
-        while(!this.started) {
+        while (!this.started) {
             logger.info('Starting Kafka consumer...');
             try {
                 this.kafka = await createKafkaClient();
-                this.consumer = this.kafka.consumer({ 
-                    groupId: this.groupId, 
-                    isolationLevel: 'read_committed', 
+                this.consumer = this.kafka.consumer({
+                    groupId: this.groupId,
+                    isolationLevel: 'read_committed',
                     sessionTimeout: this.sessionTimeout,
                 });
 
                 this.consumer.on('consumer.crash', async (payload) => {
                     logger.warn('Kafka Consumer crashed', payload);
-                    if(!payload.restart) {
+                    if (!payload.restart) {
                         await this.disconnect();
                         await this.run();
                     }
@@ -36,7 +35,7 @@ export class KafkaConsumer{
                 await new Promise((resolve) => setTimeout(() => resolve(), 5000));
             }
         }
-	}
+    }
 
     async run() {
         try {

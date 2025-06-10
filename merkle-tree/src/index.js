@@ -26,8 +26,10 @@ Web3.connect();
 const app = express();
 
 // Initialize Kafka connection here
-const bemConsumer = new BemConsumer();
-bemConsumer.start();
+if(process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+  const bemConsumer = new BemConsumer();
+  bemConsumer.start();
+}
 
 // TODO: what is this? :
 app.use(function cros(req, res, next) {
