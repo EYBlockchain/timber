@@ -200,7 +200,7 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
   }
 
   // Call BEM to subscribe to get events for given contract template
-  if(process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+  if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
       const eventJsonInterfaces = contractInstance._jsonInterface.filter(
         o => o.type === 'event' && eventNames.includes(o.name)
       );
@@ -324,13 +324,16 @@ async function start(db, contractName, contractInstance, treeId, contractId, blo
     try {
       logger.info('Starting filter...');
 
-      // stop filter if already going, to avoid leakage
-      if(subscriptions[filterId]) {
-        await utilsWeb3.unsubscribe(subscriptions[filterId]);
-      }
+      let fromBlock = 0;
+      if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER !== 'true') { 
+        // stop filter if already going, to avoid leakage
+        if(subscriptions[filterId]) {
+          await utilsWeb3.unsubscribe(subscriptions[filterId]);
+        }
 
-      // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-      const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+        // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
+        fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+      }
       // Now we filter indefinitely:
       await filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId);
       started = true;
