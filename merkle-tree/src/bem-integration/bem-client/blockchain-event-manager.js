@@ -19,7 +19,7 @@ export const subscribeToBemEvents = async (contractAddress, eventSpecification) 
 		const context = JSON.parse(await redisClient.hget(REDIS_DATA_STORE_KEY, contractAddress) || '{}')?.context;
 		if (!context) throw new Error(`Context not found in Redis for ${contractAddress}`);
 
-		logger.debug('Fetched context details from Redis: ', context);
+		logger.debug('Fetched context details from Redis: ');
 
 		const axiosConfig = {
 			method: "post",
