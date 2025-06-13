@@ -9,7 +9,7 @@ import utilsWeb3 from './utils-web3';
 
 import { LeafService, MetadataService } from './db/service';
 import logger from './logger';
-import { subscribeToBemEvents } from './bem-integration/bem-client/blockchain-event-manager'
+import { subscribeToBemEvents } from './bem/bem-client/blockchain-event-manager'
 
 // global subscriptions object:
 const subscriptions = {};
@@ -199,8 +199,8 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
     await metadataService.updateLatestRecalculation({ latestRecalculation });
   }
 
-  // Call BEM to subscribe to get events for given contract template
   if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+      // Call BEM to subscribe to get events for given contract template
       const eventJsonInterfaces = contractInstance._jsonInterface.filter(
         o => o.type === 'event' && eventNames.includes(o.name)
       );

@@ -154,7 +154,11 @@ async function update(req, res, next) {
 
 // initializing routes
 export default function(router) {
-  router.route('/start').post(verifySaasContext, startEventFilter);
+  if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+    router.route('/start').post(verifySaasContext, startEventFilter);
+  } else {
+    router.route('/start').post(startEventFilter);
+  }
 
   router.route('/update').patch(update);
 

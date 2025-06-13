@@ -1,8 +1,8 @@
 import { decode } from 'jsonwebtoken';
-import { redisClient } from '../bem-integration/infra/redis/redis-client';
+import { redisClient } from '../bem/infra/redis/redis-client';
 import logger from "../logger";
 
-const REDIS_DATA_STORE_KEY = 'store-data';
+const BEM_METADATA_STORE = 'metadata-store';
 
 export default async function verifySaasContext(req, res, next) {
     const isEnabled = process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true';
@@ -71,7 +71,7 @@ async function storeContractMetadataInRedis(body, context) {
         };
 
         const result = await redisClient.hset(
-            REDIS_DATA_STORE_KEY,
+            BEM_METADATA_STORE,
             contractAddress,
             JSON.stringify(dataToStore)
         );

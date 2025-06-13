@@ -2,7 +2,7 @@ import Redis from 'ioredis';
 import { RedisConnectionError } from './redis-exceptions';
 import logger from "../../../logger";
 
-const APP_PREFIX = (process.env.REDIS_ENV_PREFIX || '') + 'ocm-timber:';
+const APP_PREFIX = (process.env.REDIS_ENV_PREFIX || '') + 'timber:';
 
 export function createRedisClient() {
     try {

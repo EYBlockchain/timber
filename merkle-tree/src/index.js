@@ -9,7 +9,7 @@ import cors from 'cors';
 import logger from './logger';
 import Web3 from './web3';
 import autostart from './auto-start';
-import { BemConsumer } from './bem-integration/infra/kafka/consumers/bem-event-consumer';
+import { BemConsumer } from './bem/infra/kafka/consumers/bem-event-consumer';
 
 import {
   logRequest,
