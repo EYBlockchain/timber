@@ -3,7 +3,7 @@ import logger from "../../logger";
 import { BemException, BemConnectionError } from "./exceptions";
 import { redisClient } from "../infra/redis/redis-client";
 
-const BEM_METADATA_STORE = 'metadata-store';
+const CONTRACT_METADATA_STORE = 'contract-metadata';
 
 const handleBemException = (exception) => {
 	if (exception?.response?.data) {
@@ -16,7 +16,7 @@ export const subscribeToBemEvents = async (contractAddress, eventSpecification) 
 	try {
 		logger.info(`Subscribing to bem with ${contractAddress}`);
 
-		const context = JSON.parse(await redisClient.hget(BEM_METADATA_STORE, contractAddress) || '{}')?.context;
+		const context = JSON.parse(await redisClient.hget(CONTRACT_METADATA_STORE, contractAddress) || '{}')?.context;
 		if (!context) throw new Error(`Context not found in Redis for ${contractAddress}`);
 
 		logger.debug('Fetched context details from Redis: ');

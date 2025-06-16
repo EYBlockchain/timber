@@ -8,7 +8,7 @@ import adminDbConnection from '../../../../db/common/adminDbConnection';
 import DB from '../../../../db/mongodb/db';
 const { admin } = config.get('mongo');
 
-const BEM_METADATA_STORE = 'metadata-store';
+const CONTRACT_METADATA_STORE = 'contract-metadata';
 
 export class BemConsumer extends KafkaConsumer {
     constructor() {
@@ -142,7 +142,7 @@ export class BemConsumer extends KafkaConsumer {
     async getContractMetadataFromRedis(contractAddress) {
         try {
             logger.debug(`Fetching contract metadata from Redis for address: ${contractAddress}`);
-            const data = await redisClient.hget(BEM_METADATA_STORE, contractAddress);
+            const data = await redisClient.hget(CONTRACT_METADATA_STORE, contractAddress);
             if (!data) return null;
 
             const parsed = typeof data === 'string' ? JSON.parse(data) : data;
