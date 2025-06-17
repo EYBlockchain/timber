@@ -9,6 +9,7 @@ import utilsWeb3 from './utils-web3';
 
 import { LeafService, MetadataService } from './db/service';
 import logger from './logger';
+import { subscribeToBemEvents } from './bem/bem-client/blockchain-event-manager'
 
 // global subscriptions object:
 const subscriptions = {};
@@ -198,37 +199,48 @@ async function filterBlock(db, contractName, contractInstance, contractId, fromB
     await metadataService.updateLatestRecalculation({ latestRecalculation });
   }
 
-  eventNames.forEach(async eventName => {
-    const responder = newEventResponder;
-    const responseFunction =
-      eventName === eventNames[0] ? responseFunctions.NewLeaf : responseFunctions.NewLeaves;
-    const responseFunctionArgs = { db, contractName, eventName, treeId };
+  if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+      // Call BEM to subscribe to get events for given contract template
+      const eventJsonInterfaces = contractInstance._jsonInterface.filter(
+        o => o.type === 'event' && eventNames.includes(o.name)
+      );
 
-    const eventSubscription = await utilsWeb3.subscribeToEvent(
-      contractName,
-      contractInstance,
-      null, // if null, the deployedAddress will be gleaned from the contractInstance
-      eventName,
-      fromBlock,
-      responder,
-      responseFunction,
-      responseFunctionArgs,
-    );
-
-    const filterId = getFilterId(contractName, contractId, treeId);
-
-    // keep the subscription object for this event in global memory; to enable 'unsubscribe' in future.
-    subscriptions[getFilterId(contractName, contractId, treeId)] = eventSubscription; 
-
-    eventSubscription.on('connected', (str) => {
-      logger.debug(`Event listener connected for ${filterId}`);
+      const contractAddress = contractInstance.options.address;
+	    await subscribeToBemEvents(contractAddress, eventJsonInterfaces);
+  } else {
+    eventNames.forEach(async eventName => {
+      const responder = newEventResponder;
+      const responseFunction =
+        eventName === eventNames[0] ? responseFunctions.NewLeaf : responseFunctions.NewLeaves;
+      const responseFunctionArgs = { db, contractName, eventName, treeId };
+  
+      const eventSubscription = await utilsWeb3.subscribeToEvent(
+        contractName,
+        contractInstance,
+        null, // if null, the deployedAddress will be gleaned from the contractInstance
+        eventName,
+        fromBlock,
+        responder,
+        responseFunction,
+        responseFunctionArgs,
+      );
+  
+      const filterId = getFilterId(contractName, contractId, treeId);
+  
+      // keep the subscription object for this event in global memory; to enable 'unsubscribe' in future.
+      subscriptions[getFilterId(contractName, contractId, treeId)] = eventSubscription; 
+  
+      eventSubscription.on('connected', (str) => {
+        logger.debug(`Event listener connected for ${filterId}`);
+      });
+      eventSubscription.on('error', (err) => {
+        logger.error(`Event listener stopped for ${filterId}: ${err}`);
+        alreadyStarting[filterId] = false;
+        alreadyStarted[filterId] = false;
+      });
     });
-    eventSubscription.on('error', (err) => {
-      logger.error(`Event listener stopped for ${filterId}: ${err}`);
-      alreadyStarting[filterId] = false;
-      alreadyStarted[filterId] = false;
-    });
-  });
+  }
+
 }
 
 /**
@@ -312,13 +324,16 @@ async function start(db, contractName, contractInstance, treeId, contractId, blo
     try {
       logger.info('Starting filter...');
 
-      // stop filter if already going, to avoid leakage
-      if(subscriptions[filterId]) {
-        await utilsWeb3.unsubscribe(subscriptions[filterId]);
-      }
+      let fromBlock = 0;
+      if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER !== 'true') { 
+        // stop filter if already going, to avoid leakage
+        if(subscriptions[filterId]) {
+          await utilsWeb3.unsubscribe(subscriptions[filterId]);
+        }
 
-      // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
-      const fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+        // check the fiddly case of having to re-filter any old blocks due to lost information (e.g. due to a system crash).
+        fromBlock = await getFromBlock(db, contractName, contractId, block); // the blockNumber we get is the next WHOLE block to start filtering.
+      }
       // Now we filter indefinitely:
       await filterBlock(db, contractName, contractInstance, contractId, fromBlock, treeId);
       started = true;

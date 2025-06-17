@@ -8,6 +8,8 @@ import contractController from '../contract-controller';
 import { start as startFilter, FilterStates } from '../filter-controller';
 import merkleTreeController from '../merkle-tree-controller';
 import logger from '../logger';
+import verifySaasContext from '../middleware/verify-saas-context';
+
 const axios = require('axios');
 
 
@@ -152,7 +154,11 @@ async function update(req, res, next) {
 
 // initializing routes
 export default function(router) {
-  router.route('/start').post(startEventFilter);
+  if (process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER === 'true') {
+    router.route('/start').post(verifySaasContext, startEventFilter);
+  } else {
+    router.route('/start').post(startEventFilter);
+  }
 
   router.route('/update').patch(update);
 
