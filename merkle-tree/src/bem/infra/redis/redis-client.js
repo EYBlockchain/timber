@@ -6,6 +6,9 @@ const APP_PREFIX = (process.env.REDIS_ENV_PREFIX || '') + 'timber:';
 
 export function createRedisClient() {
     try {
+        if(!process.env.ENABLE_BLOCKCHAIN_EVENT_MANAGER && !process.env.REDIS_HOST)
+            return true;
+
         const redisConfig = {
             host: process.env.REDIS_HOST,
             port: process.env.REDIS_PORT,
