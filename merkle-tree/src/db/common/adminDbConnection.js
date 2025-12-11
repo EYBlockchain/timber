@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
 import config from 'config';
 
-const { host, port, databaseName, dbUrl } = config.get('mongo');
+const { host, port, databaseName, dbUrl, admin, adminPassword } = config.get('mongo');
 const dbConnections = {};
 
 let url;
-if (dbUrl)
+if (dbUrl) {
   url = dbUrl;
-else
-  url = `mongodb://${host}:${port}/${databaseName}`;
+} else {
+  url = `mongodb://${admin}:${adminPassword}@${host}:${port}/${databaseName}?authSource=admin`;
+}
 
 dbConnections.admin = mongoose.createConnection(`${url}`);
 

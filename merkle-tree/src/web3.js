@@ -30,11 +30,11 @@ export default {
    */
   connect() {
 		if (this.isConnected()) {
-			logger.debug('Blockchain connection already open');
+			logger.info('Blockchain connection already open');
 			return this.web3;
 		}
 
-		logger.http("Blockchain Connecting...");
+		logger.info("Blockchain Connecting...");
     const provider = new Web3.providers.WebsocketProvider(
       this.buildUrl(),
       null,
@@ -43,7 +43,7 @@ export default {
 
 
     provider.on("error", (err) => logger.error(`Blockchain connection error: ${err.reason}`));
-		provider.on("connect", () => logger.http("Blockchain Connected"));
+		provider.on("connect", () => logger.info("Blockchain Connected"));
 		provider.on("close", (err) => {
 			logger.error(`Blockchain connection closed. Error code ${err.code}, reason "${err.reason}"`);
 			this.isConnectionOpen = false;
