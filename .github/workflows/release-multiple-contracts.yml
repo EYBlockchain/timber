@@ -38,7 +38,7 @@ jobs:
           GPR_TOKEN=${{ secrets.GPR_TOKEN }}
         tags: |
           ghcr.io/eyblockchain/timber-multicontract:latest
-          ghcr.io/eyblockchain/timber-multicontract:v2.0.2
+          ghcr.io/eyblockchain/timber-multicontract:v2.0.3
         # username: ${{ github.actor }}
         # password: ${{ secrets.GITHUB_TOKEN }}
         push: true
