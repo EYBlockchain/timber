@@ -40,7 +40,7 @@ const autoStart = async () => {
       logger.debug(
         `Calling /start for Timber, with contractName '${contractName}' and url localhost`,
       );
-      axios.post('http://localhost/start', data, {
+      axios.post(config.APP_URL, data, {
         timeout: 3600000,
       });
     } catch (error) {

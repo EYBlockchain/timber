@@ -70,7 +70,7 @@ module.exports = {
     port: '27017',
     databaseName: process.env.DB_NAME || 'merkle_tree',
     admin: 'admin',
-    adminPassword: 'admin',
+    adminPassword: process.env.DB_PASSWORD || '',
     dbUrl: process.env.DB_URL || 'mongodb://mongo-merkle-tree:27017',
   },
   isLoggerEnabled: true,
@@ -108,4 +108,5 @@ module.exports = {
       },
     },
   },
+  APP_URL: process.env.APP_URL || '',
 };
