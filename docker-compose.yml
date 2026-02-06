@@ -44,6 +44,7 @@ services:
       # - 'compile' (to compile contracts from a .sol file, at startup, with solc, from the /app/contracts/ folder). Useful if the application using Timber doesn't use solc to generate contract interface json's.
       LOG_LEVEL: 'debug'
       UNIQUE_LEAVES: 'true'
+      DB_PASSWORD: 'admin'
     networks:
       - merkle_tree_network
 

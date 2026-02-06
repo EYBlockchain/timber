@@ -8,7 +8,6 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import logger from './logger';
 import Web3 from './web3';
-import autostart from './auto-start';
 import { BemConsumer } from './bem/infra/kafka/consumers/bem-event-consumer';
 
 import {
@@ -76,7 +75,6 @@ BigInt.prototype.toJSON = function() {
 
 const server = app.listen(80, '0.0.0.0', () => {
   logger.info('merkle-tree RESTful API server started on ::: 80');
-  if (process.env.AUTOSTART) autostart();
 });
 server.timeout = 0;
 
