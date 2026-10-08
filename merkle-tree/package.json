@@ -49,6 +49,7 @@
     "follow-redirects": "1.16.0",
     "path-to-regexp": "0.1.13",
     "tough-cookie": "4.1.3",
-    "tmp": "0.2.5"
+    "tmp": "^0.2.7",
+    "qs": "^6.16.0"
   }
 }

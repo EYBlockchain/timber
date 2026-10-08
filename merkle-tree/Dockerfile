@@ -23,7 +23,8 @@ ENV USERNAME="app"
 
 # install additional ca-certificates e.g. zscaler certificate (can be removed if not needed)
 COPY ./config/trust/* /usr/local/share/ca-certificates/
-RUN apk update --no-check-certificate && apk add --no-check-certificate ca-certificates
+RUN apk update --no-check-certificate && apk add --no-check-certificate ca-certificates  && \
+    apk upgrade --no-cache
 RUN chmod 644 /usr/local/share/ca-certificates/* && update-ca-certificates
 
 RUN addgroup -S $USERNAME && \
